@@ -1,0 +1,5 @@
+// Корневой build-файл. Приложение на чистом Java + framework-API Android.
+// Сторонних библиотек нет — только системные.
+plugins {
+    id 'com.android.application' version '8.5.2' apply false
+}

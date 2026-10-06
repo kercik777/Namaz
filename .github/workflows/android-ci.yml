@@ -1,0 +1,68 @@
+name: Android CI (APK)
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - 'app/**'
+      - 'gradle/**'
+      - 'gradlew'
+      - 'gradlew.bat'
+      - '*.gradle'
+      - 'gradle.properties'
+      - '.github/workflows/android-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Сборка debug и release APK
+        run: gradle --no-daemon --stacktrace assembleDebug assembleRelease
+
+      - name: Итог
+        run: |
+          ls -la app/build/outputs/apk/debug/ app/build/outputs/apk/release/ || true
+
+      - name: Артефакты
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-${{ github.run_number }}
+          path: app/build/outputs/apk/**/*.apk
+          if-no-files-found: warn
+
+      - name: Публикация APK в Releases
+        if: github.ref == 'refs/heads/arena/1ba67f4e-namaz'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          TAG="build-${{ github.run_number }}"
+          gh release create "$TAG" \
+            app/build/outputs/apk/debug/app-debug.apk \
+            app/build/outputs/apk/release/app-release.apk \
+            --title "Akyda we Namaz — сборка ${{ github.run_number }}" \
+            --notes "Автоматическая сборка из ветки ${{ github.ref_name }} (коммит ${{ github.sha:0:7 }}).
+
+Для установки скачайте **app-release.apk** (рекомендуется). app-debug.apk — отладочная версия." \
+            --target "${{ github.sha }}" || echo "release exists or failed"

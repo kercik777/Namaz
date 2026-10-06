@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Приложение не запрашивает НИ ОДНОГО разрешения и работает полностью офлайн -->
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:fullBackupContent="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="false"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".ui.SplashActivity"
+            android:configChanges="locale|layoutDirection|uiMode|fontScale|screenSize|smallestScreenSize|screenLayout|orientation|keyboardHidden|density"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.OnboardActivity"
+            android:configChanges="locale|layoutDirection|uiMode|fontScale|screenSize|smallestScreenSize|screenLayout|orientation|keyboardHidden|density"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:configChanges="locale|layoutDirection|uiMode|fontScale|screenSize|smallestScreenSize|screenLayout|orientation|keyboardHidden|density"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
+
+        <activity
+            android:name=".ui.ReaderActivity"
+            android:configChanges="locale|layoutDirection|uiMode|fontScale|screenSize|smallestScreenSize|screenLayout|orientation|keyboardHidden|density"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Reader" />
+
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:configChanges="locale|layoutDirection|uiMode|fontScale|screenSize|smallestScreenSize|screenLayout|orientation|keyboardHidden|density"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.StatsActivity"
+            android:configChanges="locale|layoutDirection|uiMode|fontScale|screenSize|smallestScreenSize|screenLayout|orientation|keyboardHidden|density"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.AboutActivity"
+            android:configChanges="locale|layoutDirection|uiMode|fontScale|screenSize|smallestScreenSize|screenLayout|orientation|keyboardHidden|density"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.PrivacyActivity"
+            android:configChanges="locale|layoutDirection|uiMode|fontScale|screenSize|smallestScreenSize|screenLayout|orientation|keyboardHidden|density"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+    </application>
+</manifest>

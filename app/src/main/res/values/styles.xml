@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/app_bg</item>
+        <item name="android:colorPrimary">@color/emerald_800</item>
+        <item name="android:colorPrimaryDark">@color/emerald_900</item>
+        <item name="android:colorAccent">@color/gold_500</item>
+        <item name="android:statusBarColor">@color/app_bg</item>
+        <item name="android:navigationBarColor">@color/app_bg</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:textColorPrimary">@color/ink_light</item>
+        <item name="android:textColorSecondary">@color/sub_light</item>
+        <item name="android:windowContentTransitions">true</item>
+    </style>
+
+    <style name="AppTheme.Dark" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/app_bg_dark</item>
+        <item name="android:colorPrimary">@color/emerald_700</item>
+        <item name="android:colorPrimaryDark">@color/emerald_900</item>
+        <item name="android:colorAccent">@color/gold_400</item>
+        <item name="android:statusBarColor">@color/app_bg_dark</item>
+        <item name="android:navigationBarColor">@color/app_bg_dark</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:textColorPrimary">@color/ink_dark</item>
+        <item name="android:textColorSecondary">@color/sub_dark</item>
+    </style>
+
+    <style name="AppTheme.Splash" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/emerald_900</item>
+        <item name="android:statusBarColor">@color/emerald_900</item>
+        <item name="android:navigationBarColor">@color/emerald_900</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="AppTheme.Reader" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/emerald_900</item>
+        <item name="android:statusBarColor">@color/emerald_900</item>
+        <item name="android:navigationBarColor">@color/emerald_900</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+</resources>

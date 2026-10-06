@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Akyda we Namaz</string>
+    <string name="app_tagline">Книги вероучения и намаза</string>
+
+    <!-- Навигация -->
+    <string name="nav_home">Главная</string>
+    <string name="nav_library">Книги</string>
+    <string name="nav_search">Поиск</string>
+    <string name="nav_saved">Избранное</string>
+    <string name="nav_more">Ещё</string>
+
+    <!-- Приветствие -->
+    <string name="greeting_morning">Доброе утро</string>
+    <string name="greeting_day">Добрый день</string>
+    <string name="greeting_evening">Добрый вечер</string>
+    <string name="greeting_night">Спокойной ночи</string>
+    <string name="home_subtitle">Продолжайте чтение — знания ждут вас</string>
+    <string name="just_now">только что</string>
+    <plurals name="min_ago">
+        <item quantity="one">%d минуту назад</item>
+        <item quantity="few">%d минуты назад</item>
+        <item quantity="many">%d минут назад</item>
+        <item quantity="other">%d мин. назад</item>
+    </plurals>
+    <plurals name="hours_ago">
+        <item quantity="one">%d час назад</item>
+        <item quantity="few">%d часа назад</item>
+        <item quantity="many">%d часов назад</item>
+        <item quantity="other">%d ч. назад</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="one">%d день назад</item>
+        <item quantity="few">%d дня назад</item>
+        <item quantity="many">%d дней назад</item>
+        <item quantity="other">%d дн. назад</item>
+    </plurals>
+    <plurals name="pages_read">
+        <item quantity="one">%d страница</item>
+        <item quantity="few">%d страницы</item>
+        <item quantity="many">%d страниц</item>
+        <item quantity="other">%d стр.</item>
+    </plurals>
+    <plurals name="minutes_read">
+        <item quantity="one">%d минута</item>
+        <item quantity="few">%d минуты</item>
+        <item quantity="many">%d минут</item>
+        <item quantity="other">%d мин.</item>
+    </plurals>
+    <plurals name="days_streak">
+        <item quantity="one">%d день подряд</item>
+        <item quantity="few">%d дня подряд</item>
+        <item quantity="many">%d дней подряд</item>
+        <item quantity="other">%d дн. подряд</item>
+    </plurals>
+
+    <!-- Главная -->
+    <string name="continue_reading">Продолжить чтение</string>
+    <string name="start_reading">Начать чтение</string>
+    <string name="quote_of_day">Цитата дня</string>
+    <string name="your_library">Ваша библиотека</string>
+    <string name="quick_sections">Разделы книг</string>
+    <string name="statistics">Статистика</string>
+    <string name="stat_pages">Страниц прочитано</string>
+    <string name="stat_minutes">Минут чтения</string>
+    <string name="stat_streak">Серия дней</string>
+    <string name="stat_last">Последнее чтение</string>
+    <string name="never_opened">Вы ещё не открывали эту книгу</string>
+    <string name="open_book">Открыть книгу</string>
+
+    <!-- Библиотека -->
+    <string name="library">Библиотека</string>
+    <string name="library_subtitle">Три книги в одном приложении</string>
+    <string name="read_book">Читать</string>
+    <string name="read_continue">Продолжить</string>
+    <string name="book_actions">Действия с книгой</string>
+    <string name="contents">Оглавление</string>
+    <string name="reset_progress">Сбросить прогресс</string>
+    <string name="book_progress">Прочитано %d%%</string>
+    <string name="book_not_started">Не начата</string>
+
+    <!-- Поиск -->
+    <string name="search">Поиск</string>
+    <string name="search_hint">Слово или фраза…</string>
+    <string name="search_placeholder_title">Поиск по всем книгам</string>
+    <string name="search_placeholder_text">Введите слово — например «намаз», «тәрет», «иман». Поиск понимает туркменские буквы и без диакритики.</string>
+    <string name="search_recent">Недавние запросы</string>
+    <string name="search_clear">Очистить</string>
+    <string name="search_nothing">Ничего не найдено</string>
+    <string name="search_nothing_hint">Попробуйте другое слово или проверьте написание.</string>
+    <string name="search_found">Найдено: %d</string>
+    <string name="search_in_book">Искать в книге</string>
+    <string name="search_close">Закрыть поиск</string>
+
+    <!-- Избранное -->
+    <string name="saved">Избранное</string>
+    <string name="tab_bookmarks">Закладки</string>
+    <string name="tab_quotes">Цитаты</string>
+    <string name="no_bookmarks">Пока нет закладок</string>
+    <string name="no_bookmarks_hint">Нажмите на флажок в читалке — и страница сохранится здесь.</string>
+    <string name="no_quotes">Пока нет цитат</string>
+    <string name="no_quotes_hint">Удерживайте палец на абзаце в книге, чтобы сохранить цитату.</string>
+    <string name="bookmark_added">Закладка добавлена</string>
+    <string name="bookmark_removed">Закладка удалена</string>
+    <string name="quote_saved">Цитата сохранена</string>
+    <string name="quote_removed">Цитата удалена</string>
+    <string name="delete">Удалить</string>
+    <string name="copy">Копировать</string>
+    <string name="share">Поделиться</string>
+    <string name="copied">Скопировано</string>
+    <string name="save_quote">Сохранить цитату</string>
+
+    <!-- Читалка -->
+    <string name="page">Страница</string>
+    <string name="page_of">%1$d из %2$d</string>
+    <string name="chapter">Глава</string>
+    <string name="reading_settings">Настройки чтения</string>
+    <string name="scan_mode">Оригинал</string>
+    <string name="text_mode">Текст</string>
+    <string name="scan_hint">Страница из печатного издания. Увеличивайте щипком.</string>
+    <string name="scan_missing">Скан этой страницы недоступен</string>
+    <string name="font">Шрифт</string>
+    <string name="font_serif">С засечками</string>
+    <string name="font_sans">Без засечек</string>
+    <string name="font_condensed">Узкий</string>
+    <string name="text_size">Размер текста</string>
+    <string name="line_spacing">Межстрочный интервал</string>
+    <string name="page_margins">Поля страницы</string>
+    <string name="page_theme">Цвет страницы</string>
+    <string name="theme_paper">Бумага</string>
+    <string name="theme_sepia">Сепия</string>
+    <string name="theme_emerald">Изумруд</string>
+    <string name="theme_dark">Тёмная</string>
+    <string name="theme_night">Ночь</string>
+    <string name="reading_mode">Режим чтения</string>
+    <string name="mode_pages">Страницы</string>
+    <string name="mode_scroll">Прокрутка</string>
+    <string name="page_animation">Перелистывание</string>
+    <string name="anim_slide">Сдвиг</string>
+    <string name="anim_fade">Затухание</string>
+    <string name="anim_none">Без анимации</string>
+    <string name="page_sound">Звук страницы</string>
+    <string name="keep_screen_on">Не гасить экран</string>
+    <string name="brightness">Затемнение</string>
+    <string name="fullscreen_reading">Скрывать панели</string>
+    <string name="dim_on">Яркость приглушена</string>
+    <string name="book_finished">Книга прочитана</string>
+    <string name="chapter_finished">Глава завершена</string>
+
+    <!-- Ещё / настройки -->
+    <string name="more">Ещё</string>
+    <string name="appearance">Оформление</string>
+    <string name="app_theme">Тема приложения</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Тёмная</string>
+    <string name="theme_system">Как в системе</string>
+    <string name="interface_language">Язык интерфейса</string>
+    <string name="lang_ru">Русский</string>
+    <string name="lang_tk">Türkmençe</string>
+    <string name="language_note">Текст книг остаётся на языке оригинала.</string>
+    <string name="reading_defaults">Настройки чтения по умолчанию</string>
+    <string name="my_data">Мои данные</string>
+    <string name="reset_all">Сбросить все данные</string>
+    <string name="reset_all_question">Удалить прогресс, закладки, цитаты и статистику? Это действие нельзя отменить.</string>
+    <string name="reset_done">Данные сброшены</string>
+    <string name="about_app">О приложении</string>
+    <string name="privacy">Политика конфиденциальности</string>
+    <string name="feedback">Сообщить об ошибке</string>
+    <string name="rate">Оценить в Google Play</string>
+    <string name="share_app">Поделиться приложением</string>
+    <string name="version">Версия</string>
+    <string name="cancel">Отмена</string>
+    <string name="ok">Понятно</string>
+    <string name="close">Закрыть</string>
+    <string name="back">Назад</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="all_books">Все книги</string>
+
+    <!-- О приложении -->
+    <string name="about_title">О приложении</string>
+    <string name="about_intro">«Akyda we Namaz» — офлайн-собрание книг о вероучении и намазе на туркменском языке. Приложение работает без интернета, не содержит рекламы и не запрашивает ни одного разрешения.</string>
+    <string name="about_features">Три книги</string>
+    <string name="about_features_text">«Акыда» — основы вероучения, «Намаз китабы» — намаз, омовение и правила, «Намаз» — молитвы и суры с постраничными сканами печатного издания.</string>
+    <string name="about_features2">Чтение без границ</string>
+    <string name="about_features2_text">Пять цветов страницы, три шрифта, гибкие размеры текста и полей, режимы «страницы» и «прокрутка», закладки, цитаты, поиск по всем книгам, статистика чтения.</string>
+    <string name="about_sources">Источники</string>
+    <string name="about_sources_text">Тексты взяты из печатных изданий: «Namaz kitaby» (Türkmenistanyň Müftüsiniň Müdirligi, Aşgabat, 2016) и «Akyda bölümi». Изображения и постраничные сканы приведены в исходном виде. Права на печатные издания принадлежат их правообладателям.</string>
+    <string name="about_disclaimer">Текст распознан из печатных сканов. Возможны отдельные неточности — в каждой книге доступен режим «Оригинал», где можно сверить страницу с печатным изданием.</string>
+    <string name="about_thanks">Пусть знания принесут пользу.</string>
+
+    <!-- Конфиденциальность -->
+    <string name="privacy_title">Политика конфиденциальности</string>
+    <string name="privacy_text">Приложение «Akyda we Namaz» не собирает, не хранит и не передаёт никакие персональные данные.\n\n• Приложение не запрашивает разрешений.\n• Нет доступа к интернету: все книги встроены в приложение.\n• Настройки, закладки, цитаты и статистика хранятся только на вашем устройстве и удаляются вместе с приложением или кнопкой «Сбросить все данные».\n• Нет рекламы, аналитики и сторонних библиотек.\n• Кнопки «Поделиться» и «Сообщить об ошибке» передают текст только в выбранное вами приложение.\n\nЕсли у вас есть вопросы, напишите разработчику.</string>
+
+    <!-- Первый запуск -->
+    <string name="onb_next">Далее</string>
+    <string name="onb_skip">Пропустить</string>
+    <string name="onb_start">Начать чтение</string>
+    <string name="onb1_title">Ассалам алейкум!</string>
+    <string name="onb1_text">Перед вами собрание книг о вероучении и намазе — красивая читалка, созданная специально для них.</string>
+    <string name="onb2_title">Настройте под себя</string>
+    <string name="onb2_text">Выберите язык интерфейса и оформление. Всё можно изменить позже.</string>
+    <string name="onb3_title">Всё под рукой</string>
+    <string name="onb3_text">Три книги, поиск по всем текстам, закладки, цитаты, иллюстрации и постраничные сканы печатного издания. Работает без интернета и без разрешений.</string>
+
+    <!-- Прочее -->
+    <string name="share_via">Поделиться через</string>
+    <string name="error_report_title">Сообщение об ошибке</string>
+    <string name="error_report_text">Пришлите письмо с описанием неточности: укажите книгу и страницу. Это поможет сделать приложение точнее.</string>
+    <string name="email_hint">Написать разработчику</string>
+    <string name="no_email_app">Почтовое приложение не найдено</string>
+    <string name="no_store_app">Google Play не найден на устройстве</string>
+    <string name="yes_remove">Да, удалить</string>
+    <string name="sources_note">Издание: %s</string>
+    <string name="press_again_exit">Нажмите «Назад» ещё раз, чтобы выйти</string>
+</resources>

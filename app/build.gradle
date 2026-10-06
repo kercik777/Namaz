@@ -1,0 +1,68 @@
+plugins {
+    id 'com.android.application'
+}
+
+// ПРИЛОЖЕНИЕ НА ЧИСТОМ JAVA + FRAMEWORK-API ANDROID.
+// Сторонних библиотек нет вообще (dependencies пустой), androidx не используется,
+// ViewBinding/DataBinding отключены, шрифты — только системные, разрешения — не требуются.
+android {
+    namespace 'tm.akyda.namaz'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "tm.akyda.namaz"
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0.0"
+        // В сборку войдут только нужные языковые ресурсы
+        resConfigs "ru", "tk", "en"
+    }
+
+    buildFeatures {
+        viewBinding false
+        dataBinding false
+        buildConfig false
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("../keystore/akyda-release.p12")
+            storeType "PKCS12"
+            storePassword "akyda2026"
+            keyAlias "akyda"
+            keyPassword "akyda2026"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.release
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    aaptOptions {
+        noCompress 'json', 'txt'
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+
+// Никаких зависимостей: только системные API Android.
+dependencies {
+}

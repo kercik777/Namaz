@@ -1,0 +1,30 @@
+# Gradle
+.gradle/
+build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# ОС
+.DS_Store
+Thumbs.db
+
+# Артефакты сборки
+*.apk
+*.aab
+*.ap_
+*.dex
+output.json
+
+# Временное/служебное
+/tmp_build/
+tools/**/__pycache__/
+tools/**/*.pyc

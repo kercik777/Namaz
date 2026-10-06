@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutId="continue_reading"
+        android:shortcutLongLabel="@string/continue_reading"
+        android:shortcutShortLabel="@string/continue_reading">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="tm.akyda.namaz.ui.MainActivity"
+            android:targetPackage="tm.akyda.namaz">
+            <extra android:name="continue_reading" android:value="true" />
+        </intent>
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutId="search"
+        android:shortcutLongLabel="@string/search"
+        android:shortcutShortLabel="@string/search">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="tm.akyda.namaz.ui.MainActivity"
+            android:targetPackage="tm.akyda.namaz">
+            <extra android:name="tab" android:value="2" />
+        </intent>
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>
