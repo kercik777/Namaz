@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ночная палитра: глубокий изумруд-графит и латунное золото. -->
+<resources>
+    <color name="bg">#FF0C1311</color>
+    <color name="surface">#FF151F1B</color>
+    <color name="surface_2">#FF1B2723</color>
+    <color name="surface_3">#FF22302B</color>
+    <color name="stroke">#FF26332D</color>
+    <color name="stroke_strong">#FF37463F</color>
+
+    <color name="primary">#FF2E9C77</color>
+    <color name="primary_deep">#FF0B2A21</color>
+    <color name="primary_soft">#FF16302A</color>
+    <color name="primary_press">#FF267F62</color>
+    <color name="on_primary">#FF06211A</color>
+
+    <color name="gold">#FFD9B65C</color>
+    <color name="gold_light">#FFEBD79C</color>
+    <color name="gold_soft">#FF2A2416</color>
+    <color name="gold_deep">#FFB08F3C</color>
+
+    <color name="ink">#FFEAF1ED</color>
+    <color name="ink_2">#FFA7B4AE</color>
+    <color name="ink_3">#FF74827B</color>
+    <color name="ink_inverse">#FF0C1311</color>
+
+    <color name="danger">#FFF2B8B5</color>
+    <color name="success">#FF7ED0A6</color>
+    <color name="scrim">#B3000000</color>
+    <color name="ripple">#33FFFFFF</color>
+    <color name="ripple_light">#33FFFFFF</color>
+    <color name="shadow">#66000000</color>
+    <color name="divider">#1FFFFFFF</color>
+
+    <color name="cover_b1">#FF1B6B45</color>
+    <color name="cover_b1_dark">#FF0A3A26</color>
+    <color name="cover_b2">#FF2A527A</color>
+    <color name="cover_b2_dark">#FF16304C</color>
+    <color name="cover_b3">#FF7A4F26</color>
+    <color name="cover_b3_dark">#FF4B2F12</color>
+
+    <color name="paper">#FF171512</color>
+    <color name="sepia">#FF1E1A13</color>
+    <color name="reading_green">#FF121A16</color>
+    <color name="night">#FF0A0908</color>
+</resources>

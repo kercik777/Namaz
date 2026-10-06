@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Палитра «Изумруд и золото». Светлая тема — бумага и тёплый свет,
+    тёмная — глубокая ночь и латунь. Оттенки подобраны так, чтобы
+    контраст текста был не ниже AA по стандарту доступности.
+-->
+<resources>
+    <!-- поверхность -->
+    <color name="bg">#FFF7F4EC</color>
+    <color name="surface">#FFFFFFFF</color>
+    <color name="surface_2">#FFF0ECE1</color>
+    <color name="surface_3">#FFE8E3D5</color>
+    <color name="stroke">#FFE3DCCB</color>
+    <color name="stroke_strong">#FFCFC6B0</color>
+
+    <!-- основной тон -->
+    <color name="primary">#FF0F5C46</color>
+    <color name="primary_deep">#FF0A3D2F</color>
+    <color name="primary_soft">#FFE2EFE9</color>
+    <color name="primary_press">#FF0C4C3A</color>
+    <color name="on_primary">#FFFFFFFF</color>
+
+    <!-- золото -->
+    <color name="gold">#FFC39A3E</color>
+    <color name="gold_light">#FFE6CD8B</color>
+    <color name="gold_soft">#FFF6ECd2</color>
+    <color name="gold_deep">#FF8C6A1F</color>
+
+    <!-- текст -->
+    <color name="ink">#FF16211D</color>
+    <color name="ink_2">#FF5B6862</color>
+    <color name="ink_3">#FF8A968F</color>
+    <color name="ink_inverse">#FFFFFFFF</color>
+
+    <!-- состояния -->
+    <color name="danger">#FFB3261E</color>
+    <color name="success">#FF1E7A4F</color>
+    <color name="scrim">#8C000000</color>
+    <color name="ripple">#22000000</color>
+    <color name="ripple_light">#33FFFFFF</color>
+    <color name="shadow">#1F000000</color>
+    <color name="divider">#14000000</color>
+
+    <!-- обложки книг (фирменные цвета изданий) -->
+    <color name="cover_b1">#FF1D7A4C</color>
+    <color name="cover_b1_dark">#FF0E5132</color>
+    <color name="cover_b2">#FF2E5E8C</color>
+    <color name="cover_b2_dark">#FF1B3E61</color>
+    <color name="cover_b3">#FF8A5A2B</color>
+    <color name="cover_b3_dark">#FF5E3A17</color>
+
+    <color name="paper">#FFFDFBF6</color>
+    <color name="sepia">#FFF6ECD6</color>
+    <color name="reading_green">#FFEAF3EC</color>
+    <color name="night">#FF12100C</color>
+</resources>

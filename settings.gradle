@@ -1,0 +1,19 @@
+// Монорепозиторий приложения «Akyda we Namaz».
+// Только штатные средства Android: никаких сторонних библиотек в самом приложении.
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "Akyda we Namaz"
+include ':app'

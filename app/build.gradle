@@ -1,0 +1,65 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'tm.akyda.namaz'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "tm.akyda.namaz"
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName "1.0.0"
+        // Приложение полностью офлайн: ни одного разрешения не запрашивается.
+        // Языки интерфейса: русский (по умолчанию) и туркменский.
+        resConfigs "ru", "tk"
+        vectorDrawables.useSupportLibrary = false
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Подпись релиза настраивается в Android Studio или через переменные окружения
+            // (см. README, раздел «Публикация в Google Play»).
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+        encoding = 'UTF-8'
+    }
+
+    // ViewBinding сознательно не включаем — по требованию заказчика.
+    buildFeatures {
+        viewBinding false
+        buildConfig false
+    }
+
+    packaging {
+        resources {
+            excludes += ['META-INF/*', '**/*.kotlin_metadata', 'DebugProbesKt.bin']
+        }
+    }
+
+    bundle {
+        language { enableSplit = false }
+        density { enableSplit = true }
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+
+// В приложении не используется ни одной сторонней библиотеки.
+dependencies { }

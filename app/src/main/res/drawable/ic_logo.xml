@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Знак приложения: золотой купол с полумесяцем в изумрудном круге. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+
+    <path
+        android:pathData="M48,4 A44,44 0 1,0 48,92 A44,44 0 1,0 48,4 Z"
+        android:fillColor="#14000000" />
+
+    <path
+        android:pathData="M48,7 A41,41 0 1,0 48,89 A41,41 0 1,0 48,7 Z"
+        android:strokeColor="#E6CD8B"
+        android:strokeWidth="2"
+        android:fillColor="#00000000" />
+
+    <!-- купол -->
+    <path
+        android:pathData="M29,74 L29,47 C29,36 37.5,28.5 48,28.5 C58.5,28.5 67,36 67,47 L67,74 Z"
+        android:fillColor="#E6CD8B" />
+
+    <!-- тень под куполом для объёма -->
+    <path
+        android:pathData="M48,28.5 C58.5,28.5 67,36 67,47 L67,74 L48,74 Z"
+        android:fillColor="#C39A3E" />
+
+    <!-- арка входа -->
+    <path
+        android:pathData="M42,74 L42,61 C42,57.5 44.7,55 48,55 C51.3,55 54,57.5 54,61 L54,74 Z"
+        android:fillColor="#0A3D2F" />
+
+    <!-- полумесяц -->
+    <path
+        android:fillType="evenOdd"
+        android:pathData="M48,10 A7.5,7.5 0 1,0 48,25 A7.5,7.5 0 1,0 48,10 Z M51.5,9 A7.5,7.5 0 1,0 51.5,24 A7.5,7.5 0 1,0 51.5,9 Z"
+        android:fillColor="#FFF3D8" />
+</vector>

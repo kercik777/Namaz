@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Русский интерфейс (язык по умолчанию). Туркменский перевод — values-tk. -->
+<resources>
+    <string name="app_name">Акыда и намаз</string>
+    <string name="app_subtitle">Книга и помощник</string>
+
+    <string name="splash_tagline">Знание • Вера • Спокойствие</string>
+
+    <!-- Навигация -->
+    <string name="nav_home">Главная</string>
+    <string name="nav_library">Библиотека</string>
+    <string name="nav_tools">Инструменты</string>
+    <string name="nav_settings">Настройки</string>
+
+    <!-- Общее -->
+    <string name="ok">Готово</string>
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
+    <string name="close">Закрыть</string>
+    <string name="back">Назад</string>
+    <string name="search">Поиск</string>
+    <string name="settings">Настройки</string>
+    <string name="about">О приложении</string>
+    <string name="share">Поделиться</string>
+    <string name="retry">Повторить</string>
+    <string name="loading">Загрузка…</string>
+    <string name="empty_nothing">Здесь пока ничего нет</string>
+    <string name="section_soon">Скоро</string>
+    <string name="more">Ещё</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+
+    <!-- Главная -->
+    <string name="home_hello">Ассаламу алейкум</string>
+    <string name="home_continue">Продолжить чтение</string>
+    <string name="home_start">Начать чтение</string>
+    <string name="home_library">Библиотека</string>
+    <string name="home_tools">Полезные инструменты</string>
+    <string name="home_all_books">Все книги</string>
+    <string name="home_wisdom">Наставление дня</string>
+    <string name="home_next_prayer">Следующий намаз</string>
+    <string name="home_progress">Прочитано</string>
+    <string name="home_stats">Статистика чтения</string>
+
+    <!-- Книги -->
+    <string name="book1_title">Намаз китабы</string>
+    <string name="book1_subtitle">Официальное издание Муфтията Туркменистана</string>
+    <string name="book1_desc">Полное руководство по намазу: тахарат, гусуль, время намазов, правила, сунны и порядок совершения.</string>
+    <string name="book2_title">Намаз китабы II</string>
+    <string name="book2_subtitle">Дополнительные главы и суры</string>
+    <string name="book2_desc">Продолжение книги: разбор намазов, чтение сур, дуа и разъяснения для начинающих.</string>
+    <string name="book3_title">Акыда (Вероучение)</string>
+    <string name="book3_subtitle">Одиннадцать уроков основ веры</string>
+    <string name="book3_desc">Краткое и ясное изложение основ исламского вероучения в форме вопросов и ответов.</string>
+
+    <!-- Читалка -->
+    <string name="reader_text_mode">Текст</string>
+    <string name="reader_scan_mode">Оригинал</string>
+    <string name="reader_toc">Оглавление</string>
+    <string name="reader_bookmarks">Закладки</string>
+    <string name="reader_add_bookmark">Добавить закладку</string>
+    <string name="reader_remove_bookmark">Убрать закладку</string>
+    <string name="reader_font_size">Размер текста</string>
+    <string name="reader_line_spacing">Интервал строк</string>
+    <string name="reader_theme">Оформление</string>
+    <string name="reader_theme_paper">Бумага</string>
+    <string name="reader_theme_sepia">Сепия</string>
+    <string name="reader_theme_green">Изумруд</string>
+    <string name="reader_theme_night">Ночь</string>
+    <string name="reader_page">Страница</string>
+    <string name="reader_of">из</string>
+    <string name="reader_progress">Прогресс</string>
+    <string name="reader_chapter">Раздел</string>
+    <string name="reader_go_to">Перейти</string>
+    <string name="reader_no_bookmarks">Закладок пока нет.\nНажмите на флажок вверху, чтобы сохранить страницу.</string>
+    <string name="reader_note">Заметка</string>
+    <string name="reader_note_hint">Ваша заметка к странице…</string>
+
+    <!-- Поиск -->
+    <string name="search_hint">Поиск по всем книгам…</string>
+    <string name="search_history">История поиска</string>
+    <string name="search_clear_history">Очистить историю</string>
+    <string name="search_results">Найдено</string>
+    <string name="search_nothing">Ничего не найдено.\nПопробуйте другое слово.</string>
+    <string name="search_in_book">Искать в книге</string>
+    <string name="search_all_books">Во всех книгах</string>
+
+    <!-- Инструменты -->
+    <string name="tools_prayer">Время намаза</string>
+    <string name="tools_qibla">Кибла</string>
+    <string name="tools_tasbih">Тасбих</string>
+    <string name="tools_calendar">Календарь</string>
+    <string name="tools_gallery">Иллюстрации</string>
+    <string name="tools_duas">Дуа и зикры</string>
+
+    <!-- Время намаза -->
+    <string name="prayer_fajr">Фаджр</string>
+    <string name="prayer_sunrise">Восход</string>
+    <string name="prayer_dhuhr">Зухр</string>
+    <string name="prayer_asr">Аср</string>
+    <string name="prayer_maghrib">Магриб</string>
+    <string name="prayer_isha">Иша</string>
+    <string name="prayer_next">Следующий намаз</string>
+    <string name="prayer_after">через</string>
+    <string name="prayer_now">Сейчас время намаза</string>
+    <string name="prayer_city">Город</string>
+    <string name="prayer_month">Расписание на месяц</string>
+    <string name="prayer_today">Сегодня</string>
+    <string name="prayer_method">Метод расчёта</string>
+    <string name="prayer_madhhab">Аср по мазхабу</string>
+    <string name="prayer_hint_offline">Время рассчитывается на устройстве, интернет не нужен.</string>
+    <string name="prayer_hijri">Хиджра</string>
+
+    <!-- Кибла -->
+    <string name="qibla_title">Направление киблы</string>
+    <string name="qibla_hint">Поверните телефон так, чтобы стрелка указала на Каабу</string>
+    <string name="qibla_no_sensor">На этом устройстве нет датчика направления. Ниже — угол от севера.</string>
+    <string name="qibla_accuracy">Точность</string>
+    <string name="qibla_accuracy_high">Высокая</string>
+    <string name="qibla_accuracy_mid">Средняя</string>
+    <string name="qibla_accuracy_low">Низкая — поводите телефоном «восьмёркой»</string>
+    <string name="qibla_degree">от севера</string>
+
+    <!-- Тасбих -->
+    <string name="tasbih_title">Тасбих</string>
+    <string name="tasbih_tap">Нажмите, чтобы считать</string>
+    <string name="tasbih_reset">Сбросить</string>
+    <string name="tasbih_target">Цель</string>
+    <string name="tasbih_rounds">Кругов</string>
+    <string name="tasbih_done">Достигнуто</string>
+    <string name="tasbih_choose_dhikr">Что произносим</string>
+    <string name="tasbih_reset_confirm">Сбросить счётчик?</string>
+
+    <!-- Настройки -->
+    <string name="settings_language">Язык интерфейса</string>
+    <string name="settings_theme">Тема</string>
+    <string name="settings_theme_system">Как в системе</string>
+    <string name="settings_theme_light">Светлая</string>
+    <string name="settings_theme_dark">Тёмная</string>
+    <string name="settings_reading">Чтение</string>
+    <string name="settings_default_mode">Режим по умолчанию</string>
+    <string name="settings_sound">Звук перелистывания</string>
+    <string name="settings_vibration">Вибрация</string>
+    <string name="settings_keep_screen">Не гасить экран при чтении</string>
+    <string name="settings_data">Данные</string>
+    <string name="settings_clear_progress">Сбросить прогресс чтения</string>
+    <string name="settings_clear_all">Очистить все данные</string>
+    <string name="settings_clear_all_confirm">Удалить закладки, заметки, историю и прогресс?</string>
+    <string name="settings_privacy">Конфиденциальность</string>
+
+    <!-- О приложении -->
+    <string name="about_version">Версия</string>
+    <string name="about_source">Источники</string>
+    <string name="about_source_body">Тексты книг воспроизведены по официальному изданию «Namaz kitaby» (Aşgabat, Türkmenistanyň müftüsiniň müdirligi) и учебному пособию «Акыда». Сканы страниц приведены как есть, для сверки.</string>
+    <string name="about_rights">Права</string>
+    <string name="about_privacy_title">Политика конфиденциальности</string>
+    <string name="about_privacy_body">Приложение не собирает и не передаёт никаких персональных данных. Оно не подключается к интернету и не запрашивает разрешений, кроме системной вибрации. Все настройки, закладки, заметки и статистика чтения хранятся только на вашем устройстве.</string>
+    <string name="about_feedback">Написать разработчику</string>
+    <string name="about_made_with">Сделано с уважением к читателю</string>
+    <string name="about_rate">Оценить в Google Play</string>
+
+    <!-- Календарь / хиджра -->
+    <string name="calendar_today">Сегодня</string>
+    <string name="calendar_gregorian">По григорианскому календарю</string>
+    <string name="calendar_hijri">По хиджре</string>
+</resources>

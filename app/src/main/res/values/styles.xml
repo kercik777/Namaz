@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ============ Типографика (только системные семейства шрифтов) ============ -->
+
+    <style name="Text">
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textSize">@dimen/text_body</item>
+    </style>
+
+    <style name="Text.Display">
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textSize">@dimen/text_display</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:lineSpacingMultiplier">1.08</item>
+    </style>
+
+    <style name="Text.Title">
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textSize">@dimen/text_title</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Text.Head">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/text_head</item>
+        <item name="android:textColor">@color/ink</item>
+    </style>
+
+    <style name="Text.Sub">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:textColor">@color/ink_2</item>
+        <item name="android:lineSpacingMultiplier">1.35</item>
+    </style>
+
+    <style name="Text.Label">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/text_caption</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.12</item>
+        <item name="android:textColor">@color/gold_deep</item>
+    </style>
+
+    <style name="Text.Caption">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">@dimen/text_caption</item>
+        <item name="android:textColor">@color/ink_3</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+
+    <style name="Text.Number">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <!-- ============ Карточки ============ -->
+
+    <style name="Card">
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="android:elevation">@dimen/elev_s</item>
+        <item name="android:padding">@dimen/sp_5</item>
+    </style>
+
+    <style name="Card.Flat">
+        <item name="android:background">@drawable/bg_card_flat</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+
+    <style name="Card.Hero">
+        <item name="android:background">@drawable/bg_hero</item>
+        <item name="android:elevation">@dimen/elev_m</item>
+        <item name="android:padding">@dimen/sp_5</item>
+    </style>
+
+    <!-- ============ Кнопки ============ -->
+
+    <style name="Btn">
+        <item name="android:minHeight">@dimen/touch_target</item>
+        <item name="android:gravity">center</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:paddingLeft">@dimen/sp_6</item>
+        <item name="android:paddingRight">@dimen/sp_6</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="Btn.Primary">
+        <item name="android:background">@drawable/bg_btn_primary</item>
+        <item name="android:textColor">@color/on_primary</item>
+        <item name="android:elevation">@dimen/elev_s</item>
+    </style>
+
+    <style name="Btn.Gold">
+        <item name="android:background">@drawable/bg_btn_gold</item>
+        <item name="android:textColor">@color/primary_deep</item>
+        <item name="android:elevation">@dimen/elev_s</item>
+    </style>
+
+    <style name="Btn.Ghost">
+        <item name="android:background">@drawable/bg_btn_ghost</item>
+        <item name="android:textColor">@color/primary</item>
+    </style>
+
+    <style name="Btn.Icon">
+        <item name="android:layout_width">@dimen/touch_target</item>
+        <item name="android:layout_height">@dimen/touch_target</item>
+        <item name="android:background">@drawable/ripple_circle</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:padding">@dimen/sp_3</item>
+    </style>
+
+    <!-- ============ Прочее ============ -->
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/stroke</item>
+    </style>
+
+    <style name="SectionTitle">
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textSize">@dimen/text_title</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="RowItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:minHeight">64dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:paddingLeft">@dimen/screen_pad</item>
+        <item name="android:paddingRight">@dimen/screen_pad</item>
+    </style>
+
+    <style name="Switch">
+        <item name="android:thumbTint">@color/gold</item>
+        <item name="android:trackTint">@color/stroke_strong</item>
+    </style>
+
+    <style name="ProgressBar">
+        <item name="android:indeterminateTint">@color/primary</item>
+        <item name="android:progressTint">@color/primary</item>
+    </style>
+</resources>
