@@ -3,6 +3,8 @@ name: OCR книг (сканы -> текст)
 # Запускается вручную (Actions → OCR книг → Run workflow) или при изменении инструментов.
 # На раннере есть интернет, поэтому мультиязычные модели PP-OCRv5
 # (латиница / кириллица / арабица) скачиваются автоматически.
+# Запускается только вручную: текст книг уже вычитан (tools/content/fix_text.py),
+# а автоматический прогон распознавания переписал бы его заново.
 on:
   workflow_dispatch:
     inputs:
@@ -10,12 +12,6 @@ on:
         description: 'Сколько страниц обработать (0 = все, для проверки)'
         required: false
         default: '0'
-  push:
-    paths:
-      - 'tools/ocr/**'
-      - 'tools/content/build_book.py'
-      - 'tools/build_pages.py'
-      - '.github/workflows/ocr.yml'
 
 permissions:
   contents: write
