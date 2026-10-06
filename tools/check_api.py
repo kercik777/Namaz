@@ -152,6 +152,43 @@ def check_file_names(problems):
                 os.path.relpath(path, ROOT), m.group(1)))
 
 
+# Часто используемые классы платформы: если встречаются, должны быть импортированы
+JAVA_LANG_OK = {"String", "StringBuilder", "StringBuffer", "Math", "System", "Runnable",
+                 "Thread", "Integer", "Long", "Double", "Float", "Boolean", "Character",
+                 "Object", "Number", "Iterable", "Comparable", "Exception", "RuntimeException",
+                 "Throwable", "Class", "Void", "Byte", "Short", "Deprecated", "Override"}
+
+PLATFORM_CLASSES = """
+Intent Uri Bundle View ViewGroup MotionEvent Gravity Canvas Paint Path Rect RectF Bitmap BitmapFactory
+BitmapShader Shader LinearGradient Typeface StaticLayout TextPaint Layout SpannableString Spannable
+ForegroundColorSpan StyleSpan RelativeSizeSpan AlignmentSpan ClipData ClipboardManager Vibrator
+SharedPreferences Context ContextWrapper Resources Configuration DisplayMetrics Handler Looper Runnable
+Activity Application Fragment Dialog AlertDialog Toast Notification NotificationManager PendingIntent
+Drawable ColorDrawable GradientDrawable RippleDrawable ColorStateList StateListDrawable
+ScrollView LinearLayout FrameLayout RelativeLayout TextView ImageView Button EditText ProgressBar
+SeekBar Switch CheckBox RadioButton Space Toolbar ViewPager RecyclerView ListView GridView
+ScaleGestureDetector GestureDetector ValueAnimator ObjectAnimator Animator Interpolator
+SimpleDateFormat Date Calendar Locale ArrayList HashMap HashSet List Map Set Collections Arrays
+Math System String Integer Long Float Double Boolean Character StringBuilder Thread IOException
+File FileOutputStream FileInputStream InputStream OutputStream BufferedReader InputStreamReader
+ActivityNotFoundException JSONObject JSONArray IPackageManager InputMethodManager Window WindowManager
+""".split()
+
+
+def check_platform_imports(problems):
+    for path in glob.glob(os.path.join(SRC, "**", "*.java"), recursive=True):
+        raw = open(path, encoding="utf-8").read()
+        code = strip_code(raw)
+        imports = set(re.findall(r"^\s*import\s+([\w.]+)\s*;", code, flags=re.M))
+        imported = {i.rsplit(".", 1)[-1] for i in imports}
+        for name in PLATFORM_CLASSES:
+            if name in imported or name in JAVA_LANG_OK:
+                continue
+            # используем как тип или как Класс.метод
+            if re.search(r"(?:^|[^\w.\"]){}(?:\s+[a-zA-Z_][\w]*|\s*\.)".format(name), code):
+                problems.append("{}: класс {} не импортирован".format(os.path.relpath(path, ROOT), name))
+
+
 def main():
     classes = collect_classes()
     simple = {}
@@ -269,6 +306,7 @@ def main():
                 problems.append("{}: нет ресурса R.{}.{}".format(
                     os.path.relpath(path, ROOT), kind, name))
 
+    check_platform_imports(problems)
     check_xml_references(res_dir, problems)
     check_manifest_classes(problems)
     check_file_names(problems)

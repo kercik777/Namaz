@@ -1,6 +1,8 @@
 package tm.akyda.namaz.ui;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -819,6 +821,49 @@ public class ReaderActivity extends BaseActivity {
         saveProgress();
     }
 
+
+    /** Отправка сообщения об опечатке: системное окно «Поделиться» с готовым текстом.
+     *  Ничего не отправляется без действия пользователя, разрешения не нужны. */
+    private void reportTypo() {
+        if (book == null) return;
+        StringBuilder sb = new StringBuilder();
+        sb.append(getString(R.string.report_typo_head)).append("\n\n");
+        sb.append(getString(R.string.book_label)).append(": ").append(book.t(Loc.lang())).append('\n');
+        Book.Toc t = book.tocAt(chapter);
+        if (t != null) sb.append(getString(R.string.chapter)).append(": ").append(t.text).append('\n');
+        if (pages != null && !pages.pages.isEmpty()) {
+            sb.append(getString(R.string.page)).append(": ")
+              .append(Math.min(pageIndex + 1, pages.pages.size())).append(" / ")
+              .append(pages.pages.size()).append('\n');
+        }
+        String sample = currentPageSample();
+        if (!U.empty(sample)) sb.append('\n').append(sample).append('\n');
+        sb.append('\n').append(getString(R.string.report_typo_hint));
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("text/plain");
+        i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name) + " — " + getString(R.string.report_typo));
+        i.putExtra(Intent.EXTRA_TEXT, sb.toString());
+        try {
+            startActivity(Intent.createChooser(i, getString(R.string.report_typo)));
+        } catch (ActivityNotFoundException e) {
+            U.pill(this, getString(R.string.no_email_app));
+        }
+    }
+
+    /** Первые строки текущей страницы — чтобы было понятно, о каком месте речь. */
+    private String currentPageSample() {
+        if (pages == null || pages.pages.isEmpty()) return "";
+        int idx = Math.max(0, Math.min(pageIndex, pages.pages.size() - 1));
+        StringBuilder sb = new StringBuilder();
+        for (Paginator.Item it : pages.pages.get(idx).items) {
+            if (it.block == null || U.empty(it.block.plain())) continue;
+            sb.append(it.block.plain());
+            if (sb.length() > 220) break;
+            sb.append(' ');
+        }
+        return U.trimTo(sb.toString().trim(), 260);
+    }
+
     private void settingsSheet() {
         LinearLayout c = (LinearLayout) SettingsPanel.build(this, new SettingsPanel.Changed() {
             @Override
@@ -830,6 +875,13 @@ public class ReaderActivity extends BaseActivity {
                 applyKeepScreenOn();
             }
         }, true);
+        c.addView(Ui.hline(this, Skin.line(this), 1f));
+        c.addView(sheetRow(Ico.MAIL, getString(R.string.report_typo), new Runnable() {
+            @Override
+            public void run() {
+                reportTypo();
+            }
+        }));
         Chrome.Sheet sheet = new Chrome.Sheet(this, getString(R.string.reading_settings), c);
         rootView().addView(sheet.root());
         sheet.show();

@@ -200,4 +200,8 @@
          из приложения открывалось с уже заполненным получателем. -->
     <string name="dev_email" translatable="false"></string>
     <string name="github_page">GitHub</string>
+    <string name="report_typo">Ýalňyşlyk barada habar ber</string>
+    <string name="report_typo_head">Kitapdaky ýalňyşlyk:</string>
+    <string name="report_typo_hint">Ýalňyşlygy şu ýerde ýazyň we amatly usul bilen iberiň.</string>
+    <string name="book_label">Kitap</string>
 </resources>
