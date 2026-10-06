@@ -35,7 +35,7 @@ jobs:
           pip install pymupdf pillow numpy "rapidocr>=3.4" onnxruntime
 
       - name: Распознавание
-        run: python tools/ocr/run_ocr.py
+        run: python tools/ocr/run_ocr.py 2>&1 | tee ocr.log
 
       - name: Публикация результата
         run: |
@@ -45,6 +45,19 @@ jobs:
           git add -A content/ocr
           git commit -m "OCR: результаты распознавания книг (автоматически)" || echo "нет изменений"
           git push
+
+      - name: Лог ошибок в репозиторий (нужен для отладки)
+        if: failure()
+        run: |
+          mkdir -p ci-logs
+          tail -c 300000 ocr.log > ci-logs/ocr.log || true
+          grep -aE "Error|error|Traceback|Exception|ОШИБКА" ocr.log | sort -u | head -200 > ci-logs/ocr-errors.txt || true
+          git config user.name "ci-bot"
+          git config user.email "ci-bot@users.noreply.github.com"
+          git add -f ci-logs
+          git commit -m "CI: лог неудачного OCR [skip ci]" || echo "нечего коммитить"
+          git pull --rebase --autostash || true
+          git push || echo "push лога не удался"
 
       - name: Артефакт с результатами
         if: always()

@@ -40,7 +40,7 @@ jobs:
       - name: Сборка debug и release APK
         run: |
           set -o pipefail
-          gradle --no-daemon --stacktrace assembleDebug assembleRelease 2>&1 | tee build.log
+          gradle --no-daemon --stacktrace --console=plain assembleDebug assembleRelease 2>&1 | tee build.log
 
       - name: Лог сборки (при ошибке)
         if: always()
@@ -49,6 +49,19 @@ jobs:
           name: build-log-${{ github.run_number }}
           path: build.log
           if-no-files-found: warn
+
+      - name: Лог ошибок в репозиторий (нужен для отладки)
+        if: failure()
+        run: |
+          mkdir -p ci-logs
+          tail -c 400000 build.log > ci-logs/build.log || true
+          grep -aE "error:|error;|\.java:[0-9]+" build.log | sort -u | head -400 > ci-logs/errors.txt || true
+          git config user.name "ci-bot"
+          git config user.email "ci-bot@users.noreply.github.com"
+          git add -f ci-logs
+          git commit -m "CI: лог неудачной сборки [skip ci]" || echo "нечего коммитить"
+          git pull --rebase --autostash || true
+          git push || echo "push лога не удался"
 
       - name: Итог
         run: |
