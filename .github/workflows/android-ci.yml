@@ -68,11 +68,16 @@ jobs:
         run: |
           set -e
           TAG="build-${{ github.run_number }}"
+          printf '%s\n' \
+            "Автоматическая сборка из ветки ${{ github.ref_name }} (коммит ${GITHUB_SHA:0:7})." \
+            "" \
+            "Для установки скачайте app-release.apk — он подписан постоянным ключом и ставится поверх следующих версий." \
+            "app-debug.apk — отладочная версия с отдельным идентификатором (tm.akyda.namaz.debug)." \
+            "" \
+            "Приложение работает полностью офлайн и не запрашивает ни одного разрешения." > notes.txt
           gh release create "$TAG" \
             app/build/outputs/apk/debug/app-debug.apk \
             app/build/outputs/apk/release/app-release.apk \
             --title "Akyda we Namaz — сборка ${{ github.run_number }}" \
-            --notes "Автоматическая сборка из ветки ${{ github.ref_name }} (коммит ${{ github.sha:0:7 }}).
-
-Для установки скачайте **app-release.apk** (рекомендуется). app-debug.apk — отладочная версия." \
-            --target "${{ github.sha }}" || echo "release exists or failed"
+            --notes-file notes.txt \
+            --target "${{ github.sha }}" || echo "релиз уже существует или не создан"
