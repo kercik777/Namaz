@@ -317,7 +317,9 @@ def main():
         "xml": {os.path.basename(f)[:-4] for f in glob.glob(os.path.join(res_dir, "xml", "*.xml"))},
         "style": res_keys("values"),
         "mipmap": {os.path.basename(f).split(".")[0] for f in glob.glob(os.path.join(res_dir, "mipmap-*", "*"))},
-        "drawable": {os.path.basename(f).split(".")[0] for f in glob.glob(os.path.join(res_dir, "drawable-*", "*"))},
+        "drawable": {os.path.basename(f).split(".")[0]
+                     for f in glob.glob(os.path.join(res_dir, "drawable", "*"))
+                     + glob.glob(os.path.join(res_dir, "drawable-*", "*"))},
         "string": set(), "plurals": set(),
     }
     # дубликаты имён внутри одного файла строк -- AAPT падает

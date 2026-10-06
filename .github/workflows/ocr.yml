@@ -105,6 +105,7 @@ jobs:
         run: |
           python tools/content/mark_junk.py
           python tools/content/add_ills.py
+          python tools/content/add_figs.py
 
       - name: Публикация результата в репозиторий
         if: env.LIMIT == '0'

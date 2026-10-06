@@ -512,8 +512,17 @@ public class Paginator {
         String src = b.source;
         if (U.empty(src)) return null;
         Bitmap bm;
-        if (src.startsWith("ill:")) {
-            // собственная векторная иллюстрация приложения
+        boolean isFig = false;
+        if (src.startsWith("ill:fig:")) {
+            // рисунок из книги: фигурка человека (омовение, позы намаза)
+            String name = src.substring(8);
+            int w = Math.max(120, o.width);
+            int h = Math.min(Math.round(w * 1.05f), Math.max(120, (int) (o.height * 0.62f)));
+            bm = Ill.renderFigure(app, name, w, h);
+            isFig = bm != null;
+            if (!isFig) return null;
+        } else if (src.startsWith("ill:")) {
+            // декоративная векторная иллюстрация приложения
             int id = Ill.idOf(src.substring(4));
             if (id < 0) return null;
             int w = Math.max(120, o.width);
@@ -536,7 +545,7 @@ public class Paginator {
         it.image = bm;
         int w = Math.min(o.width, bm.getWidth());
         it.imageHeight = Math.max(1, (int) ((float) bm.getHeight() * w / bm.getWidth()));
-        int maxH = (int) (o.height * 0.62f);
+        int maxH = (int) (o.height * (isFig ? 0.68f : 0.62f));
         if (it.imageHeight > maxH) {
             it.imageHeight = maxH;
         }

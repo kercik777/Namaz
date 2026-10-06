@@ -52,6 +52,73 @@ public final class Ill {
             "Suw", "Ýyldyz"
     };
 
+    /* ==================== Рисунки из книг (vector drawable) ==================== */
+
+    /**
+     * Имена рисунков, нарисованных кодом в tools/ill/figures.py и лежащих
+     * в res/drawable/ill_<имя>.xml. Это фигурки людей: омовение, позы намаза.
+     */
+    public static final String[] FIGS = {
+            "pose_niet_m", "pose_niet_w", "pose_takbir_m", "pose_takbir_w",
+            "pose_stand_m", "pose_stand_w", "pose_ruku_m", "pose_ruku_w",
+            "pose_sajda_m", "pose_sajda_w", "pose_sit_m", "pose_sit_w",
+            "pose_dua_m", "pose_dua_w", "pose_salam_r", "pose_salam_l",
+            "pose_salam_r_w", "pose_salam_l_w",
+            "abl_intent", "abl_intent_w", "abl_hands", "abl_mouth", "abl_nose",
+            "abl_face", "abl_arm", "abl_head", "abl_ear", "abl_foot", "abl_dua",
+            "tay_intent", "tay_hands", "tay_face", "tay_arm",
+    };
+
+    /** Ресурсы рисунков в том же порядке, что {@link #FIGS}. */
+    public static final int[] FIG_RES = {
+            R.drawable.ill_pose_niet_m, R.drawable.ill_pose_niet_w,
+            R.drawable.ill_pose_takbir_m, R.drawable.ill_pose_takbir_w,
+            R.drawable.ill_pose_stand_m, R.drawable.ill_pose_stand_w,
+            R.drawable.ill_pose_ruku_m, R.drawable.ill_pose_ruku_w,
+            R.drawable.ill_pose_sajda_m, R.drawable.ill_pose_sajda_w,
+            R.drawable.ill_pose_sit_m, R.drawable.ill_pose_sit_w,
+            R.drawable.ill_pose_dua_m, R.drawable.ill_pose_dua_w,
+            R.drawable.ill_pose_salam_r, R.drawable.ill_pose_salam_l,
+            R.drawable.ill_pose_salam_r_w, R.drawable.ill_pose_salam_l_w,
+            R.drawable.ill_abl_intent, R.drawable.ill_abl_intent_w,
+            R.drawable.ill_abl_hands, R.drawable.ill_abl_mouth, R.drawable.ill_abl_nose,
+            R.drawable.ill_abl_face, R.drawable.ill_abl_arm, R.drawable.ill_abl_head,
+            R.drawable.ill_abl_ear, R.drawable.ill_abl_foot, R.drawable.ill_abl_dua,
+            R.drawable.ill_tay_intent, R.drawable.ill_tay_hands,
+            R.drawable.ill_tay_face, R.drawable.ill_tay_arm,
+    };
+
+    /** Номер ресурса рисунка или 0. */
+    public static int figRes(String name) {
+        if (U.empty(name)) return 0;
+        String n = name.trim();
+        for (int i = 0; i < FIGS.length; i++) {
+            if (FIGS[i].equals(n) && i < FIG_RES.length) return FIG_RES[i];
+        }
+        return 0;
+    }
+
+    public static boolean isFigure(String name) {
+        return figRes(name) != 0;
+    }
+
+    /** Рисунок из drawable, растянутый в заданный прямоугольник. */
+    public static Bitmap renderFigure(Context c, String name, int w, int h) {
+        int res = figRes(name);
+        if (res == 0 || w <= 0 || h <= 0) return null;
+        try {
+            android.graphics.drawable.Drawable d = c.getResources().getDrawable(res);
+            if (d == null) return null;
+            Bitmap bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bm);
+            d.setBounds(0, 0, w, h);
+            d.draw(canvas);
+            return bm;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     private Ill() {
     }
 
