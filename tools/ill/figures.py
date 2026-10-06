@@ -10,7 +10,10 @@
 """
 import argparse
 import os
+import sys
 from xml.sax.saxutils import escape
+
+import human as H
 
 # ---------- палитра ----------
 
@@ -92,8 +95,12 @@ class Svg:
             self.circle(cx, cy, r + 0.9, outline)
         return self.circle(cx, cy, r, fill)
 
-    def line(self, x1, y1, x2, y2, w, color):
-        return self.path("M %g %g L %g %g" % (x1, y1, x2, y2), stroke=color, sw=w)
+    def line(self, x1, y1, x2, y2, w, color, cap="round"):
+        return self.path("M %g %g L %g %g" % (x1, y1, x2, y2), stroke=color, sw=w, cap=cap)
+
+    def shadow_fig(self, cx, cy, rx=20.0, ry=2.6, opacity=0.16):
+        """Мягкая тень под человеком."""
+        self.ellipse(cx, cy, rx, ry, "#6B5A46", opacity=opacity)
 
     # --- вывод ---
     def svg(self):
@@ -179,289 +186,151 @@ def drops(s, x, y, n=4):
 
 # ---------- фигура человека ----------
 
-class Pal:
-    def __init__(self, gender="man"):
-        self.gender = gender
-        if gender == "man":
-            self.body = WHITE
-            self.body_sh = WHITE_SH
-            self.legs = TROUSER
-            self.legs_sh = TROUSER_SH
-            self.headwear = CAP
-            self.headwear_sh = CAP_SH
-        else:
-            self.body = DRESS
-            self.body_sh = DRESS_SH
-            self.legs = DRESS
-            self.legs_sh = DRESS_SH
-            self.headwear = SCARF
-            self.headwear_sh = SCARF_SH
+# ---------- позы: рисует движок human.py ----------
+
+def cloth(man):
+    return H.KAMIS if man else H.DRESS
 
 
-def head(s, x, y, r, pal, turn=0.0):
-    """Голова: шея, лицо, глаза, уши, головной убор."""
-    ex = x + turn
-    # шея
-    s.limb(x, y + r * 0.5, x, y + r + 3.0, r * 0.85, SKIN, outline=OUTLINE)
-    if pal.gender == "woman":
-        # платок вокруг лица
-        s.ellipse(ex, y + 1.0, r + 3.4, r + 3.0, pal.headwear)
-        s.path("M %g %g C %g %g %g %g %g %g L %g %g Z"
-               % (x - r - 3.0, y + 1.4, x - r - 5.0, y + r + 12, x + r + 5.0, y + r + 12,
-                  x + r + 3.0, y + 1.4, x + r + 3.0, y + 1.4), fill=pal.headwear_sh)
-        s.disc(ex, y, r, SKIN, outline=OUTLINE)
-        s.path("M %g %g A %g %g 0 0 1 %g %g Z"
-               % (ex - r - 0.4, y - 0.6, r + 0.4, r + 0.6, ex + r + 0.4, y - 0.6), fill=pal.headwear)
-        # обрамление платка у подбородка
-        s.path("M %g %g C %g %g %g %g %g %g" % (ex - r - 3.2, y + 1.6, ex - r - 3.4, y + r + 10,
-                                                ex + r + 3.4, y + r + 10, ex + r + 3.2, y + 1.6),
-               fill=pal.headwear)
-        s.circle(ex, y, r - 0.6, SKIN)
-    else:
-        s.disc(ex, y, r, SKIN, outline=OUTLINE)
-        s.circle(ex - r * 0.9, y + r * 0.25, r * 0.28, SKIN_SH)   # ухо
-        s.path("M %g %g A %g %g 0 0 1 %g %g Z"
-               % (ex - r - 0.8, y - 0.6, r + 0.8, r + 0.8, ex + r + 0.8, y - 0.6), fill=CAP)
-        s.path("M %g %g H %g V %g H %g Z" % (ex - r - 1.6, y - 1.0, ex + r + 1.6, y + 1.6,
-                                             ex - r - 1.6), fill=CAP_SH)
-    s.circle(ex - r * 0.36, y + 0.4, 0.7, "#2B2B2B")
-    s.circle(ex + r * 0.36, y + 0.4, 0.7, "#2B2B2B")
-    s.path("M %g %g C %g %g %g %g %g %g" % (ex - r * 0.3, y + r * 0.55, ex - r * 0.1, y + r * 0.7,
-                                            ex + r * 0.1, y + r * 0.7, ex + r * 0.3, y + r * 0.55),
-           stroke="#B07A5A", sw=0.7, cap="round")
+def arm_at(s, sh, elbow, wrist, man, hand_size=2.7, palm=True):
+    """Рука по трём точкам: плечо (в рукаве), предплечье и кисть."""
+    H.seg(s, sh, elbow, 4.4, cloth(man))
+    H.seg(s, elbow, wrist, 3.6, H.SKIN)
+    H.hand(s, wrist, hand_size, palm)
 
 
-def tunic(s, pal, hip, shoulder, w=18):
-    """Верхняя одежда: широкий рукав-туника от бёдер к плечам."""
-    s.limb(hip[0], hip[1], shoulder[0], shoulder[1], w, pal.body, outline=OUTLINE)
-    s.limb(hip[0] + 2.5, hip[1], shoulder[0] + 2.5, shoulder[1], w * 0.35, pal.body_sh)
-
-
-def legs_standing(s, pal, cx, hip_y, foot_y, spread=4.0):
-    s.limb(cx - spread * 0.55, hip_y, cx - spread, foot_y, 9, pal.legs, outline=OUTLINE)
-    s.limb(cx + spread * 0.55, hip_y, cx + spread, foot_y, 9, pal.legs, outline=OUTLINE)
-    s.limb(cx - spread * 0.35, hip_y, cx - spread * 0.8, foot_y, 3, pal.legs_sh)
-    # ступни
-    s.path("M %g %g H %g L %g %g H %g Z" % (cx - spread - 4, foot_y + 4.5, cx - spread + 4,
-                                            cx - spread + 3, foot_y - 0.5, cx - spread - 4),
-           fill=GOLD)
-    s.path("M %g %g H %g L %g %g H %g Z" % (cx + spread - 4, foot_y + 4.5, cx + spread + 4.5,
-                                            cx + spread + 3.5, foot_y - 0.5, cx + spread - 4),
-           fill=GOLD)
-
-
-def arm(s, pal, from_, to, sleeve=True, hand_at=None, w=6.5):
-    s.limb(from_[0], from_[1], to[0], to[1], w, pal.body if sleeve else SKIN,
-           outline=OUTLINE)
-    if hand_at:
-        s.disc(hand_at[0], hand_at[1], 3.4, SKIN, outline=OUTLINE)
-
-
-def palms_up(s, x1, y1, x2, y2):
-    """Раскрытые ладони (две руки рядом или по бокам)."""
-    s.ellipse(x1, y1, 5.0, 5.8, OUTLINE)
-    s.ellipse(x1, y1, 4.4, 5.2, SKIN)
-    s.ellipse(x2, y2, 5.0, 5.8, OUTLINE)
-    s.ellipse(x2, y2, 4.4, 5.2, SKIN)
-    s.path("M %g %g H %g" % (x1 - 3, y1 - 2.6, x1 + 3), stroke=SKIN_SH, sw=0.7, cap="round")
-    s.path("M %g %g H %g" % (x2 - 3, y2 - 2.6, x2 + 3), stroke=SKIN_SH, sw=0.7, cap="round")
-
-
-# ---------- позы намаза ----------
-
-def pose_stand(s, pal, hands="down", arch=True):
-    """Стоя (кыям)."""
-    backdrop(s, arch=arch)
-    shadow(s, 50, 84)
-    legs_standing(s, pal, 50, 62, 80)
-    tunic(s, pal, (50, 62), (50, 42), 18)
-    if hands == "fold":
-        arm(s, pal, (42, 45), (46, 55), hand_at=None)
-        arm(s, pal, (58, 45), (54, 55), hand_at=None)
-        s.circle(50, 56, 4.2, SKIN)
-    elif hands == "down":
-        arm(s, pal, (42, 45), (40, 60), hand_at=(40, 61))
-        arm(s, pal, (58, 45), (60, 60), hand_at=(60, 61))
-    elif hands == "open":
-        arm(s, pal, (42, 45), (38, 56), hand_at=None)
-        arm(s, pal, (58, 45), (62, 56), hand_at=None)
-        palms_up(s, 38, 58, 62, 58)
-    head(s, 50, 32, 8.2, pal)
-
-
-def pose_takbir(s, pal):
-    """Такбир: ладони у ушей."""
+def pose_niyet(s, man=True):
+    """Ният перед намазом: стоим спокойно, руки опущены."""
     backdrop(s)
-    shadow(s, 50, 84)
-    legs_standing(s, pal, 50, 62, 80)
-    tunic(s, pal, (50, 62), (50, 42), 18)
-    if pal.gender == "man":
-        arm(s, pal, (42, 45), (33, 39))
-        arm(s, pal, (58, 45), (67, 39))
-        arm(s, pal, (33, 39), (40, 27), w=6.0, sleeve=False)
-        arm(s, pal, (67, 39), (60, 27), w=6.0, sleeve=False)
-    else:
-        arm(s, pal, (42, 45), (34, 38))
-        arm(s, pal, (58, 45), (66, 38))
-        arm(s, pal, (34, 38), (41, 29), w=6.0, sleeve=False)
-        arm(s, pal, (66, 38), (59, 29), w=6.0, sleeve=False)
-    s.circle(41.5, 25.5, 3.6, SKIN)
-    s.circle(58.5, 25.5, 3.6, SKIN)
-    head(s, 50, 32, 8.2, pal)
+    H.draw_stand(s, man, hands="down")
 
 
-def pose_ruku(s, pal):
+def pose_takbir(s, man=True):
+    """Вступительный такбир: ладони у ушей."""
+    backdrop(s)
+    H.draw_stand(s, man, hands="raise")
+
+
+def pose_qiyam(s, man=True):
+    """Кыям: руки сложены (мужчина ниже пупка, женщина на груди)."""
+    backdrop(s)
+    H.draw_stand(s, man, hands="fold")
+
+
+def pose_ruku(s, man=True):
     """Поясной поклон."""
     backdrop(s)
-    s.limb(46, 62, 46, 80, 9, pal.legs)
-    s.limb(56, 62, 56, 80, 9, pal.legs)
-    s.path("M 38 84.5 H 51 L 50 79.5 H 38 Z", fill=GOLD)
-    s.path("M 51 84.5 H 63 L 63 79.5 H 52 Z", fill=GOLD)
-    # спина: от бёдер вперёд вверх
-    s.limb(51, 60, 70, 46, 18, pal.body)
-    s.limb(53, 61, 71, 48, 6, pal.body_sh)
-    # руки к коленям
-    arm(s, pal, (66, 48), (61, 60), hand_at=(60, 61))
-    arm(s, pal, (69, 49), (64, 61), hand_at=(63, 62))
-    head(s, 75, 44, 7.6, pal, turn=1.2)
+    H.draw_ruku(s, man)
 
 
-def pose_sajda(s, pal):
+def pose_sajda(s, man=True):
     """Земной поклон."""
     backdrop(s)
-    s.rect(30, 78, 34, 4.5, RUG_G, rx=2)
-    # голени и ступни
-    s.limb(58, 76, 66, 60, 11, pal.legs)
-    s.limb(66, 60, 68, 74, 9, pal.legs)
-    s.path("M 63 79 H 73 L 72 74 H 63 Z", fill=GOLD)
-    # спина к полу
-    s.limb(64, 62, 50, 70, 17, pal.body)
-    s.limb(63, 64, 51, 71, 6, pal.body_sh)
-    # руки на коврике
-    arm(s, pal, (56, 68), (44, 76), hand_at=(43, 77), w=6.0)
-    arm(s, pal, (58, 70), (47, 78), hand_at=(46, 79), w=6.0)
-    head(s, 45, 74, 7.4, pal, turn=-1.0)
+    s.rect(28, 80, 44, 3.2, RUG_G, rx=1.6)
+    H.draw_sajda(s, man)
 
 
-def pose_sit(s, pal, hands="knees", turn=0.0, arch=True):
-    """Сидя на коленях (ташаххуд, дуа)."""
-    backdrop(s, arch=arch)
-    shadow(s, 50, 83)
-    # сложенные ноги
-    s.rect(36, 72, 30, 10, pal.legs, rx=3)
-    s.rect(38, 66, 26, 9, pal.legs_sh, rx=3)
-    s.path("M 34 82 H 47 L 46 77 H 34 Z", fill=GOLD)
-    s.path("M 52 82 H 65 L 65 77 H 53 Z", fill=GOLD)
-    tunic(s, pal, (51, 64), (51, 42), 18)
-    if hands == "knees":
-        arm(s, pal, (43, 46), (44, 62), hand_at=(45, 63))
-        arm(s, pal, (59, 46), (58, 62), hand_at=(57, 63))
-    elif hands == "up":
-        arm(s, pal, (43, 46), (41, 58), hand_at=None)
-        arm(s, pal, (59, 46), (61, 58), hand_at=None)
-        palms_up(s, 41, 60, 61, 60)
-    elif hands == "lap":
-        arm(s, pal, (43, 46), (48, 60), hand_at=(49, 61))
-        arm(s, pal, (59, 46), (54, 60), hand_at=(53, 61))
-    head(s, 51, 32, 8.2, pal, turn=turn)
-
-
-def pose_salam(s, pal, right=True):
-    pose_sit(s, pal, hands="knees", turn=3.4 if right else -3.4, arch=False)
-
-
-# ---------- омовение ----------
-
-def abl_stand(s, pal):
-    """Ният перед омовением: стоя, ладони раскрыты."""
+def pose_sit(s, man=True, hands="knees", turn=0.0):
+    """Сидя на коленях: ташаххуд, дуа, салам."""
     backdrop(s)
-    legs_standing(s, pal, 50, 62, 80)
-    tunic(s, pal, (50, 62), (50, 42), 18)
-    arm(s, pal, (42, 45), (39, 56), hand_at=None)
-    arm(s, pal, (58, 45), (61, 56), hand_at=None)
-    palms_up(s, 39, 58, 61, 58)
-    head(s, 50, 32, 8.2, pal)
+    H.draw_sit(s, man, hands=hands, turn=turn)
 
 
-def abl_sit(s, pal, part="hands", turn=0.0):
-    """Омовение сидя: перед человеком кувшин, вода льётся на нужную часть тела."""
-    backdrop(s, arch=True, rug=False)
-    shadow(s, 44, 86)
-    s.rect(24, 74, 44, 12, "#DCCFB4", rx=4)
-    s.rect(26, 76, 40, 8, CARD_D, rx=3)
-    jug(s, 78, 70, 1.1)
-    # сложенные ноги
-    s.rect(34, 70, 26, 9, pal.legs, rx=3)
-    s.path("M 32 79 H 44 L 43 75 H 32 Z", fill=GOLD)
-    tunic(s, pal, (47, 64), (47, 44), 17)
-    head(s, 47, 34, 8.0, pal, turn=turn)
+def abl_scene(s, man=True):
+    """Общая сцена омовения: коврик, чаша и кувшин."""
+    backdrop(s, arch=True, rug=True)
+    H.basin(s, 72, 66, w=30, h=8)
+    H.jug(s, 78, 62, 1.05)
 
-    hx, hy = 47, 44          # плечи
+
+def wudu(s, man=True, part="hands"):
+    """Омовение: человек стоит у чаши, вода льётся на нужную часть тела."""
+    abl_scene(s, man)
+    b = H.draw_stand(s, man, hands="down")
+    sh1, sh2, neck = b["sh1"], b["sh2"], b["neck"]
+    hip = b["hip1"][1]
     if part == "hands":
-        arm(s, pal, (hx - 8, hy + 2), (hx + 4, hy + 14))
-        arm(s, pal, (hx + 8, hy + 2), (hx + 10, hy + 12))
-        s.circle(hx + 6, hy + 17, 3.6, SKIN)
-        s.circle(hx + 11, hy + 14, 3.6, SKIN)
-        water(s, hx + 12, hy + 18, 3)
+        arm_at(s, sh2, (sh2[0] + 4.5, sh2[1] + 8.0), (60.4, 55.0), man, 2.0, palm=False)
+        arm_at(s, sh1, (sh1[0] + 3.5, sh1[1] + 9.0), (55.6, 57.0), man, 2.0, palm=False)
+        H.cupped_hands(s, (58.4, 57.6))
+        H.jug(s, 76, 50, 0.95)
+        H.water(s, 70.0, 52.0, 55.6)
+        H.drops(s, 62.0, 61.6, 3, spread=5.0)
     elif part == "mouth":
-        arm(s, pal, (hx + 8, hy + 2), (hx + 12, hy - 6), hand_at=(hx + 11, hy - 8))
-        water(s, hx + 6, hy - 14, 2)
-        drops(s, hx + 4, hy - 18, 3)
+        arm_at(s, sh2, (sh2[0] + 2.0, sh2[1] + 7.0), (neck[0] + 1.6, neck[1] - 9.4), man, 2.5)
+        H.water(s, neck[0] + 3.0, neck[1] - 12.0, neck[1] - 8.6, 2.0)
+        H.sparkle(s, neck[0] + 2.4, neck[1] - 6.0)
     elif part == "nose":
-        arm(s, pal, (hx + 8, hy + 2), (hx + 13, hy - 4), hand_at=(hx + 12, hy - 6))
-        water(s, hx + 6, hy - 10, 2)
-        drops(s, hx + 4, hy - 14, 3)
+        arm_at(s, sh2, (sh2[0] + 2.0, sh2[1] + 6.0), (neck[0] + 1.2, neck[1] - 11.0), man, 2.4)
+        H.water(s, neck[0] + 3.4, neck[1] - 13.0, neck[1] - 10.4, 1.8)
+        H.sparkle(s, neck[0] + 2.0, neck[1] - 8.4)
     elif part == "face":
-        arm(s, pal, (hx - 8, hy + 2), (hx - 2, hy - 6), hand_at=(hx, hy - 8))
-        arm(s, pal, (hx + 8, hy + 2), (hx + 4, hy - 6), hand_at=(hx + 4, hy - 8))
-        water(s, hx + 2, hy - 12, 3)
+        arm_at(s, sh1, (sh1[0] + 2.0, sh1[1] + 7.0), (neck[0] - 2.0, neck[1] - 10.6), man, 2.4)
+        arm_at(s, sh2, (sh2[0] + 1.6, sh2[1] + 7.0), (neck[0] + 2.0, neck[1] - 10.6), man, 2.4)
+        H.water(s, neck[0] + 4.0, neck[1] - 13.6, neck[1] - 9.0, 1.8)
+        H.sparkle(s, neck[0] - 2.6, neck[1] - 8.0)
     elif part == "arm":
-        arm(s, pal, (hx - 8, hy + 2), (hx + 8, hy + 6), w=6.0, sleeve=False)
-        s.circle(hx + 10, hy + 7, 3.6, SKIN)
-        arm(s, pal, (hx + 8, hy + 2), (hx + 12, hy + 10), hand_at=(hx + 12, hy + 11))
-        water(s, hx + 12, hy + 12, 3)
+        # правый рукав засучен, вода льётся на предплечье
+        arm_at(s, sh2, (sh2[0] + 5.0, sh2[1] + 8.0), (64.0, 55.0), man, 2.6)
+        s.path("M %g %g L %g %g" % (sh2[0] + 3.6, sh2[1] + 6.4, 60.4, 53.4),
+               stroke=H.KAMIS_D, sw=1.4)
+        H.water(s, 64.0, 50.0, 55.0, 2.2)
+        H.drops(s, 64.0, 58.0, 3, spread=5.0)
     elif part == "head":
-        arm(s, pal, (hx - 8, hy + 2), (hx - 4, hy - 10), hand_at=(hx - 3, hy - 12))
-        arm(s, pal, (hx + 8, hy + 2), (hx + 4, hy - 10), hand_at=(hx + 3, hy - 12))
-        water(s, hx, hy - 16, 2)
+        arm_at(s, sh1, (sh1[0] + 1.0, sh1[1] + 6.0), (neck[0] - 3.0, neck[1] - 13.0), man, 2.4)
+        arm_at(s, sh2, (sh2[0] - 1.0, sh2[1] + 6.0), (neck[0] + 3.0, neck[1] - 13.0), man, 2.4)
+        H.water(s, neck[0] + 4.4, neck[1] - 16.0, neck[1] - 12.4, 1.8)
+        H.sparkle(s, neck[0] + 2.0, neck[1] - 10.0)
     elif part == "ear":
-        arm(s, pal, (hx + 8, hy + 2), (hx + 11, hy - 10), hand_at=(hx + 11, hy - 12))
-        water(s, hx + 8, hy - 16, 2)
+        arm_at(s, sh2, (sh2[0] + 1.0, sh2[1] + 5.0), (neck[0] + 6.0, neck[1] - 8.0), man, 2.4)
+        H.water(s, neck[0] + 8.0, neck[1] - 12.0, neck[1] - 9.0, 1.8)
+        H.sparkle(s, neck[0] + 6.4, neck[1] - 6.6)
     elif part == "foot":
-        arm(s, pal, (hx + 8, hy + 2), (hx + 14, hy + 16), hand_at=(hx + 14, hy + 18))
-        s.limb(hx + 6, 66, hx + 16, 74, 7, pal.legs)
-        s.circle(hx + 19, 76, 3.6, SKIN)
-        water(s, hx + 18, 78, 2)
+        # сидя на скамье: правая стопа на краю чаши, вода льётся на неё
+        s.rect(28, 72, 32, 5, "#C9B99A", rx=2)
+        s.rect(30, 77, 4, 6, "#B5A488", rx=1)
+        s.rect(54, 77, 4, 6, "#B5A488", rx=1)
+        H.draw_sit(s, man, hands="knees")
+        arm_at(s, (56.0, 42.0), (60.0, 50.0), (64.0, 58.0), man, 2.0)
+        H.shoe(s, (62.0, 62.0), (68.0, 59.0))
+        H.water(s, 66.0, 50.0, 57.0, 2.2)
+        H.drops(s, 66.0, 63.0, 3, spread=5.0)
+    H.sparkle(s, 74.0, 46.0, 0.8, "#A9D6EE")
 
 
-def tay(s, pal, part="intent"):
-    """Тейеммум: вместо воды — чистый песок/камень."""
+def tayammum(s, man=True, part="intent"):
+    """Тейеммум: вместо воды — чистый песок."""
     backdrop(s, arch=True, rug=False)
-    shadow(s, 44, 87)
-    s.rect(20, 76, 60, 11, STONE, rx=4)
-    s.rect(23, 78, 54, 7, STONE_SH, rx=3)
-    for i in range(5):
-        s.circle(28 + i * 11, 81, 1.2, "#9C8E74")
-    s.rect(32, 72, 30, 8, pal.legs, rx=3)
-    tunic(s, pal, (47, 64), (47, 44), 17)
-    head(s, 47, 34, 8.0, pal)
-    hx, hy = 47, 44
+    s.shadow_fig(46, 87, rx=30)
+    s.path("M 18 88 C 22 78 40 74 58 76 C 72 77 80 82 82 88 Z", fill="#E4D3AE", stroke=H.INK, sw=1.0)
+    s.path("M 24 86 C 30 80 44 78 58 80" , stroke="#D2BE93", sw=1.0)
+    for i in range(7):
+        s.circle(26 + i * 8, 84 - (i % 2) * 1.6, 0.9, "#CDB98E")
     if part == "intent":
-        arm(s, pal, (hx - 8, hy + 2), (hx - 11, hy + 14), hand_at=None)
-        arm(s, pal, (hx + 8, hy + 2), (hx + 11, hy + 14), hand_at=None)
-        palms_up(s, hx - 11, hy + 16, hx + 11, hy + 16)
+        H.draw_stand(s, man, hands="palms")
     elif part == "hands":
-        arm(s, pal, (hx - 8, hy + 2), (hx - 6, hy + 24), hand_at=(hx - 6, hy + 26))
-        arm(s, pal, (hx + 8, hy + 2), (hx + 6, hy + 24), hand_at=(hx + 6, hy + 26))
-        for i in range(3):
-            s.circle(hx - 6 + i * 1.6, hy + 29 + (i % 2) * 1.6, 0.9, STONE_SH)
+        H.draw_sit(s, man, hands="knees")
+        sh1, sh2 = (42.6, 53.0), (56.6, 53.0)
+        arm_at(s, sh1, (sh1[0] - 3.0, sh1[1] + 12.0), (44.0, 80.0), man, 2.5, palm=False)
+        arm_at(s, sh2, (sh2[0] - 1.0, sh1[1] + 13.0), (54.0, 81.4), man, 2.5, palm=False)
+        for x in (44.0, 54.0):
+            for k in (-1, 0, 1):
+                s.line(x + k * 1.4, 82.6, x + k * 1.4, 84.4, 0.6, "#C6B183")
     elif part == "face":
-        arm(s, pal, (hx - 8, hy + 2), (hx - 4, hy - 8), hand_at=(hx - 3, hy - 10))
-        arm(s, pal, (hx + 8, hy + 2), (hx + 4, hy - 8), hand_at=(hx + 3, hy - 10))
-    else:  # arm
-        arm(s, pal, (hx + 8, hy + 2), (hx + 14, hy + 8), w=6.0, sleeve=False)
-        arm(s, pal, (hx - 8, hy + 2), (hx - 4, hy + 12), hand_at=(hx - 4, hy + 14))
-        s.circle(hx + 16, hy + 9, 3.6, SKIN)
+        H.draw_sit(s, man, hands="knees")
+        sh1, sh2, neck = (42.6, 53.0), (56.6, 53.0), (49.8, 49.8)
+        arm_at(s, sh1, (sh1[0] + 2.0, sh1[1] + 8.0), (neck[0] - 2.2, neck[1] - 10.0), man, 2.4)
+        arm_at(s, sh2, (sh2[0] - 1.0, sh2[1] + 8.0), (neck[0] + 2.2, neck[1] - 10.0), man, 2.4)
+        for (dx, dy) in ((-3.2, -11.0), (2.6, -12.0), (0.4, -9.0), (-1.6, -13.4)):
+            s.circle(neck[0] + dx, neck[1] + dy, 0.75, "#D8C79B")
+    else:   # arm
+        H.draw_sit(s, man, hands="knees")
+        sh1, sh2 = (42.6, 53.0), (56.6, 53.0)
+        arm_at(s, sh2, (sh2[0] + 3.0, sh2[1] + 10.0), (60.0, 74.0), man, 2.5, palm=False)
+        s.path("M %g %g L %g %g" % (sh2[0] + 5.0, sh2[1] + 8.4, 58.0, 72.0), stroke=H.KAMIS_D, sw=1.4)
+        arm_at(s, sh1, (sh1[0] + 4.0, sh1[1] + 12.0), (56.0, 70.0), man, 2.5)
+        for (dx, dy) in ((0, -3), (2.4, -1.6), (-2.0, -2.4)):
+            s.circle(58.0 + dx, 71.0 + dy, 0.7, "#D8C79B")
 
 
 # ---------- список всех иллюстраций ----------
@@ -469,44 +338,41 @@ def tay(s, pal, part="intent"):
 def build():
     """name -> (заголовок по-туркменски, функция рисования)."""
     figs = {}
-    man = Pal("man")
-    woman = Pal("woman")
+    figs["pose_niet_m"] = ("Niýet edildi — erkek kişi", lambda s: pose_niyet(s, True))
+    figs["pose_niet_w"] = ("Niýet edildi — aýal kişi", lambda s: pose_niyet(s, False))
+    figs["pose_takbir_m"] = ("Tahrim tekbiri — erkek kişi", lambda s: pose_takbir(s, True))
+    figs["pose_takbir_w"] = ("Tahrim tekbiri — aýal kişi", lambda s: pose_takbir(s, False))
+    figs["pose_stand_m"] = ("Kyýam — erkek kişi", lambda s: pose_qiyam(s, True))
+    figs["pose_stand_w"] = ("Kyýam — aýal kişi", lambda s: pose_qiyam(s, False))
+    figs["pose_ruku_m"] = ("Rukug — erkek kişi", lambda s: pose_ruku(s, True))
+    figs["pose_ruku_w"] = ("Rukug — aýal kişi", lambda s: pose_ruku(s, False))
+    figs["pose_sajda_m"] = ("Säjdä — erkek kişi", lambda s: pose_sajda(s, True))
+    figs["pose_sajda_w"] = ("Säjdä — aýal kişi", lambda s: pose_sajda(s, False))
+    figs["pose_sit_m"] = ("Oturyş (täşehhüt) — erkek kişi", lambda s: pose_sit(s, True))
+    figs["pose_sit_w"] = ("Oturyş (täşehhüt) — aýal kişi", lambda s: pose_sit(s, False))
+    figs["pose_dua_m"] = ("Doga — erkek kişi", lambda s: pose_sit(s, True, hands="up"))
+    figs["pose_dua_w"] = ("Doga — aýal kişi", lambda s: pose_sit(s, False, hands="up"))
+    figs["pose_salam_r"] = ("Salam — saga", lambda s: pose_sit(s, True, turn=1.0))
+    figs["pose_salam_l"] = ("Salam — sola", lambda s: pose_sit(s, True, turn=-1.0))
+    figs["pose_salam_r_w"] = ("Salam — saga (aýal)", lambda s: pose_sit(s, False, turn=1.0))
+    figs["pose_salam_l_w"] = ("Salam — sola (aýal)", lambda s: pose_sit(s, False, turn=-1.0))
 
-    figs["pose_niet_m"] = ("Niýet edildi — erkek kişi", lambda s: pose_stand(s, man, hands="down"))
-    figs["pose_niet_w"] = ("Niýet edildi — aýal kişi", lambda s: pose_stand(s, woman, hands="down"))
-    figs["pose_takbir_m"] = ("Tahrim tekbiri — erkek kişi", lambda s: pose_takbir(s, man))
-    figs["pose_takbir_w"] = ("Tahrim tekbiri — aýal kişi", lambda s: pose_takbir(s, woman))
-    figs["pose_stand_m"] = ("Kyýam — dik duruş", lambda s: pose_stand(s, man, hands="fold"))
-    figs["pose_stand_w"] = ("Kyýam — aýal kişi", lambda s: pose_stand(s, woman, hands="fold"))
-    figs["pose_ruku_m"] = ("Rukug — bil baglamak", lambda s: pose_ruku(s, man))
-    figs["pose_ruku_w"] = ("Rukug — aýal kişi", lambda s: pose_ruku(s, woman))
-    figs["pose_sajda_m"] = ("Säjdä — ýere baş goýmak", lambda s: pose_sajda(s, man))
-    figs["pose_sajda_w"] = ("Säjdä — aýal kişi", lambda s: pose_sajda(s, woman))
-    figs["pose_sit_m"] = ("Oturyş — täşehhüt", lambda s: pose_sit(s, man))
-    figs["pose_sit_w"] = ("Oturyş — aýal kişi", lambda s: pose_sit(s, woman))
-    figs["pose_dua_m"] = ("Doga — eller açyk", lambda s: pose_sit(s, man, hands="up"))
-    figs["pose_dua_w"] = ("Doga — aýal kişi", lambda s: pose_sit(s, woman, hands="up"))
-    figs["pose_salam_r"] = ("Salam — saga", lambda s: pose_salam(s, man, right=True))
-    figs["pose_salam_l"] = ("Salam — sola", lambda s: pose_salam(s, man, right=False))
-    figs["pose_salam_r_w"] = ("Salam — saga (aýal)", lambda s: pose_salam(s, woman, right=True))
-    figs["pose_salam_l_w"] = ("Salam — sola (aýal)", lambda s: pose_salam(s, woman, right=False))
+    figs["abl_intent"] = ("Täret: niýet", lambda s: pose_niyet(s, True))
+    figs["abl_intent_w"] = ("Täret: niýet (aýal)", lambda s: pose_niyet(s, False))
+    figs["abl_hands"] = ("Täret: elleri ýuwmak", lambda s: wudu(s, True, "hands"))
+    figs["abl_mouth"] = ("Täret: agzy çaýkamak", lambda s: wudu(s, True, "mouth"))
+    figs["abl_nose"] = ("Täret: burny ýuwmak", lambda s: wudu(s, True, "nose"))
+    figs["abl_face"] = ("Täret: ýüzi ýuwmak", lambda s: wudu(s, True, "face"))
+    figs["abl_arm"] = ("Täret: goly ýuwmak", lambda s: wudu(s, True, "arm"))
+    figs["abl_head"] = ("Täret: başa mesh etmek", lambda s: wudu(s, True, "head"))
+    figs["abl_ear"] = ("Täret: gulaga mesh etmek", lambda s: wudu(s, True, "ear"))
+    figs["abl_foot"] = ("Täret: aýagy ýuwmak", lambda s: wudu(s, True, "foot"))
+    figs["abl_dua"] = ("Täretden soň doga", lambda s: pose_sit(s, True, hands="up"))
 
-    figs["abl_intent"] = ("Täret: niýet", lambda s: abl_stand(s, man))
-    figs["abl_intent_w"] = ("Täret: niýet (aýal)", lambda s: abl_stand(s, woman))
-    figs["abl_hands"] = ("Täret: elleri ýuwmak", lambda s: abl_sit(s, man, "hands"))
-    figs["abl_mouth"] = ("Täret: agzy çaýkamak", lambda s: abl_sit(s, man, "mouth"))
-    figs["abl_nose"] = ("Täret: burny ýuwmak", lambda s: abl_sit(s, man, "nose"))
-    figs["abl_face"] = ("Täret: ýüzi ýuwmak", lambda s: abl_sit(s, man, "face"))
-    figs["abl_arm"] = ("Täret: goly ýuwmak", lambda s: abl_sit(s, man, "arm"))
-    figs["abl_head"] = ("Täret: başa mesh etmek", lambda s: abl_sit(s, man, "head"))
-    figs["abl_ear"] = ("Täret: gulaga mesh etmek", lambda s: abl_sit(s, man, "ear"))
-    figs["abl_foot"] = ("Täret: aýagy ýuwmak", lambda s: abl_sit(s, man, "foot"))
-    figs["abl_dua"] = ("Täretden soň doga", lambda s: abl_stand(s, man))
-
-    figs["tay_intent"] = ("Teýemmüm: niýet", lambda s: tay(s, man, "intent"))
-    figs["tay_hands"] = ("Teýemmüm: elleri topraga urmak", lambda s: tay(s, man, "hands"))
-    figs["tay_face"] = ("Teýemmüm: ýüze mesh", lambda s: tay(s, man, "face"))
-    figs["tay_arm"] = ("Teýemmüm: gola mesh", lambda s: tay(s, man, "arm"))
+    figs["tay_intent"] = ("Teýemmüm: niýet", lambda s: tayammum(s, True, "intent"))
+    figs["tay_hands"] = ("Teýemmüm: elleri topraga urmak", lambda s: tayammum(s, True, "hands"))
+    figs["tay_face"] = ("Teýemmüm: ýüze mesh", lambda s: tayammum(s, True, "face"))
+    figs["tay_arm"] = ("Teýemmüm: gola mesh", lambda s: tayammum(s, True, "arm"))
 
     return figs
 
@@ -536,29 +402,10 @@ def main():
         print("записано в", out_dir)
 
     if a.preview:
-        import pymupdf
-        from PIL import Image, ImageDraw
-        cols, thumb, pad, lab = 7, 150, 6, 14
-        rows = (len(names) + cols - 1) // cols
-        sheet = Image.new("RGB", (cols * (thumb + pad) + pad, rows * (thumb + lab + pad) + pad),
-                          (246, 243, 236))
-        d = ImageDraw.Draw(sheet)
-        os.makedirs(os.path.join(os.path.dirname(__file__), "..", "preview"), exist_ok=True)
-        for i, n in enumerate(names):
-            s = Svg()
-            figs[n][1](s)
-            doc = pymupdf.open("svg", s.svg().encode("utf-8"))
-            pix = doc[0].get_pixmap(matrix=pymupdf.Matrix(thumb / 100.0 * 2, thumb / 100.0 * 2))
-            im = Image.frombytes("RGB", (pix.width, pix.height), pix.samples).resize((thumb, thumb),
-                                                                                    Image.LANCZOS)
-            x = pad + (i % cols) * (thumb + pad)
-            y = pad + (i // cols) * (thumb + lab + pad)
-            sheet.paste(im, (x, y))
-            d.text((x + 2, y + thumb + 1), n, fill=(40, 40, 40))
-        out = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "preview",
-                                           "ill-preview.png"))
-        sheet.save(out)
-        print("превью:", out, sheet.size)
+        import subprocess
+        out = os.path.join(os.path.dirname(__file__), "..", "..", "docs", "preview", "suratlar.png")
+        subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), "preview.py"),
+                        "--out", os.path.abspath(out)], check=True)
 
 
 if __name__ == "__main__":

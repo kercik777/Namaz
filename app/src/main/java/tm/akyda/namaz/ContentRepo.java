@@ -69,7 +69,7 @@ public class ContentRepo {
     private synchronized void loadSync(Context c) {
         if (loaded) return;
         AssetManager am = c.getAssets();
-        String[] order = {"akyda", "namaz_kitaby", "namaz"};
+        String[] order = {"akyda", "namaz_kitaby"};
         for (String id : order) {
             try {
                 String json = readAsset(am, "content/" + id + ".json");
@@ -93,6 +93,9 @@ public class ContentRepo {
                     qt.tk = o.optString("tk", "");
                     qt.ru = o.optString("ru", "");
                     qt.src = o.optString("src", "");
+                    qt.bookId = o.optString("book", "");
+                    qt.chapter = o.optInt("chapter", -1);
+                    qt.block = o.optInt("block", -1);
                     quotes.add(qt);
                 }
             } catch (Exception ignored) {
@@ -209,6 +212,14 @@ public class ContentRepo {
         public String tk;
         public String ru;
         public String src;
+        public String bookId = "";      // где эта мысль напечатана
+        public int chapter = -1;
+        public int block = -1;
+
+        /** Можно ли открыть это место в книге. */
+        public boolean located() {
+            return !bookId.isEmpty() && chapter >= 0 && block >= 0;
+        }
     }
 
     public List<Quote> quotes() {

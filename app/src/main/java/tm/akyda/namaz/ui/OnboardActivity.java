@@ -54,7 +54,7 @@ public class OnboardActivity extends BaseActivity {
         root.addView(top, Ui.llpMatch());
 
         pager = Ui.frame(this);
-        pages = new View[]{pageGreeting(), pageBooks(), pageLook(), pageFeatures()};
+        pages = new View[]{pageGreeting(), pageFeatures()};
         for (View p : pages) {
             pager.addView(p, Ui.flp(FrameLayout.LayoutParams.MATCH_PARENT,
                     FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER));
@@ -182,47 +182,6 @@ public class OnboardActivity extends BaseActivity {
         addBody(R.string.onb1_text);
         addFeature(Ico.BOOK, R.string.library);
         addFeature(Ico.SHIELD, R.string.privacy);
-        return wrap;
-    }
-
-    private View pageBooks() {
-        LinearLayout wrap = newPage();
-        addArt(Ill.QURAN, 148);
-        addHeadline(R.string.onb_books_title);
-        addBody(R.string.onb_books_text);
-        addFeature(Ico.IMAGE, R.string.scan_hint);
-        addFeature(Ico.SEARCH, R.string.search);
-        return wrap;
-    }
-
-    private View pageLook() {
-        LinearLayout wrap = newPage();
-        addArt(Ill.RUG, 148);
-        addHeadline(R.string.onb2_title);
-        addBody(R.string.onb2_text);
-
-        LinearLayout chips = Ui.row(this);
-        chips.setGravity(Gravity.CENTER);
-        int mode = P.i(P.appTheme, Skin.MODE_SYSTEM);
-        final String[] names = {getString(R.string.theme_light), getString(R.string.theme_dark),
-                getString(R.string.theme_system)};
-        for (int i = 0; i < names.length; i++) {
-            TextView chip = Ui.chip(this, names[i], mode == i);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            lp.setMargins(U.dp(this, 5), U.dp(this, 18), U.dp(this, 5), 0);
-            chip.setLayoutParams(lp);
-            final int m = i;
-            Ui.click(chip, new Runnable() {
-                @Override
-                public void run() {
-                    P.si(P.appTheme, m);
-                    restart();
-                }
-            });
-            chips.addView(chip);
-        }
-        pageColumn.addView(chips);
         return wrap;
     }
 

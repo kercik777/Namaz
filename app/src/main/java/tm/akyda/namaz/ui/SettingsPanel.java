@@ -138,63 +138,7 @@ public final class SettingsPanel {
         c.addView(themes);
         c.addView(Ui.space(a, 16));
 
-        /* ---------- Режим чтения ---------- */
-        c.addView(label(a, a.getString(R.string.reading_mode)));
-        LinearLayout modes = Ui.row(a);
-        final int mode = P.i(P.readerMode, 0);
-        String[] modeNames = {a.getString(R.string.mode_pages), a.getString(R.string.mode_scroll)};
-        for (int i = 0; i < 2; i++) {
-            final int m = i;
-            TextView chip = Ui.chip(a, modeNames[i], mode == i);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            lp.rightMargin = U.dp(a, 8);
-            chip.setLayoutParams(lp);
-            Ui.click(chip, new Runnable() {
-                @Override
-                public void run() {
-                    P.si(P.readerMode, m);
-                    listener.onChanged();
-                    refreshChips(chip);
-                }
-            });
-            modes.addView(chip);
-        }
-        c.addView(modes);
-        c.addView(Ui.space(a, 16));
-
-        /* ---------- Анимация перелистывания ---------- */
-        c.addView(label(a, a.getString(R.string.page_animation)));
-        LinearLayout anims = Ui.row(a);
-        final int anim = P.i(P.readerAnim, 0);
-        String[] animNames = {a.getString(R.string.anim_slide), a.getString(R.string.anim_fade), a.getString(R.string.anim_none)};
-        for (int i = 0; i < 3; i++) {
-            final int an = i;
-            TextView chip = Ui.chip(a, animNames[i], anim == i);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            lp.rightMargin = U.dp(a, 8);
-            chip.setLayoutParams(lp);
-            Ui.click(chip, new Runnable() {
-                @Override
-                public void run() {
-                    P.si(P.readerAnim, an);
-                    listener.onChanged();
-                    refreshChips(chip);
-                }
-            });
-            anims.addView(chip);
-        }
-        c.addView(anims);
-        c.addView(Ui.space(a, 14));
-
-        /* ---------- Переключатели ---------- */
-        c.addView(toggle(a, Ico.HEADPHONES, a.getString(R.string.page_sound), P.b(P.readerSound, true),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                    }
-                }, P.readerSound));
+        /* ---------- Переключатель ---------- */
         c.addView(toggle(a, Ico.SUN, a.getString(R.string.keep_screen_on), P.b(P.readerKeepOn, false),
                 new Runnable() {
                     @Override

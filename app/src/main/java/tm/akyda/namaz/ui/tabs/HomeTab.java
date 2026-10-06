@@ -210,6 +210,15 @@ public class HomeTab implements TabPage {
     private View quoteCard(final ContentRepo.Quote q) {
         final String txt = tm.akyda.namaz.Loc.TK.equals(tm.akyda.namaz.Loc.lang()) && !U.empty(q.tk) ? q.tk : q.ru;
         LinearLayout card = Ui.card(host);
+        if (q.located()) {
+            // нажатие открывает то самое место в книге
+            Ui.click(card, new Runnable() {
+                @Override
+                public void run() {
+                    Nav.openReader(host, q.bookId, q.chapter, q.block);
+                }
+            });
+        }
         card.setBackground(U.strokeRound(Skin.surface(host), Skin.withAlpha(Skin.accent(host), 0.4f), 22f, 1.2f, host));
         Ui.pad(card, host, 18, 16, 18, 16);
 
@@ -236,6 +245,19 @@ public class HomeTab implements TabPage {
             slp.topMargin = U.dp(host, 8);
             src.setLayoutParams(slp);
             card.addView(src);
+        }
+        if (q.located()) {
+            LinearLayout open = Ui.row(host);
+            open.setGravity(Gravity.CENTER_VERTICAL);
+            open.addView(new IconView(host, Ico.BOOK, Skin.accent(host), 15f));
+            TextView ol = Ui.tv(host, getString(R.string.quote_open), 12.5f, Skin.accent(host), U.uiMed(host));
+            LinearLayout.LayoutParams olp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            olp.leftMargin = U.dp(host, 7);
+            open.addView(ol, olp);
+            LinearLayout.LayoutParams olp2 = Ui.llpMatch();
+            olp2.topMargin = U.dp(host, 6);
+            card.addView(open, olp2);
         }
 
         LinearLayout actions = Ui.row(host);

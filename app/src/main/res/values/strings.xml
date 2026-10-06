@@ -40,6 +40,7 @@
     <string name="continue_reading">Okamagy dowam et</string>
     <string name="start_reading">Okamaga başla</string>
     <string name="quote_of_day">Günüň sözi</string>
+    <string name="quote_open">Kitapda aç</string>
     <string name="your_library">Siziň kitaphanaňyz</string>
     <string name="quick_sections">Bölümler</string>
     <string name="statistics">Statistika</string>
@@ -180,7 +181,7 @@
     <string name="onb2_title">Özüňize sazlaň</string>
     <string name="onb2_text">Interfeýs dilini we görnüşi saýlaň. Soň hem üýtgedip bilersiňiz.</string>
     <string name="onb3_title">Hemmesi eliňizde</string>
-    <string name="onb3_text">Üç kitap, ähli tekstlerden gözleg, bellikler, sözler we öz elimiz bilen çyzylan suratlar. Internetsiz we rugsatsyz işleýär.</string>
+    <string name="onb3_text">Iki kitap, ähli tekstlerden gözleg, bellikler, sözler we öz elimiz bilen çyzylan suratlar. Internetsiz we rugsatsyz işleýär.</string>
 
     <!-- Beýlekiler -->
     <string name="share_via">Paýlaşmak üçin</string>
@@ -201,6 +202,8 @@
     <string name="report_typo_hint">Ýalňyşlygy şu ýerde ýazyň we amatly usul bilen iberiň.</string>
     <string name="book_label">Kitap</string>
     <string name="settings_note">Ähli sazlamalar diňe siziň enjamyňyzda saklanýar. Programma internetsiz işleýär.</string>
-    <string name="onb_books_title">Üç kitap — bir programmada</string>
-    <string name="onb_books_text">«Namaz kitaby», onuň ikinji kitaby we «Akyda»: doly tekst, öz elimiz bilen çyzylan suratlar we günüň sözi.</string>
+    <string name="onb_books_title">Iki kitap — bir programmada</string>
+    <string name="onb_books_text">«Akyda» we «Namaz kitaby»: doly tekst, öz elimiz bilen çyzylan suratlar we günüň sözi.</string>
+    <string name="go_to_page">Sahypa geçmek</string>
+    <string name="size">Ululyk</string>
 </resources>

@@ -1,11 +1,8 @@
 package tm.akyda.namaz.ui;
 
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -18,25 +15,23 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import tm.akyda.namaz.Block;
 import tm.akyda.namaz.Book;
-import tm.akyda.namaz.BookView;
 import tm.akyda.namaz.Chrome;
 import tm.akyda.namaz.ContentRepo;
-import tm.akyda.namaz.FlowView;
 import tm.akyda.namaz.Ico;
 import tm.akyda.namaz.IconView;
+import tm.akyda.namaz.Ill;
 import tm.akyda.namaz.Lib;
 import tm.akyda.namaz.Loc;
 import tm.akyda.namaz.Nav;
 import tm.akyda.namaz.P;
 import tm.akyda.namaz.PageView;
+import tm.akyda.namaz.PagesView;
 import tm.akyda.namaz.Paginator;
 import tm.akyda.namaz.R;
 import tm.akyda.namaz.Skin;
@@ -45,10 +40,15 @@ import tm.akyda.namaz.Ui;
 import tm.akyda.namaz.Widgets;
 
 /**
- * Читалка книги: бумажная страница с объёмным перелистыванием, режим прокрутки,
- * масштаб текста прямо на экране, оригинал скана, оглавление, поиск, закладки.
+ * Читалка: одна простая панель сверху, одна снизу и книжная страница между ними.
+ *
+ * Слева и справа — перелистывание листа, как в бумажной книге. Всё остальное
+ * (оглавление, поиск, закладки, настройки, размер текста) — в меню одной кнопкой.
  */
 public class ReaderActivity extends BaseActivity {
+
+    /** Во сколько раз книжный лист выше видимой части: остаток читается свайпом вниз. */
+    private static final float LEAF = 1.55f;
 
     private Book book;
     private Paginator paginator;
@@ -57,34 +57,29 @@ public class ReaderActivity extends BaseActivity {
     private int chapter = 0;
     private int pageIndex = 0;
 
-    private FrameLayout stage;
-    private BookView bookView;
-    private PageView renderer;          // невидимый «печатник» страниц в битмапы
-    private ScrollView scrollWrap;
-    private LinearLayout scrollList;
+    private FrameLayout root, stage;
+    private PagesView viewer;
+    private PageView renderer;
     private View dim;
-
     private LinearLayout topBar, bottomBar;
-    private TextView barTitle, pageLabel, zoomLabel;
+    private TextView barTitle, pageLabel;
     private IconView markIcon;
-    private Widgets.Slider slider;
 
-    private boolean barsVisible = true;
-    private boolean scrollMode = false;
+    private boolean chromeShown = true;
     private boolean ready = false;
-
     private long sessionStart = 0;
-    private long lastAutoHide = 0;
+    private int chapterStartBlock = 0;
 
-    /** Кэш готовых страниц-картинок (мало памяти, мгновенное перелистывание). */
-    private final Map<Integer, Bitmap> pageCache = new LinkedHashMap<Integer, Bitmap>(4, 0.75f, true) {
+    private final Map<Integer, Bitmap> pageCache = new LinkedHashMap<Integer, Bitmap>(6, 0.75f, true) {
         @Override
         protected boolean removeEldestEntry(Map.Entry<Integer, Bitmap> eldest) {
-            return size() > 4;
+            return size() > 6;
         }
     };
 
-    private int chapterStartBlock = 0;
+    private int theme() {
+        return P.i(P.readerTheme, Skin.T_PAPER);
+    }
 
     @Override
     protected int themeRes() {
@@ -98,64 +93,63 @@ public class ReaderActivity extends BaseActivity {
         String id = getIntent() == null ? null : getIntent().getStringExtra(Nav.EXTRA_BOOK);
         book = ContentRepo.get().byId(id);
         if (book == null) {
+            book = ContentRepo.get().books().isEmpty() ? null : ContentRepo.get().books().get(0);
+        }
+        if (book == null) {
             finish();
             return;
         }
         paginator = new Paginator(this);
-        chapter = Math.max(0, getIntent().getIntExtra(Nav.EXTRA_CHAPTER, Lib.get().prog(book.id).chapter));
+        Lib.Prog pr = Lib.get().prog(book.id);
+        chapter = Math.max(0, getIntent().getIntExtra(Nav.EXTRA_CHAPTER, pr.chapter));
         if (chapter >= book.toc.size()) chapter = 0;
-        final int startBlock = getIntent().getIntExtra(Nav.EXTRA_BLOCK, Lib.get().prog(book.id).block);
+        final int startBlock = getIntent().getIntExtra(Nav.EXTRA_BLOCK, pr.block);
 
         buildUi();
         applyKeepScreenOn();
         sessionStart = System.currentTimeMillis();
-        lastAutoHide = sessionStart;
 
         stage.post(new Runnable() {
             @Override
             public void run() {
                 ready = true;
-                if (P.i(P.readerMode, 0) == 1) {
-                    enterScrollMode(startBlock);
-                } else {
-                    rebuild(startBlock);
-                }
+                rebuild(startBlock);
             }
         });
     }
 
-    /* ==================== Интерфейс ==================== */
+    /* ==================== Экран ==================== */
 
     private void buildUi() {
-        FrameLayout root = Ui.frame(this);
-        root.setBackgroundColor(Skin.readerFrame(P.i(P.readerTheme, Skin.T_PAPER)));
+        root = Ui.frame(this);
+        root.setBackgroundColor(Skin.readerFrame(theme()));
 
         stage = Ui.frame(this);
         root.addView(stage, Ui.flp(FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER));
 
-        bookView = new BookView(this);
-        bookView.setTheme(P.i(P.readerTheme, Skin.T_PAPER));
-        bookView.setListener(new BookView.Listener() {
+        viewer = new PagesView(this);
+        viewer.setTheme(theme());
+        viewer.setInsets(72f, 78f);
+        viewer.setListener(new PagesView.Listener() {
             @Override
             public void onNeedPages() {
-                prepareNeighbours();
+                preparePages();
             }
 
             @Override
-            public void onTurned(int dir) {
-                afterTurn(dir);
+            public void onTurned(boolean forward) {
+                afterTurn(forward);
             }
 
             @Override
             public void onTap(float x, float y) {
-                tapAt(x, y);
+                tapAt(x);
             }
         });
-        stage.addView(bookView, Ui.flp(FrameLayout.LayoutParams.MATCH_PARENT,
+        stage.addView(viewer, Ui.flp(FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER));
 
-        // Затемнение для чтения в темноте
         dim = new View(this);
         dim.setBackgroundColor(0xFF000000);
         dim.setAlpha(P.i(P.readerBrightness, 0) / 100f);
@@ -163,135 +157,122 @@ public class ReaderActivity extends BaseActivity {
         root.addView(dim, Ui.flp(FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER));
 
-        buildBars(root);
+        buildTopBar();
+        buildBottomBar();
         setContentView(root);
+        applyReaderColors();
     }
 
-    /** Панели: «плавающие» карточки с мягкими углами, как обложка книги. */
-    private void buildBars(FrameLayout root) {
-        int theme = P.i(P.readerTheme, Skin.T_PAPER);
-        int paper = Skin.paper(theme);
-
-        // --- верхняя панель ---
+    /** Верхняя панель: назад, название главы (нажатие — оглавление), закладка, меню. */
+    private void buildTopBar() {
         topBar = Ui.row(this);
-        topBar.setBackground(U.round(Skin.withAlpha(paper, 0.97f), 22f, this));
-        U.shadow(topBar, 10f);
+        topBar.setGravity(Gravity.CENTER_VERTICAL);
+        topBar.setBackground(U.round(Skin.withAlpha(Skin.paper(theme()), 0.96f), 20f, this));
+        U.shadow(topBar, 12f);
         Ui.pad(topBar, this, 6, 6, 6, 6);
-        topBar.addView(barButton(Ico.BACK, new Runnable() {
+
+        topBar.addView(roundButton(Ico.BACK, 24f, new Runnable() {
             @Override
             public void run() {
                 goBack();
             }
         }));
-        barTitle = Ui.tv(this, "", 13.5f, Skin.paperInk(theme), U.uiMed(this));
+
+        barTitle = Ui.tv(this, "", 15f, Skin.paperInk(theme()), U.uiMed(this));
         barTitle.setSingleLine(true);
         barTitle.setEllipsize(android.text.TextUtils.TruncateAt.END);
-        LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-        tlp.leftMargin = U.dp(this, 4);
+        LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(0,
+                LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        tlp.leftMargin = U.dp(this, 6);
+        tlp.rightMargin = U.dp(this, 6);
         topBar.addView(barTitle, tlp);
-        markIcon = new IconView(this, Ico.MARK, Skin.paperInk(theme), 21f);
-        topBar.addView(clickable(markIcon, new Runnable() {
+
+        markIcon = new IconView(this, Ico.MARK, Skin.paperInk(theme()), 24f);
+        topBar.addView(roundButtonWrap(markIcon, new Runnable() {
             @Override
             public void run() {
                 toggleBookmark();
             }
         }));
-        topBar.addView(barButton(Ico.LIST, new Runnable() {
+
+        topBar.addView(roundButton(Ico.MORE, 24f, new Runnable() {
+            @Override
+            public void run() {
+                menuSheet();
+            }
+        }));
+        Ui.click(barTitle, new Runnable() {
             @Override
             public void run() {
                 tocSheet();
             }
-        }));
-        topBar.addView(barButton(Ico.SEARCH_BOOK, new Runnable() {
+        });
+
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, U.dp(this, 58));
+        lp.gravity = Gravity.TOP;
+        lp.setMargins(U.dp(this, 10), U.dp(this, 8), U.dp(this, 10), 0);
+        root.addView(topBar, lp);
+    }
+
+    /** Нижняя панель: назад, мельче, номер страницы, крупнее, вперёд. */
+    private void buildBottomBar() {
+        bottomBar = Ui.row(this);
+        bottomBar.setGravity(Gravity.CENTER_VERTICAL);
+        bottomBar.setBackground(U.round(Skin.withAlpha(Skin.paper(theme()), 0.96f), 20f, this));
+        U.shadow(bottomBar, 12f);
+        Ui.pad(bottomBar, this, 8, 7, 8, 7);
+
+        bottomBar.addView(roundButton(Ico.LEFT, 26f, new Runnable() {
             @Override
             public void run() {
-                searchSheet();
+                prevPage();
             }
         }));
-        topBar.addView(barButton(Ico.GEAR, new Runnable() {
-            @Override
-            public void run() {
-                settingsSheet();
-            }
-        }));
-        FrameLayout.LayoutParams tblp = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, U.dp(this, 56));
-        tblp.gravity = Gravity.TOP;
-        tblp.setMargins(U.dp(this, 10), U.dp(this, 10), U.dp(this, 10), 0);
-        root.addView(topBar, tblp);
 
-        // --- нижняя панель ---
-        bottomBar = Ui.col(this);
-        bottomBar.setBackground(U.round(Skin.withAlpha(paper, 0.97f), 22f, this));
-        U.shadow(bottomBar, 10f);
-        Ui.pad(bottomBar, this, 14, 8, 14, 10);
-
-        slider = new Widgets.Slider(this);
-        slider.setColors(Skin.withAlpha(Skin.paperInk(theme), 0.14f), Skin.paperAccent(theme), paper);
-        slider.setLayoutParams(Ui.llpMatchH(U.dp(this, 26)));
-        slider.setListener(pageSliderListener());
-        bottomBar.addView(slider);
-
-        LinearLayout tools = Ui.row(this);
-        tools.setGravity(Gravity.CENTER_VERTICAL);
-
-        // Масштаб текста — прямо на экране
-        tools.addView(smallButton(Ico.MINUS, new Runnable() {
+        pageLabel = Ui.tv(this, "", 15f, Skin.paperInk(theme()), U.uiMed(this));
+        pageLabel.setGravity(Gravity.CENTER);
+        bottomBar.addView(roundButton(Ico.MINUS, 24f, new Runnable() {
             @Override
             public void run() {
                 zoomText(-1);
             }
         }));
-        zoomLabel = Ui.tv(this, String.valueOf(P.i(P.readerSize, 19)), 12.5f,
-                Skin.paperInk(theme), U.uiMed(this));
-        zoomLabel.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams zlp = new LinearLayout.LayoutParams(U.dp(this, 30),
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        tools.addView(zoomLabel, zlp);
-        tools.addView(smallButton(Ico.PLUS, new Runnable() {
+        bottomBar.addView(pageLabel, Ui.llpW(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        Ui.click(pageLabel, new Runnable() {
+            @Override
+            public void run() {
+                jumpSheet();
+            }
+        });
+        bottomBar.addView(roundButton(Ico.PLUS, 24f, new Runnable() {
             @Override
             public void run() {
                 zoomText(1);
             }
         }));
 
-        pageLabel = Ui.tv(this, "", 12.5f, Skin.paperSub(theme), U.uiMed(this));
-        pageLabel.setGravity(Gravity.CENTER);
-        tools.addView(pageLabel, Ui.llpW(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-
-        tools.addView(smallButton(Ico.LEFT, new Runnable() {
-            @Override
-            public void run() {
-                prevPage();
-            }
-        }));
-        tools.addView(smallButton(Ico.RIGHT, new Runnable() {
+        bottomBar.addView(roundButton(Ico.RIGHT, 26f, new Runnable() {
             @Override
             public void run() {
                 nextPage();
             }
         }));
-        tools.addView(smallButton(Ico.LIST, new Runnable() {
-            @Override
-            public void run() {
-                tocSheet();
-            }
-        }));
-        bottomBar.addView(tools);
 
-        FrameLayout.LayoutParams bblp = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        bblp.gravity = Gravity.BOTTOM;
-        bblp.setMargins(U.dp(this, 10), 0, U.dp(this, 10), U.dp(this, 10));
-        root.addView(bottomBar, bblp);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, U.dp(this, 58));
+        lp.gravity = Gravity.BOTTOM;
+        lp.setMargins(U.dp(this, 10), 0, U.dp(this, 10), U.dp(this, 8));
+        root.addView(bottomBar, lp);
     }
 
-    private View smallButton(int ico, final Runnable action) {
+    /** Круглая кнопка с крупной иконкой. */
+    private View roundButton(int ico, float sizeDp, final Runnable action) {
         FrameLayout f = Ui.frame(this);
-        int s = U.dp(this, 38);
+        int s = U.dp(this, 46);
         f.setLayoutParams(new LinearLayout.LayoutParams(s, s));
-        f.addView(new IconView(this, ico, Skin.paperInk(P.i(P.readerTheme, Skin.T_PAPER)), 19f),
-                Ui.flp(U.dp(this, 19), U.dp(this, 19), Gravity.CENTER));
+        IconView iv = new IconView(this, ico, Skin.paperInk(theme()), sizeDp);
+        f.addView(iv, Ui.flp(U.dp(this, sizeDp), U.dp(this, sizeDp), Gravity.CENTER));
         Ui.click(f, new Runnable() {
             @Override
             public void run() {
@@ -301,27 +282,12 @@ public class ReaderActivity extends BaseActivity {
         return f;
     }
 
-    private View barButton(int ico, final Runnable action) {
+    private View roundButtonWrap(View inner, final Runnable action) {
         FrameLayout f = Ui.frame(this);
-        int s = U.dp(this, 42);
+        int s = U.dp(this, 46);
         f.setLayoutParams(new LinearLayout.LayoutParams(s, s));
-        f.addView(new IconView(this, ico, Skin.paperInk(P.i(P.readerTheme, Skin.T_PAPER)), 21f),
-                Ui.flp(U.dp(this, 21), U.dp(this, 21), Gravity.CENTER));
-        Ui.click(f, new Runnable() {
-            @Override
-            public void run() {
-                action.run();
-            }
-        });
-        return f;
-    }
-
-    private View clickable(View v, final Runnable action) {
-        FrameLayout f = Ui.frame(this);
-        int s = U.dp(this, 42);
-        f.setLayoutParams(new LinearLayout.LayoutParams(s, s));
-        v.setLayoutParams(Ui.flp(U.dp(this, 21), U.dp(this, 21), Gravity.CENTER));
-        f.addView(v);
+        inner.setLayoutParams(Ui.flp(U.dp(this, 24), U.dp(this, 24), Gravity.CENTER));
+        f.addView(inner);
         Ui.click(f, new Runnable() {
             @Override
             public void run() {
@@ -334,25 +300,23 @@ public class ReaderActivity extends BaseActivity {
     /* ==================== Страницы ==================== */
 
     private Paginator.Opt opt() {
-        int w = (int) bookView.pageRect().width();
-        int h = (int) bookView.pageRect().height();
+        int w = (int) viewer.pageRect().width();
+        int h = (int) viewer.pageRect().height();
         if (w <= 0 || h <= 0) {
-            w = U.screenW(this) - U.dp(this, 30);
-            h = U.screenH(this) - U.dp(this, 20);
+            w = U.screenW(this) - U.dp(this, 28);
+            h = U.screenH(this) - U.dp(this, 150);
         }
-        return SettingsPanel.opt(this, w, h);
+        // лист выше экрана: по вертикали читаем продолжение страницы
+        return SettingsPanel.opt(this, w, Math.round(h * LEAF));
     }
 
     private void rebuild(int startBlock) {
         if (!ready) return;
-        scrollMode = false;
-        if (scrollWrap != null) scrollWrap.setVisibility(View.GONE);
-        bookView.setVisibility(View.VISIBLE);
-        if (slider != null) slider.setVisibility(View.VISIBLE);
 
         pages = paginator.paginate(book, chapter, opt());
         if (pages.pages.isEmpty()) pages.pages.add(new Paginator.Page());
-        chapterStartBlock = book.tocAt(chapter) == null ? 0 : book.tocAt(chapter).blockIndex;
+        Book.Toc toc = book.tocAt(chapter);
+        chapterStartBlock = toc == null ? 0 : Math.max(0, toc.blockIndex);
 
         int target = 0;
         for (int i = 0; i < pages.pages.size(); i++) {
@@ -360,91 +324,73 @@ public class ReaderActivity extends BaseActivity {
         }
         pageIndex = Math.max(0, Math.min(pages.pages.size() - 1, target));
         pageCache.clear();
+        viewer.jump();
+        preparePages();
         showPage();
-        bookView.softSwap();
     }
 
-    private void showPage() {
+    /** Рисует текущую страницу и её соседей — листание получается мгновенным. */
+    private void preparePages() {
         if (pages == null || pages.pages.isEmpty()) return;
-        pageIndex = Math.max(0, Math.min(pages.pages.size() - 1, pageIndex));
-        pageCache.clear();
-        prepareNeighbours();
-
-        Book.Toc toc = book.tocAt(chapter);
-        String title = toc == null ? book.t(Loc.lang()) : toc.text;
-        bookView.setTheme(P.i(P.readerTheme, Skin.T_PAPER));
-        bookView.setMeta(title, pageIndex + 1, pages.pages.size());
-        bookView.setBookmarked(Lib.get().markAt(book.id, chapter, pageIndex) != null);
-        barTitle.setText(title);
-        pageLabel.setText(getString(R.string.page_of, pageIndex + 1, pages.pages.size()));
-        if (slider != null) {
-            slider.set(pages.pages.size() <= 1 ? 1f : pageIndex / (float) (pages.pages.size() - 1));
-        }
-        updateMarkIcon();
-        if (zoomLabel != null) zoomLabel.setText(String.valueOf(P.i(P.readerSize, 19)));
+        viewer.setPages(cache(pageIndex), cache(pageIndex + 1), cache(pageIndex - 1));
     }
 
-    /** Рисует текущую и соседние страницы в битмапы и отдаёт их книге. */
-    private void prepareNeighbours() {
-        if (pages == null || pages.pages.isEmpty() || scrollMode) return;
-        Bitmap cur = renderPage(pageIndex);
-        Bitmap next = renderPage(pageIndex + 1);
-        Bitmap prev = renderPage(pageIndex - 1);
-        bookView.setPages(cur, next, prev);
+    private Bitmap cache(int index) {
+        if (pages == null || index < 0 || index >= pages.pages.size()) return null;
+        Bitmap bm = pageCache.get(index);
+        if (bm != null && !bm.isRecycled()) return bm;
+        bm = renderPage(index);
+        if (bm != null) pageCache.put(index, bm);
+        return bm;
     }
 
     private Bitmap renderPage(int index) {
         if (pages == null || index < 0 || index >= pages.pages.size()) return null;
-        Bitmap cached = pageCache.get(index);
-        if (cached != null && !cached.isRecycled()) return cached;
-
-        int w = (int) bookView.pageRect().width();
-        int h = (int) bookView.pageRect().height();
+        int w = (int) viewer.pageRect().width();
+        int h = (int) viewer.pageRect().height();
         if (w <= 0 || h <= 0) return null;
 
         if (renderer == null) {
             renderer = new PageView(this);
             renderer.setLayerType(View.LAYER_TYPE_NONE, null);
         }
-        renderer.setChromeVisible(false);
+        renderer.setChromeVisible(false);      // название главы и номер рисуют панели
         renderer.setPage(pages.pages.get(index), opt());
         Book.Toc toc = book.tocAt(chapter);
         renderer.setMeta(book.t(Loc.lang()), toc == null ? "" : toc.text, index + 1, pages.pages.size());
-        int wSpec = View.MeasureSpec.makeMeasureSpec(w, View.MeasureSpec.EXACTLY);
-        int hSpec = View.MeasureSpec.makeMeasureSpec(h, View.MeasureSpec.EXACTLY);
-        renderer.measure(wSpec, hSpec);
+        renderer.measure(View.MeasureSpec.makeMeasureSpec(w, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(h, View.MeasureSpec.EXACTLY));
         renderer.layout(0, 0, w, h);
 
         Bitmap bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         renderer.draw(new Canvas(bm));
-        pageCache.put(index, bm);
         return bm;
     }
 
-    /* ==================== Перелистывание ==================== */
-
-    private void tapAt(float x, float y) {
-        float w = bookView.getWidth();
-        if (x < w * 0.28f) {
-            prevPage();
-        } else if (x > w * 0.72f) {
-            nextPage();
-        } else {
-            toggleBars();   // только панели — ничего лишнего не всплывает
-        }
+    private void showPage() {
+        if (pages == null || pages.pages.isEmpty()) return;
+        pageIndex = Math.max(0, Math.min(pages.pages.size() - 1, pageIndex));
+        Book.Toc toc = book.tocAt(chapter);
+        String title = toc == null ? book.t(Loc.lang()) : toc.text;
+        viewer.setTheme(theme());
+        viewer.setMeta(title, pageIndex + 1, pages.pages.size());
+        viewer.setBookmarked(Lib.get().markAt(book.id, chapter, pageIndex) != null);
+        barTitle.setText(title);
+        pageLabel.setText(getString(R.string.page_of, pageIndex + 1, pages.pages.size()));
+        updateMarkIcon();
     }
 
-    private void afterTurn(int dir) {
+    private void afterTurn(boolean forward) {
         if (pages == null || pages.pages.isEmpty()) return;
-        if (dir == BookView.DIR_RIGHT || dir == BookView.DIR_UP) {
+        if (forward) {
             if (pageIndex >= pages.pages.size() - 1) {
                 if (chapter + 1 < book.toc.size()) {
                     chapter++;
                     rebuild(book.tocAt(chapter).blockIndex);
-                    U.pill(this, book.tocAt(chapter).text);
                     saveProgress();
                 } else {
-                    showPage();
+                    viewer.jump();
+                    preparePages();
                     U.pill(this, getString(R.string.book_finished));
                 }
                 return;
@@ -455,298 +401,66 @@ public class ReaderActivity extends BaseActivity {
                 if (chapter > 0) {
                     chapter--;
                     rebuild(book.tocAt(chapter).blockIndex);
-                    if (!pages.pages.isEmpty()) pageIndex = pages.pages.size() - 1;
-                    showPage();
+                    if (pages != null && !pages.pages.isEmpty()) {
+                        pageIndex = pages.pages.size() - 1;
+                        viewer.jump();
+                        preparePages();
+                        showPage();
+                    }
                     saveProgress();
                 } else {
-                    showPage();
+                    viewer.jump();
+                    preparePages();
                 }
                 return;
             }
             pageIndex--;
         }
-        pageCache.clear();
-        prepareNeighbours();
+        preparePages();
         showPage();
-        countPage();
+        Lib.get().addPage();
         saveProgress();
     }
 
     private void nextPage() {
-        if (scrollMode) {
-            scrollWrap.smoothScrollBy(0, (int) (scrollWrap.getHeight() * 0.82f));
-            return;
-        }
         if (pages == null || pages.pages.isEmpty()) return;
         if (pageIndex >= pages.pages.size() - 1 && chapter + 1 >= book.toc.size()) {
             U.pill(this, getString(R.string.book_finished));
             return;
         }
-        if (P.i(P.readerAnim, 0) == 2) {
-            pageIndex = Math.min(pageIndex + 1, pages.pages.size() - 1);
-            showPage();
-            countPage();
-            saveProgress();
-            return;
-        }
-        bookView.flipForward(BookView.DIR_RIGHT);
-        playTurnFeedback();
+        viewer.turn(true);
     }
 
     private void prevPage() {
-        if (scrollMode) {
-            scrollWrap.smoothScrollBy(0, -(int) (scrollWrap.getHeight() * 0.82f));
-            return;
-        }
-        if (pages == null || pages.pages.isEmpty() || (pageIndex <= 0 && chapter <= 0)) return;
-        if (P.i(P.readerAnim, 0) == 2) {
-            if (pageIndex > 0) {
-                pageIndex--;
-                showPage();
-            } else {
-                chapter--;
-                rebuild(book.tocAt(chapter).blockIndex);
-                pageIndex = Math.max(0, pages.pages.size() - 1);
-                showPage();
-            }
-            saveProgress();
-            return;
-        }
-        bookView.flipBack(BookView.DIR_LEFT);
-        playTurnFeedback();
+        if (pages == null || pages.pages.isEmpty()) return;
+        if (pageIndex <= 0 && chapter <= 0) return;
+        viewer.turn(false);
     }
 
-    private void countPage() {
-        Lib.get().addPage();
-    }
-
-    private void playTurnFeedback() {
-        if (P.b(P.readerSound, true)) {
-            try {
-                android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                if (am != null) am.playSoundEffect(android.media.AudioManager.FX_KEY_CLICK, 0.28f);
-            } catch (Exception ignored) {
-            }
-        }
-        U.vibrate(this, 8);
-    }
-
-    /** Изменение размера текста прямо в читалке. */
-    private void zoomText(int delta) {
-        int size = P.i(P.readerSize, 19);
-        int next = Math.max(14, Math.min(32, size + delta));
-        if (next == size) return;
-        P.si(P.readerSize, next);
-        int block = pages == null || pages.pages.isEmpty() ? 0 : currentBlock();
-        paginator.clearCache();
-        pageCache.clear();
-        if (scrollMode) {
-            rebuildScroll(block);
+    /** Касание листа: слева и справа перелистываем, посередине — прячем панели. */
+    private void tapAt(float x) {
+        float w = Math.max(1f, viewer.getWidth());
+        if (x < w * 0.25f) {
+            prevPage();
+        } else if (x > w * 0.75f) {
+            nextPage();
         } else {
-            rebuild(block);
+            toggleChrome();
         }
-        if (zoomLabel != null) zoomLabel.setText(String.valueOf(next));
-        U.vibrate(this, 6);
     }
 
-    private int currentBlock() {
-        if (scrollMode) return lastScrollBlock;
-        if (pages == null || pages.pages.isEmpty()) return Math.max(0, chapterStartBlock);
-        int b = pages.pages.get(Math.max(0, Math.min(pageIndex, pages.pages.size() - 1))).firstBlock;
-        return Math.max(0, b < 0 ? chapterStartBlock : b);
+    /** Панели прячутся, чтобы читать «как в книге», и возвращаются по касанию. */
+    private void toggleChrome() {
+        chromeShown = !chromeShown;
+        U.fade(topBar, chromeShown, 180);
+        U.fade(bottomBar, chromeShown, 180);
     }
 
-    private Widgets.OnSlide pageSliderListener() {
-        return new Widgets.OnSlide() {
-            @Override
-            public void onSlide(float value, boolean fromUser) {
-                if (!fromUser) return;
-                if (scrollMode) {
-                    if (scrollList != null && scrollWrap != null) {
-                        int total = scrollList.getHeight() - scrollWrap.getHeight();
-                        scrollWrap.scrollTo(0, (int) (Math.max(0, total) * value));
-                    }
-                    return;
-                }
-                if (pages == null || pages.pages.isEmpty()) return;
-                int total = pages.pages.size();
-                int target = Math.min(total - 1, Math.round(value * (total - 1)));
-                if (target != pageIndex) {
-                    pageIndex = target;
-                    showPage();
-                    saveProgress();
-                }
-            }
-        };
+    private void updateMarkIcon() {
+        boolean marked = Lib.get().markAt(book.id, chapter, pageIndex) != null;
+        markIcon.setColor(marked ? Skin.paperAccent(theme()) : Skin.paperInk(theme()));
+        markIcon.setInset(marked ? 0.10f : 0.16f);
     }
-
-    /* ==================== Режим прокрутки ==================== */
-
-    private int lastScrollBlock = 0;
-    private List<Paginator.Item> flow;
-    private float[] flowTops;
-    private float flowTotal;
-    private FlowView[] chunks;
-    private float[] chunkTops;
-    private boolean scrollWatcherAdded = false;
-
-    private void enterScrollMode(int startBlock) {
-        if (scrollWrap == null) {
-            scrollWrap = new ScrollView(this);
-            scrollWrap.setClipToPadding(false);
-            scrollWrap.setVerticalScrollBarEnabled(false);
-            scrollList = Ui.col(this);
-            scrollWrap.addView(scrollList, Ui.llpMatch());
-            stage.addView(scrollWrap, Ui.flp(FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER));
-        }
-        bookView.setVisibility(View.GONE);
-        scrollWrap.setVisibility(View.VISIBLE);
-        scrollMode = true;
-        rebuildScroll(startBlock);
-    }
-
-    /** Собирает «ленту» главы и режет её на точные куски — прокрутка идёт без стыков. */
-    private void rebuildScroll(int startBlock) {
-        if (scrollList == null) return;
-        scrollList.removeAllViews();
-        scrollMode = true;
-        bookView.setVisibility(View.GONE);
-        scrollWrap.setVisibility(View.VISIBLE);
-
-        Paginator.Opt o = opt();
-        paginator.clearCache();
-        flow = paginator.flow(book, chapter, o);
-        if (flow.isEmpty()) {
-            flow.add(emptyItem());
-        }
-        flowTops = FlowView.computeTops(flow, o);
-        flowTotal = FlowView.totalHeight(flowTops, flow, o);
-
-        // куски примерно по две страницы — быстрый старт и точные стыки
-        float maxChunk = Math.max(o.height, 1) * 2f;
-        List<int[]> bounds = new ArrayList<int[]>();
-        int i = 0;
-        while (i < flow.size()) {
-            int j = i;
-            while (j + 1 < flow.size() && flowTops[j + 1] - flowTops[i] < maxChunk) j++;
-            bounds.add(new int[]{i, j + 1});
-            i = j + 1;
-        }
-        chunks = new FlowView[bounds.size()];
-        for (int k = 0; k < bounds.size(); k++) {
-            int[] bd = bounds.get(k);
-            FlowView fv = new FlowView(this, flow, flowTops, bd[0], bd[1], o,
-                    k == 0, k == bounds.size() - 1);
-            fv.setTag(Integer.valueOf(k));
-            chunks[k] = fv;
-            scrollList.addView(fv);
-        }
-        lastScrollBlock = startBlock;
-
-        // столбик весов, чтобы точно попадать в нужное место
-        int startItem = 0;
-        for (int k = 0; k < flow.size(); k++) {
-            if (flow.get(k).blockIndex <= startBlock) startItem = k;
-        }
-        final int targetChunk = chunkOfItem(startItem);
-        pageIndex = targetChunk;
-        updateScrollLabel();
-        addScrollWatcher();
-        scrollWrap.post(new Runnable() {
-            @Override
-            public void run() {
-                if (targetChunk >= 0 && targetChunk < scrollList.getChildCount()) {
-                    scrollWrap.scrollTo(0, scrollList.getChildAt(targetChunk).getTop()
-                            + U.dp(ReaderActivity.this, 1));
-                }
-                updateScrollLabel();
-            }
-        });
-    }
-
-    private int chunkOfItem(int item) {
-        if (chunks == null || chunks.length == 0) return 0;
-        int idx = Math.max(0, Math.min(item, flowTops.length - 1));
-        float y = flowTops[idx];
-        for (int k = 0; k < chunks.length; k++) {
-            if (chunks[k] == null) continue;
-            if (chunks[k].flowTo() > y) return k;
-        }
-        return chunks.length - 1;
-    }
-
-    private Paginator.Item emptyItem() {
-        Paginator.Item it = new Paginator.Item();
-        it.type = Block.P;
-        it.text = "";
-        it.height = opt().textSize * 2f;
-        it.blockIndex = 0;
-        return it;
-    }
-
-    private void addScrollWatcher() {
-        if (scrollWatcherAdded) return;
-        scrollWatcherAdded = true;
-        scrollWrap.getViewTreeObserver().addOnScrollChangedListener(
-                new android.view.ViewTreeObserver.OnScrollChangedListener() {
-                    @Override
-                    public void onScrollChanged() {
-                        if (scrollWrap != null) onScrolled(scrollWrap.getScrollY());
-                    }
-                });
-    }
-
-    private void onScrolled(int y) {
-        if (scrollList == null || chunks == null || chunks.length == 0) return;
-        int probe = y + Math.max(U.dp(this, 60), scrollWrap.getHeight() / 3);
-        int best = 0;
-        for (int i = 0; i < scrollList.getChildCount(); i++) {
-            View child = scrollList.getChildAt(i);
-            if (child.getTop() <= probe) best = i;
-        }
-        if (best != pageIndex) {
-            pageIndex = best;
-            FlowView fv = chunks[Math.min(best, chunks.length - 1)];
-            lastScrollBlock = fv.blockAt(probe - fv.getTop());
-            autoHideBars();
-        }
-        updateScrollLabel();
-    }
-
-    private void updateScrollLabel() {
-        if (scrollList == null || scrollWrap == null) return;
-        int total = Math.max(1, scrollList.getHeight() - scrollWrap.getHeight());
-        int percent = Math.max(0, Math.min(100, Math.round(scrollWrap.getScrollY() * 100f / total)));
-        pageLabel.setText(getString(R.string.book_progress, percent));
-        if (slider != null) {
-            slider.set(Math.max(0f, Math.min(1f, scrollWrap.getScrollY() / (float) total)));
-        }
-        Book.Toc toc = book.tocAt(chapter);
-        if (toc != null) barTitle.setText(toc.text);
-    }
-
-
-    /* ==================== Панели ==================== */
-
-    private void toggleBars() {
-        barsVisible = !barsVisible;
-        float dist = U.dpf(this, 90);
-        topBar.animate().translationY(barsVisible ? 0 : -dist).alpha(barsVisible ? 1f : 0f)
-                .setDuration(210).start();
-        bottomBar.animate().translationY(barsVisible ? 0 : dist).alpha(barsVisible ? 1f : 0f)
-                .setDuration(210).start();
-        if (bookView != null) bookView.setChromeVisible(!barsVisible);
-        lastAutoHide = System.currentTimeMillis();
-    }
-
-    private void autoHideBars() {
-        if (!barsVisible) return;
-        if (System.currentTimeMillis() - lastAutoHide < 5200) return;
-        toggleBars();
-    }
-
-    /* ==================== Закладки ==================== */
 
     private void toggleBookmark() {
         Book.Toc toc = book.tocAt(chapter);
@@ -756,66 +470,188 @@ public class ReaderActivity extends BaseActivity {
                         ? Paginator.pageText(pages.pages.get(Math.min(pageIndex, pages.pages.size() - 1)))
                         : "");
         updateMarkIcon();
-        bookView.setBookmarked(added);
+        viewer.setBookmarked(added);
         U.pill(this, getString(added ? R.string.bookmark_added : R.string.bookmark_removed));
-    }
-
-    private void updateMarkIcon() {
-        boolean marked = Lib.get().markAt(book.id, chapter, pageIndex) != null;
-        markIcon.setColor(marked ? Skin.paperAccent(P.i(P.readerTheme, Skin.T_PAPER))
-                : Skin.paperInk(P.i(P.readerTheme, Skin.T_PAPER)));
-        markIcon.setInset(marked ? 0.14f : 0.18f);
     }
 
     /* ==================== Нижние панели ==================== */
 
-    private void quoteSheet(final Paginator.Item item) {
+    /** Понятное меню: крупные строки с подписями. */
+    private void menuSheet() {
         LinearLayout c = Ui.col(this);
-        String previewText = item.blockIndex >= 0 && item.blockIndex < book.blocks.size()
-                ? book.blocks.get(item.blockIndex).plain() : item.text;
-        TextView preview = Ui.tv(this, U.trimTo(previewText, 260), 15f, Skin.ink(this),
-                U.tf(Skin.familyName(P.i(P.readerFont, Skin.F_SERIF)), Typeface.NORMAL));
-        preview.setLineSpacing(U.dpf(this, 6f), 1.18f);
-        c.addView(preview);
-        c.addView(Ui.space(this, 14));
-
-        final String full = previewText;
-        c.addView(sheetRow(Ico.QUOTE, getString(R.string.save_quote), new Runnable() {
+        c.addView(menuRow(Ico.LIST, getString(R.string.contents), new Runnable() {
             @Override
             public void run() {
-                Lib.get().addQuote(book, chapter, item.blockIndex, full);
-                toast(getString(R.string.quote_saved));
+                tocSheet();
             }
         }));
-        c.addView(sheetRow(Ico.COPY, getString(R.string.copy), new Runnable() {
+        c.addView(menuRow(Ico.SEARCH_BOOK, getString(R.string.search), new Runnable() {
             @Override
             public void run() {
-                U.copy(ReaderActivity.this, full);
-                toast(getString(R.string.copied));
+                searchSheet();
             }
         }));
-        c.addView(sheetRow(Ico.SHARE, getString(R.string.share), new Runnable() {
+        c.addView(menuRow(Ico.MARK, getString(R.string.tab_bookmarks), new Runnable() {
             @Override
             public void run() {
-                U.share(ReaderActivity.this, full + "\n— " + book.t(Loc.lang()));
+                marksSheet();
+            }
+        }));
+        c.addView(menuRow(Ico.TYPE, getString(R.string.text_size), new Runnable() {
+            @Override
+            public void run() {
+                sizeSheet();
+            }
+        }));
+        c.addView(menuRow(Ico.GEAR, getString(R.string.reading_settings), new Runnable() {
+            @Override
+            public void run() {
+                settingsSheet();
+            }
+        }));
+        c.addView(menuRow(Ico.MAIL, getString(R.string.report_typo), new Runnable() {
+            @Override
+            public void run() {
+                reportTypo();
             }
         }));
         Chrome.Sheet sheet = new Chrome.Sheet(this, null, c);
-        rootView().addView(sheet.root());
+        root.addView(sheet.root());
         sheet.show();
     }
 
-    private View sheetRow(int icon, String text, final Runnable action) {
+    private View menuRow(int icon, String text, final Runnable action) {
         LinearLayout r = Ui.row(this);
-        Ui.pad(r, this, 4, 14, 4, 14);
-        r.addView(new IconView(this, icon, Skin.accent(this), 20f));
-        TextView t = Ui.tv(this, text, 15.5f, Skin.ink(this), U.ui(this));
+        r.setGravity(Gravity.CENTER_VERTICAL);
+        Ui.pad(r, this, 6, 13, 6, 13);
+        r.addView(new IconView(this, icon, Skin.accent(this), 22f));
+        TextView t = Ui.tv(this, text, 16f, Skin.ink(this), U.ui(this));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0,
                 LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-        lp.leftMargin = U.dp(this, 14);
+        lp.leftMargin = U.dp(this, 15);
         r.addView(t, lp);
+        r.addView(new IconView(this, Ico.RIGHT, Skin.withAlpha(Skin.sub(this), 0.7f), 16f));
         Ui.click(r, action);
         return r;
+    }
+
+    /** Быстрый переход по книге и размер текста. */
+    private void jumpSheet() {
+        LinearLayout c = Ui.col(this);
+        final Widgets.Slider slider = new Widgets.Slider(this);
+        slider.setColors(Skin.surface2(this), Skin.accent(this), Skin.surface(this));
+        slider.setLayoutParams(Ui.llpMatchH(U.dp(this, 36)));
+        c.addView(slider);
+        if (pages != null) {
+            final int total = pages.pages.size();
+            slider.set(total <= 1 ? 1f : pageIndex / (float) (total - 1));
+            slider.setListener(new Widgets.OnSlide() {
+                @Override
+                public void onSlide(float value, boolean fromUser) {
+                    if (!fromUser) return;
+                    int target = Math.min(total - 1, Math.round(value * (total - 1)));
+                    if (target != pageIndex) {
+                        pageIndex = target;
+                        pageCache.clear();
+                        viewer.jump();
+                        preparePages();
+                        showPage();
+                        saveProgress();
+                    }
+                }
+            });
+        }
+        c.addView(Ui.space(this, 14));
+
+        LinearLayout row = Ui.row(this);
+        row.setGravity(Gravity.CENTER);
+        row.addView(sizeButton(Ico.MINUS, -1));
+        final TextView size = Ui.tv(this, getString(R.string.text_size) + ": " + P.i(P.readerSize, 19),
+                15f, Skin.ink(this), U.uiMed(this));
+        size.setGravity(Gravity.CENTER);
+        row.addView(size, Ui.llpW(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        row.addView(sizeButton(Ico.PLUS, 1));
+        c.addView(row);
+
+        Chrome.Sheet sheet = new Chrome.Sheet(this, getString(R.string.go_to_page), c);
+        root.addView(sheet.root());
+        sheet.show();
+    }
+
+    private View sizeButton(int ico, final int delta) {
+        FrameLayout f = Ui.frame(this);
+        f.setBackground(U.round(Skin.surface2(this), 16f, this));
+        f.setLayoutParams(new LinearLayout.LayoutParams(U.dp(this, 52), U.dp(this, 48)));
+        f.addView(new IconView(this, ico, Skin.ink(this), 24f),
+                Ui.flp(U.dp(this, 24), U.dp(this, 24), Gravity.CENTER));
+        Ui.click(f, new Runnable() {
+            @Override
+            public void run() {
+                zoomText(delta);
+            }
+        });
+        return f;
+    }
+
+    private void zoomText(int delta) {
+        int size = P.i(P.readerSize, 19);
+        int next = Math.max(14, Math.min(32, size + delta));
+        if (next == size) return;
+        P.si(P.readerSize, next);
+        int block = currentBlock();
+        paginator.clearCache();
+        pageCache.clear();
+        rebuild(block);
+        U.vibrate(this, 6);
+    }
+
+    private int currentBlock() {
+        if (pages == null || pages.pages.isEmpty()) return Math.max(0, chapterStartBlock);
+        int b = pages.pages.get(Math.max(0, Math.min(pageIndex, pages.pages.size() - 1))).firstBlock;
+        return Math.max(0, b < 0 ? chapterStartBlock : b);
+    }
+
+    /** Закладки этой книги. */
+    private void marksSheet() {
+        LinearLayout c = Ui.col(this);
+        ScrollView sc = new ScrollView(this);
+        LinearLayout in = Ui.col(this);
+        int n = 0;
+        for (final Lib.Mark m : Lib.get().marks()) {
+            if (!book.id.equals(m.bookId)) continue;
+            n++;
+            LinearLayout r = Ui.row(this);
+            r.setGravity(Gravity.CENTER_VERTICAL);
+            Ui.pad(r, this, 6, 12, 6, 12);
+            r.addView(new IconView(this, Ico.MARK, Skin.accent(this), 18f));
+            LinearLayout col = Ui.col(this);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0,
+                    LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+            lp.leftMargin = U.dp(this, 14);
+            TextView head = Ui.tv(this, U.trimTo(m.chapterTitle, 40), 12f, Skin.accent(this), U.uiMed(this));
+            col.addView(head);
+            TextView sn = Ui.tv(this, U.trimTo(m.snippet, 110), 14f, Skin.ink(this), U.ui(this));
+            sn.setMaxLines(2);
+            col.addView(sn);
+            r.addView(col, lp);
+            Ui.click(r, new Runnable() {
+                @Override
+                public void run() {
+                    chapter = Math.max(0, Math.min(m.chapter, book.toc.size() - 1));
+                    rebuild(m.block);
+                }
+            });
+            in.addView(r);
+        }
+        if (n == 0) in.addView(Ui.tv(this, getString(R.string.no_bookmarks), 15f,
+                Skin.sub(this), U.ui(this)));
+        sc.addView(in);
+        sc.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                Math.min((int) (U.screenH(this) * 0.6f), U.dp(this, 520))));
+        c.addView(sc);
+        Chrome.Sheet sheet = new Chrome.Sheet(this, getString(R.string.tab_bookmarks), c);
+        root.addView(sheet.root());
+        sheet.show();
     }
 
     private void tocSheet() {
@@ -823,27 +659,24 @@ public class ReaderActivity extends BaseActivity {
         ScrollView sc = new ScrollView(this);
         LinearLayout in = Ui.col(this);
         for (int i = 0; i < book.toc.size(); i++) {
-            Book.Toc t = book.toc.get(i);
+            final Book.Toc t = book.toc.get(i);
             if (U.empty(t.text)) continue;
             LinearLayout r = Ui.row(this);
-            Ui.pad(r, this, t.level == 0 ? 4 : (t.level == 1 ? 10 : 20), 12, 4, 12);
-            boolean current = i == chapter;
-            final int index = i;
-            TextView tv = Ui.tv(this, t.text, t.level == 0 ? 16f : 15f,
-                    current ? Skin.accent(this) : Skin.ink(this),
-                    t.level == 0 ? U.tf("serif", Typeface.BOLD) : U.uiMed(this));
+            r.setGravity(Gravity.CENTER_VERTICAL);
+            Ui.pad(r, this, t.level == 0 ? 4 : (t.level == 1 ? 12 : 22), 12, 4, 12);
+            boolean currentRow = i == chapter;
+            TextView tv = Ui.tv(this, t.text, t.level == 0 ? 16.5f : 15f,
+                    currentRow ? Skin.accent(this) : Skin.ink(this),
+                    t.level == 0 ? U.tf("serif", Typeface.BOLD) : U.ui(this));
             r.addView(tv, Ui.llpW(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-            if (current) r.addView(new IconView(this, Ico.CHECK, Skin.accent(this), 16f));
+            if (currentRow) r.addView(new IconView(this, Ico.CHECK, Skin.accent(this), 16f));
+            final int index = i;
             Ui.click(r, new Runnable() {
                 @Override
                 public void run() {
                     chapter = index;
-                    int block = book.tocAt(index) == null ? 0 : book.tocAt(index).blockIndex;
-                    if (scrollMode) {
-                        rebuildScroll(block);
-                    } else {
-                        rebuild(block);
-                    }
+                    int block = book.tocAt(index) == null ? 0 : Math.max(0, book.tocAt(index).blockIndex);
+                    rebuild(block);
                     saveProgress();
                 }
             });
@@ -851,10 +684,10 @@ public class ReaderActivity extends BaseActivity {
         }
         sc.addView(in);
         sc.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                Math.min((int) (U.screenH(this) * 0.52f), U.dp(this, 460))));
+                Math.min((int) (U.screenH(this) * 0.62f), U.dp(this, 560))));
         c.addView(sc);
         Chrome.Sheet sheet = new Chrome.Sheet(this, getString(R.string.contents), c);
-        rootView().addView(sheet.root());
+        root.addView(sheet.root());
         sheet.show();
     }
 
@@ -864,22 +697,23 @@ public class ReaderActivity extends BaseActivity {
         input.setHint(getString(R.string.search_in_book));
         input.setHintTextColor(Skin.withAlpha(Skin.sub(this), 0.7f));
         input.setTextColor(Skin.ink(this));
-        input.setTextSize(15.5f);
+        input.setTextSize(16f);
+        input.setSingleLine(true);
         input.setBackground(U.round(Skin.surface2(this), 16f, this));
-        Ui.pad(input, this, 16, 12, 16, 12);
+        Ui.pad(input, this, 16, 14, 16, 14);
         c.addView(input);
 
         final LinearLayout results = Ui.col(this);
         ScrollView sc = new ScrollView(this);
         sc.addView(results);
-        LinearLayout.LayoutParams slp = Ui.llpMatch();
-        slp.topMargin = U.dp(this, 10);
         sc.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                Math.min((int) (U.screenH(this) * 0.45f), U.dp(this, 400))));
+                Math.min((int) (U.screenH(this) * 0.5f), U.dp(this, 460))));
+        LinearLayout.LayoutParams slp = Ui.llpMatch();
+        slp.topMargin = U.dp(this, 12);
         c.addView(sc, slp);
 
         final Chrome.Sheet sheet = new Chrome.Sheet(this, getString(R.string.search_in_book), c);
-        rootView().addView(sheet.root());
+        root.addView(sheet.root());
         sheet.show();
 
         input.addTextChangedListener(new android.text.TextWatcher() {
@@ -908,28 +742,27 @@ public class ReaderActivity extends BaseActivity {
                     final int blockIndex = i;
                     LinearLayout r = Ui.col(ReaderActivity.this);
                     Ui.pad(r, ReaderActivity.this, 8, 12, 8, 12);
-                    int ch = book.chapterOf(i);
-                    Book.Toc t = book.tocAt(ch);
-                    TextView head = Ui.tv(ReaderActivity.this, t == null ? "" : t.text, 11.5f,
-                            Skin.accent(ReaderActivity.this), U.uiMed(ReaderActivity.this));
-                    r.addView(head);
-                    TextView sn = Ui.tv(ReaderActivity.this, snippet(plain, at, nq.length()), 14f,
+                    Book.Toc t = book.tocAt(book.chapterOf(i));
+                    r.addView(Ui.tv(ReaderActivity.this, t == null ? "" : t.text, 12f,
+                            Skin.accent(ReaderActivity.this), U.uiMed(ReaderActivity.this)));
+                    TextView sn = Ui.tv(ReaderActivity.this, snippet(plain, at, nq.length()), 15f,
                             Skin.ink(ReaderActivity.this), U.ui(ReaderActivity.this));
                     sn.setMaxLines(3);
-                    LinearLayout.LayoutParams slp2 = Ui.llpMatch();
-                    slp2.topMargin = U.dp(ReaderActivity.this, 4);
-                    r.addView(sn, slp2);
+                    LinearLayout.LayoutParams lp2 = Ui.llpMatch();
+                    lp2.topMargin = U.dp(ReaderActivity.this, 4);
+                    r.addView(sn, lp2);
                     Ui.click(r, new Runnable() {
                         @Override
                         public void run() {
-                            chTo(blockIndex);
+                            chapter = book.chapterOf(blockIndex);
+                            rebuild(blockIndex);
                             sheet.hide();
                         }
                     });
                     results.addView(r);
                 }
                 if (found == 0) {
-                    results.addView(Ui.tv(ReaderActivity.this, getString(R.string.search_nothing), 14f,
+                    results.addView(Ui.tv(ReaderActivity.this, getString(R.string.search_nothing), 15f,
                             Skin.sub(ReaderActivity.this), U.ui(ReaderActivity.this)));
                 }
             }
@@ -943,17 +776,30 @@ public class ReaderActivity extends BaseActivity {
         return (start > 0 ? "… " : "") + s + (end < text.length() ? " …" : "");
     }
 
-    private void chTo(int blockIndex) {
-        chapter = book.chapterOf(blockIndex);
-        if (scrollMode) {
-            rebuildScroll(blockIndex);
-        } else {
-            rebuild(blockIndex);
-        }
-        saveProgress();
+    private void settingsSheet() {
+        LinearLayout c = (LinearLayout) SettingsPanel.build(this, new SettingsPanel.Changed() {
+            @Override
+            public void onChanged() {
+                paginator.clearCache();
+                pageCache.clear();
+                applyReaderColors();
+                rebuild(currentBlock());
+                applyKeepScreenOn();
+            }
+        }, true);
+        c.addView(Ui.hline(this, Skin.line(this), 1f));
+        c.addView(menuRow(Ico.MAIL, getString(R.string.report_typo), new Runnable() {
+            @Override
+            public void run() {
+                reportTypo();
+            }
+        }));
+        Chrome.Sheet sheet = new Chrome.Sheet(this, getString(R.string.reading_settings), c);
+        root.addView(sheet.root());
+        sheet.show();
     }
 
-    /** Отправка сообщения об опечатке: системное окно «Поделиться» с готовым текстом. */
+    /** Письмо об ошибке: системное «Поделиться» с готовым текстом. */
     private void reportTypo() {
         if (book == null) return;
         StringBuilder sb = new StringBuilder();
@@ -963,10 +809,10 @@ public class ReaderActivity extends BaseActivity {
         if (t != null) sb.append(getString(R.string.chapter)).append(": ").append(t.text).append('\n');
         if (pages != null && !pages.pages.isEmpty()) {
             sb.append(getString(R.string.page)).append(": ")
-              .append(Math.min(pageIndex + 1, pages.pages.size())).append(" / ")
-              .append(pages.pages.size()).append('\n');
+                    .append(Math.min(pageIndex + 1, pages.pages.size())).append(" / ")
+                    .append(pages.pages.size()).append('\n');
         }
-        String sample = currentPageSample();
+        String sample = currentSample();
         if (!U.empty(sample)) sb.append('\n').append(sample).append('\n');
         sb.append('\n').append(getString(R.string.report_typo_hint));
         Intent i = new Intent(Intent.ACTION_SEND);
@@ -980,15 +826,13 @@ public class ReaderActivity extends BaseActivity {
         }
     }
 
-    /** Первые строки текущей страницы — чтобы было понятно, о каком месте речь. */
-    private String currentPageSample() {
-        if (pages == null || pages.pages.isEmpty()) return "";
-        int idx = Math.max(0, Math.min(pageIndex, pages.pages.size() - 1));
+    private String currentSample() {
         StringBuilder sb = new StringBuilder();
-        Paginator.Page pg = pages.pages.get(idx);
+        if (pages == null || pages.pages.isEmpty()) return "";
+        Paginator.Page pg = pages.pages.get(Math.max(0, Math.min(pageIndex, pages.pages.size() - 1)));
         for (Paginator.Item it : pg.items) {
             int bi = it.blockIndex;
-            if (book == null || bi < 0 || bi >= book.blocks.size()) continue;
+            if (bi < 0 || bi >= book.blocks.size()) continue;
             String line = book.blocks.get(bi).plain();
             if (U.empty(line)) continue;
             sb.append(line).append(' ');
@@ -997,64 +841,22 @@ public class ReaderActivity extends BaseActivity {
         return U.trimTo(sb.toString().trim(), 260);
     }
 
-    private void settingsSheet() {
-        LinearLayout c = (LinearLayout) SettingsPanel.build(this, new SettingsPanel.Changed() {
-            @Override
-            public void onChanged() {
-                paginator.clearCache();
-                pageCache.clear();
-                applyReaderColors();
-                int block = currentBlock();
-                if (P.i(P.readerMode, 0) == 1) {
-                    if (!scrollMode) enterScrollMode(block);
-                    else rebuildScroll(block);
-                } else {
-                    if (scrollMode) {
-                        scrollMode = false;
-                        if (scrollWrap != null) scrollWrap.setVisibility(View.GONE);
-                        bookView.setVisibility(View.VISIBLE);
-                        rebuild(block);
-                    } else {
-                        rebuild(block);
-                    }
-                }
-                applyKeepScreenOn();
-            }
-        }, true);
-        c.addView(Ui.hline(this, Skin.line(this), 1f));
-        c.addView(sheetRow(Ico.MAIL, getString(R.string.report_typo), new Runnable() {
-            @Override
-            public void run() {
-                reportTypo();
-            }
-        }));
-        Chrome.Sheet sheet = new Chrome.Sheet(this, getString(R.string.reading_settings), c);
-        rootView().addView(sheet.root());
-        sheet.show();
-    }
-
     private void applyReaderColors() {
-        int theme = P.i(P.readerTheme, Skin.T_PAPER);
-        int ink = Skin.paperInk(theme);
-        int paper = Skin.paper(theme);
-        View root = findViewById(android.R.id.content);
-        root.setBackgroundColor(Skin.readerFrame(theme));
-        if (bookView != null) bookView.setTheme(theme);
-        topBar.setBackground(U.round(Skin.withAlpha(paper, 0.97f), 22f, this));
-        bottomBar.setBackground(U.round(Skin.withAlpha(paper, 0.97f), 22f, this));
+        int t = theme();
+        int ink = Skin.paperInk(t);
+        int paper = Skin.paper(t);
+        root.setBackgroundColor(Skin.readerFrame(t));
+        viewer.setTheme(t);
+        topBar.setBackground(U.round(Skin.withAlpha(paper, 0.96f), 20f, this));
+        bottomBar.setBackground(U.round(Skin.withAlpha(paper, 0.96f), 20f, this));
         barTitle.setTextColor(ink);
-        pageLabel.setTextColor(Skin.paperSub(theme));
-        if (zoomLabel != null) zoomLabel.setTextColor(ink);
+        pageLabel.setTextColor(ink);
         markIcon.setColor(ink);
-        if (slider != null) {
-            slider.setColors(Skin.withAlpha(ink, 0.14f), Skin.paperAccent(theme), paper);
-            slider.setListener(pageSliderListener());
-        }
         if (dim != null) dim.setAlpha(P.i(P.readerBrightness, 0) / 100f);
-        // перекрашиваем кнопки панелей
         tintIcons(topBar, ink);
         tintIcons(bottomBar, ink);
-        if (!scrollMode) prepareNeighbours();
+        pageCache.clear();
+        preparePages();
     }
 
     private void tintIcons(View v, int color) {
@@ -1087,8 +889,7 @@ public class ReaderActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        long spent = System.currentTimeMillis() - sessionStart;
-        Lib.get().addReadingTime(spent);
+        Lib.get().addReadingTime(System.currentTimeMillis() - sessionStart);
         saveProgress();
         paginator.clearImages();
     }
@@ -1103,15 +904,13 @@ public class ReaderActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (!scrollMode) {
-            if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-                nextPage();
-                return true;
-            }
-            if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-                prevPage();
-                return true;
-            }
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            nextPage();
+            return true;
+        }
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            prevPage();
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }
