@@ -497,12 +497,6 @@ public class ReaderActivity extends BaseActivity {
                 marksSheet();
             }
         }));
-        c.addView(menuRow(Ico.TYPE, getString(R.string.text_size), new Runnable() {
-            @Override
-            public void run() {
-                sizeSheet();
-            }
-        }));
         c.addView(menuRow(Ico.GEAR, getString(R.string.reading_settings), new Runnable() {
             @Override
             public void run() {

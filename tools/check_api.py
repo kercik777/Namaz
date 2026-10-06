@@ -230,6 +230,160 @@ def check_member_access(classes, problems):
                         os.path.relpath(path, ROOT), var, member, " / ".join(sorted(clss))))
 
 
+# Методы платформы, которые вызываются без квалификатора внутри Activity/View
+FRAMEWORK_CALLS = set("""
+getString getResources getApplicationContext getApplication getSystemService getSharedPreferences
+getPackageName getPackageManager setContentView findViewById finish startActivity startActivityForResult
+onBackPressed setResult getIntent getWindow getLayoutInflater getAssets getWindowManager getContentResolver
+isFinishing recreate setTitle overridePendingTransition onNewIntent onSaveInstanceState onRestoreInstanceState
+onCreate onStart onStop onDestroy onResume onPause onRestart onPostCreate onPostResume onActivityResult
+onRequestPermissionsResult onWindowFocusChanged onConfigurationChanged onKeyDown onTouchEvent onInterceptTouchEvent
+invalidate postInvalidate requestLayout post postDelayed removeCallbacks getWidth getHeight getMeasuredWidth
+setMeasuredDimension setLayoutParams setTheme getWindowManagerOf setContentView
+getMeasuredHeight getPaddingLeft getPaddingRight getPaddingTop getPaddingBottom setPadding getContext notify
+wait equals hashCode toString getClass clone isShown getVisibility setVisibility getId animate setAlpha
+setTranslationX setTranslationY setTranslationZ setScaleX setScaleY setRotation setRotationX setRotationY
+setTag getTag setOnClickListener setOnTouchListener setBackground setBackgroundColor setForeground
+clearAnimation removeAllViews addView removeView removeViewAt getChildCount getChildAt indexOfChild
+bringToFront callOnClick performClick getRootView getParent getLayoutParams getAlpha setEnabled setSelected
+setClickable setLongClickable setFocusable setWillNotDraw scrollTo smoothScrollTo setX setY getX getY
+setPivotX setPivotY setLayerType setCameraDistance getLocationInWindow getLocationOnScreen offsetTopAndBottom
+computeScroll draw dispatchDraw onDraw onMeasure onLayout onSizeChanged onAttachedToWindow onDetachedFromWindow
+notifyDataSetChanged notifyItemChanged getItemCount getItemViewType onCreateViewHolder onBindViewHolder
+getItemId isEmpty size get length clear put get remove contains keySet values entrySet add addAll iterator
+next hasNext append insert delete replace indexOf lastIndexOf substring trim split toCharArray toUpperCase
+toLowerCase startsWith endsWith contains charAt format valueOf toStringOf join sort reverse copyOf copyOfRange
+asList fill binarySearch setAll removeIf forEach stream map filter collect parseInt parseFloat parseLong
+max min abs round floor ceil sqrt pow random signum toHexString equalsIgnoreCase compareTo compare matches
+toIntExact isEmptyOf intern getBytes concat padStart repeat strip lines chars codePoints of
+""".split())
+
+
+def declared_methods(path, code):
+    """Имена методов и конструкторов, объявленных в файле (построчный разбор)."""
+    names = set()
+    mods = r"(?:(?:public|private|protected|static|final|synchronized|abstract|native|default|strictfp)\s+)*"
+    with_type = re.compile(r"^\s*" + mods + r"([\w.$<>\[\],]+(?:\s*<[^;{]*?>)?(?:\[\])?)\s+([a-zA-Z_]\w*)\s*\(")
+    ctor = re.compile(r"^\s*(?:(?:public|private|protected)\s+)([A-Za-z_]\w*)\s*\(")
+    for line in code.split("\n"):
+        line = re.sub(r"^\s*(?:@\w+(?:\([^)]*\))?\s*)+", "", line)
+        m = with_type.match(line)
+        if m:
+            names.add(m.group(2))
+        m = ctor.match(line)
+        if m:
+            names.add(m.group(1))
+    for m in re.finditer(r"\b(?:class|interface|enum)\s+([A-Za-z_0-9]+)", code):
+        names.add(m.group(1))
+        names.add("new " + m.group(1))
+    return names
+
+
+def super_chain(path, code, by_path):
+    """Методы методов-предков по цепочке extends (только свои классы)."""
+    names = set()
+    seen = {path}
+    cur_path, cur_code = path, code
+    while True:
+        names |= declared_methods(cur_path, cur_code)
+        m = re.search(r"\bclass\s+[A-Za-z_0-9]+\s+extends\s+([A-Za-z_0-9.]+)", cur_code)
+        if not m:
+            break
+        base = m.group(1).rsplit(".", 1)[-1]
+        nxt = by_path.get(base)
+        if not nxt or nxt in seen:
+            break
+        seen.add(nxt)
+        cur_path = nxt
+        cur_code = strip_code(open(nxt, encoding="utf-8").read())
+    return names
+
+
+def check_self_calls(classes, problems):
+    """Неквалифицированные вызовы методов: определены ли они в классе или в предках."""
+    by_path = {k.dotted: k.path for k in classes.values() if "." not in k.dotted}
+    by_path = {os.path.basename(p)[:-5]: p for p in set(by_path.values())}
+    known_classes = {k.rsplit(".", 1)[-1] for k in by_path}
+    known_classes |= set(PLATFORM_CLASSES) | JAVA_LANG_OK
+    for path in glob.glob(os.path.join(SRC, "**", "*.java"), recursive=True):
+        raw = open(path, encoding="utf-8").read()
+        code = strip_code(raw)
+        if not re.search(r"\bclass\b", code):
+            continue
+        known = super_chain(path, code, by_path) | FRAMEWORK_CALLS
+        imported = {i.rsplit(".", 1)[-1]
+                    for i in re.findall(r"^\s*import\s+(?:static\s+)?([\w.]+)\s*;", code, flags=re.M)}
+        known_classes = (known_classes - {os.path.basename(path)[:-5]}) | imported
+        for m in re.finditer(r"(?<![\w.])([a-zA-Z_]\w*)\s*\(", code):
+            name = m.group(1)
+            before = code[:m.start()].rstrip()
+            if (before.endswith("new") or before.endswith(".") or before.endswith(">")
+                    or before.endswith("@")):
+                continue
+            if name in known or name in RESERVED or name in known_classes:
+                continue
+            line = code[:m.start()].count("\n") + 1
+            problems.append("{}:{}: вызов {}() — метод не объявлен".format(
+                os.path.relpath(path, ROOT), line, name))
+
+
+RESERVED = {"if", "for", "while", "switch", "catch", "return", "new", "synchronized", "super",
+            "this", "throw", "assert", "case", "do", "else", "try", "instanceof", "final", "static"}
+
+
+def project_interfaces():
+    """Имя интерфейса -> имена его методов (в т.ч. по цепочке extends)."""
+    ifaces = {}
+    extra = []
+    for path in glob.glob(os.path.join(SRC, "**", "*.java"), recursive=True):
+        code = strip_code(open(path, encoding="utf-8").read())
+        for m in re.finditer(r"\binterface\s+(\w+)\s*(?:extends\s+([\w.]+))?\s*\{", code):
+            name = m.group(1)
+            body = brace_body(code, m.end() - 1)
+            methods = {x for x in declared_methods(path, body)}
+            methods.discard(name)
+            methods = {x for x in methods if not x.startswith("new ")}
+            ifaces[name] = (methods, m.group(2))
+            if m.group(2):
+                extra.append((name, m.group(2).rsplit(".", 1)[-1]))
+    for name, base in extra:
+        if name in ifaces and base in ifaces:
+            ifaces[name] = (ifaces[name][0] | ifaces[base][0], None)
+    return {k: v[0] for k, v in ifaces.items()}
+
+
+def brace_body(code, at):
+    """Тело блока, начиная с позиции «{»."""
+    depth = 0
+    j = at
+    while j < len(code):
+        if code[j] == "{":
+            depth += 1
+        elif code[j] == "}":
+            depth -= 1
+            if depth == 0:
+                return code[at + 1:j]
+        j += 1
+    return code[at + 1:]
+
+
+def check_anonymous_impls(problems):
+    """Анонимный класс по своему интерфейсу должен реализовать все его методы."""
+    ifaces = project_interfaces()
+    for path in glob.glob(os.path.join(SRC, "**", "*.java"), recursive=True):
+        code = strip_code(open(path, encoding="utf-8").read())
+        for m in re.finditer(r"new\s+([A-Z][\w.]*)\s*\(\s*\)\s*\{", code):
+            owner = m.group(1).rsplit(".", 1)[-1]
+            if owner not in ifaces:
+                continue
+            body = brace_body(code, m.end() - 1)
+            for meth in sorted(ifaces[owner]):
+                if not re.search(r"\b{}\s*\(".format(re.escape(meth)), body):
+                    line = code[:m.start()].count("\n") + 1
+                    problems.append("{}:{}: в new {}() нет метода {}()".format(
+                        os.path.relpath(path, ROOT), line, m.group(1), meth))
+
+
 def main():
     classes = collect_classes()
     simple = {}
@@ -350,6 +504,8 @@ def main():
                     os.path.relpath(path, ROOT), kind, name))
 
     check_member_access(classes, problems)
+    check_self_calls(classes, problems)
+    check_anonymous_impls(problems)
     check_platform_imports(problems)
     check_xml_references(res_dir, problems)
     check_manifest_classes(problems)
