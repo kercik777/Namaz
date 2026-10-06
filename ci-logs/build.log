@@ -13,9 +13,9 @@ Daemon will be stopped at the end of the build
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preDebugBuild UP-TO-DATE
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkDebugAarMetadata
 > Task :app:javaPreCompileDebug
 > Task :app:generateDebugResValues
-> Task :app:checkDebugAarMetadata
 > Task :app:mapDebugSourceSetPaths
 > Task :app:generateDebugResources
 > Task :app:packageDebugResources
@@ -35,62 +35,27 @@ Daemon will be stopped at the end of the build
 > Task :app:desugarDebugFileDependencies
 
 > Task :app:compileDebugJavaWithJavac
-/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/P.java:45: error: method i(String,int) is already defined in class P
-    public static void i(String k, int v) {
-                       ^
-/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/P.java:53: error: method s(String,String) is already defined in class P
-    public static void s(String k, String v) {
-                       ^
-/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/P.java:61: error: method b(String,boolean) is already defined in class P
-    public static void b(String k, boolean v) {
-                       ^
-/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/P.java:69: error: method l(String,long) is already defined in class P
-    public static void l(String k, long v) {
-                       ^
-/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/U.java:265: error: cannot find symbol
-        int h = new java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY);
-                                      ^
-  symbol:   class getInstance
-  location: class Calendar
-/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/Ico.java:385: error: float cannot be dereferenced
-                U.roundRect(c, x(7.5f, cx, s), y(12f, cy, s), x(11f, cx, s), y(20f, cy, s), 1.4f * s, p);
-                 ^
-/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/Ico.java:386: error: float cannot be dereferenced
-                U.roundRect(c, x(13f, cx, s), y(7.5f, cy, s), x(16.5f, cx, s), y(20f, cy, s), 1.4f * s, p);
-                 ^
-/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/ui/ReaderActivity.java:959: error: incompatible types: possible lossy conversion from float to int
-                h = item.imageHeight + U.dp(c, 24) + (item.captionLayout != null ? item.captionHeight : 0);
-                                                   ^
-/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/PageView.java:198: error: no suitable method found for addRect(int,float,int,float)
-            clip.addRect(0, y, opt.width, y + hh);
-                ^
-    method Path.addRect(RectF,Direction) is not applicable
-      (actual and formal argument lists differ in length)
-    method Path.addRect(float,float,float,float,Direction) is not applicable
-      (actual and formal argument lists differ in length)
-/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/Widgets.java:502: error: cannot find symbol
-            scaleDet.onScaleEnd(null);
-                    ^
-  symbol:   method onScaleEnd(<null>)
-  location: variable scaleDet of type ScaleGestureDetector
-/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/ui/tabs/HomeTab.java:160: error: variable ch is already defined in method heroCard(Book,Prog)
-            TextView ch = Ui.tv(host, toc.text, 12.5f, 0xCCF7F1E2, U.ui(host));
-                     ^
-/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/ui/tabs/HomeTab.java:191: error: method getString in class HomeTab cannot be applied to given types;
-        TextView pct = Ui.tv(host, getString(R.string.book_progress, p.percent), 11.5f,
-                                   ^
-  required: int
-  found:    int,int
-  reason: actual and formal argument lists differ in length
-/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/ui/StatsActivity.java:101: error: variable tlp is already defined in method onCreate(Bundle)
-            LinearLayout.LayoutParams tlp = Ui.llpMatchH(U.dp(this, 5));
-                                      ^
+/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/ui/ReaderActivity.java:859: error: cannot find symbol
+            if (it.block == null || U.empty(it.block.plain())) continue;
+                  ^
+  symbol:   variable block
+  location: variable it of type Item
+/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/ui/ReaderActivity.java:859: error: cannot find symbol
+            if (it.block == null || U.empty(it.block.plain())) continue;
+                                              ^
+  symbol:   variable block
+  location: variable it of type Item
+/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/ui/ReaderActivity.java:860: error: cannot find symbol
+            sb.append(it.block.plain());
+                        ^
+  symbol:   variable block
+  location: variable it of type Item
 Note: Some input files use or override a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
-13 errors
+3 errors
 
 > Task :app:compileDebugJavaWithJavac FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1791308581631.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1791309088995.json
 
 FAILURE: Build failed with an exception.
 
@@ -134,6 +99,36 @@ org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':app:com
 	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:303)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:463)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:380)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:116)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:138)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:123)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.DryRunBuildExecutionAction.execute(DryRunBuildExecutionAction.java:51)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:200)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:195)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:157)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.call(DefaultBuildOperationExecutor.java:73)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:44)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:264)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:128)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:80)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
 Caused by: org.gradle.api.internal.tasks.compile.CompilationFailedException: Compilation failed; see the compiler error output for details.
@@ -295,9 +290,39 @@ Caused by: org.gradle.api.internal.tasks.compile.CompilationFailedException: Com
 	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:303)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:463)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:380)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:116)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:138)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:123)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.DryRunBuildExecutionAction.execute(DryRunBuildExecutionAction.java:51)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:200)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:195)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:157)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.call(DefaultBuildOperationExecutor.java:73)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:44)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:264)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:128)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:80)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
 
 
-BUILD FAILED in 46s
+BUILD FAILED in 36s
 19 actionable tasks: 19 executed
