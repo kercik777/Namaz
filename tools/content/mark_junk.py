@@ -18,7 +18,7 @@ import re
 
 ASSETS = "app/src/main/assets/content"
 VOWELS = "aäeioöuüyý"
-NOTE = "Arap ýazuwyndaky ýer — çap nusgasyndan okaň · %d-nji sahypa"
+NOTE = "Arapça aýatlar — bu bölek programmada doly berilmeýär"
 MARK = "arap_note"
 NOISE_RATIO = 0.5     # доля шума на странице, после которой ставим пометку
 MIN_NOISE = 4         # минимум шумных блоков
@@ -85,7 +85,7 @@ def clean(path, dry):
         out.append(b)
         page = b.get("n")
         if page in heavy and page not in noted:
-            out.append({"t": "note", "x": NOTE % page, "n": page, "mark": MARK})
+            out.append({"t": "note", "x": NOTE, "n": page, "mark": MARK})
             noted.add(page)
 
     data["blocks"] = out
