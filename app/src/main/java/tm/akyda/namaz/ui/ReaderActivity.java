@@ -585,8 +585,9 @@ public class ReaderActivity extends BaseActivity {
 
     private int currentBlock() {
         if (scrollMode) return lastScrollBlock;
-        if (pages == null || pages.pages.isEmpty()) return chapterStartBlock;
-        return pages.pages.get(Math.max(0, Math.min(pageIndex, pages.pages.size() - 1))).firstBlock;
+        if (pages == null || pages.pages.isEmpty()) return Math.max(0, chapterStartBlock);
+        int b = pages.pages.get(Math.max(0, Math.min(pageIndex, pages.pages.size() - 1))).firstBlock;
+        return Math.max(0, b < 0 ? chapterStartBlock : b);
     }
 
     private Widgets.OnSlide pageSliderListener() {
@@ -1212,8 +1213,9 @@ public class ReaderActivity extends BaseActivity {
 
     private void saveProgress() {
         if (book == null) return;
-        int block = currentBlock();
-        int percent = book.blocks.isEmpty() ? 0 : Math.round(block * 100f / book.blocks.size());
+        int block = Math.max(0, currentBlock());
+        int percent = book.blocks.isEmpty() ? 0
+                : Math.max(0, Math.min(100, Math.round(block * 100f / book.blocks.size())));
         Lib.get().saveProg(book.id, chapter, block, scanMode ? scanPage : pageIndex, percent);
     }
 

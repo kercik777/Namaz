@@ -163,7 +163,10 @@ public class Paginator {
                 }
                 case Block.IMG: {
                     Item it = image(b, o);
-                    if (it != null) out.add(it);
+                    if (it != null) {
+                        it.blockIndex = i;   // чтобы закладки и прогресс знали, где мы
+                        out.add(it);
+                    }
                     break;
                 }
                 case Block.TABLE: {
