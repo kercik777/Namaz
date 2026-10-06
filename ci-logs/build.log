@@ -14,16 +14,16 @@ Daemon will be stopped at the end of the build
 > Task :app:preDebugBuild UP-TO-DATE
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
 > Task :app:generateDebugResValues
-> Task :app:javaPreCompileDebug
 > Task :app:checkDebugAarMetadata
+> Task :app:javaPreCompileDebug
 > Task :app:mapDebugSourceSetPaths
 > Task :app:generateDebugResources
 > Task :app:packageDebugResources
 > Task :app:mergeDebugResources
 > Task :app:createDebugCompatibleScreenManifests
 > Task :app:extractDeepLinksDebug
-> Task :app:processDebugMainManifest
 > Task :app:parseDebugLocalResources
+> Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
@@ -35,16 +35,15 @@ Daemon will be stopped at the end of the build
 > Task :app:desugarDebugFileDependencies
 
 > Task :app:compileDebugJavaWithJavac
-/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/ui/ReaderActivity.java:503: error: cannot find symbol
-                sizeSheet();
-                ^
-  symbol: method sizeSheet()
+/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/ui/ReaderActivity.java:131: error: local variables referenced from an inner class must be final or effectively final
+                rebuild(startBlock);
+                        ^
 Note: Some input files use or override a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
 1 error
 
 > Task :app:compileDebugJavaWithJavac FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1791319796950.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1791327469110.json
 
 FAILURE: Build failed with an exception.
 
@@ -253,5 +252,5 @@ Caused by: org.gradle.api.internal.tasks.compile.CompilationFailedException: Com
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
 
 
-BUILD FAILED in 39s
+BUILD FAILED in 31s
 19 actionable tasks: 19 executed

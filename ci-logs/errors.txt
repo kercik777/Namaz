@@ -140,4 +140,4 @@
 	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
 	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
 	at org.gradle.jvm.toolchain.internal.DefaultToolchainJavaCompiler.execute(DefaultToolchainJavaCompiler.java:57)
-/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/ui/ReaderActivity.java:503: error: cannot find symbol
+/home/runner/work/Namaz/Namaz/app/src/main/java/tm/akyda/namaz/ui/ReaderActivity.java:131: error: local variables referenced from an inner class must be final or effectively final
