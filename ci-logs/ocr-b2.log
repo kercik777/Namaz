@@ -1,6 +1,6 @@
 страниц: 94 потоков: 2
   найдены enum-типы RapidOCR: ['LangDet', 'LangRec', 'ModelType', 'OCRVersion']
-[0;93m2026-10-06 19:20:15.098064583 [W:onnxruntime:Default, device_discovery.cc:146 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
+[0;93m2026-10-06 22:37:41.907982396 [W:onnxruntime:Default, device_discovery.cc:146 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
   модель det  готова (enums=True, rec_only=False)
   модель rec latin готова (enums=True, rec_only=True)
   модель rec cyrillic готова (enums=True, rec_only=True)
@@ -9,8 +9,8 @@
 [2/94] 0002r: блоков 5
 [3/94] 0003l: блоков 93
 [4/94] 0004r: блоков 47
-[5/94] 0005l: блоков 122
-[6/94] 0006r: блоков 20
+[5/94] 0005l: блоков 126
+[6/94] 0006r: блоков 25
 [7/94] 0007l: блоков 54
 [8/94] 0008r: блоков 16
 [9/94] 0009l: блоков 18
