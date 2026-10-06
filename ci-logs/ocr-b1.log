@@ -1,0 +1,20 @@
+страниц: 94 потоков: 2
+Traceback (most recent call last):
+  File "/home/runner/work/Namaz/Namaz/tools/ocr/recognize.py", line 231, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/runner/work/Namaz/Namaz/tools/ocr/recognize.py", line 212, in main
+    engines()  # прогреваем модели в главном процессе (чтобы видеть ошибки сразу)
+    ^^^^^^^^^
+  File "/home/runner/work/Namaz/Namaz/tools/ocr/recognize.py", line 43, in engines
+    det = RapidOCR(params={
+          ^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/rapidocr/main.py", line 42, in __init__
+    cfg = self._load_config(config_path, params)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/rapidocr/main.py", line 57, in _load_config
+    cfg = ParseParams.update_batch(cfg, params)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/rapidocr/utils/parse_parameters.py", line 60, in update_batch
+    raise TypeError(f"The value of {k} must be Enum Type.")
+TypeError: The value of Det.model_type must be Enum Type.

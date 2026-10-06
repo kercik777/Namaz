@@ -1,0 +1,3 @@
+ci-logs/ocr-b1.log:    raise TypeError(f"The value of {k} must be Enum Type.")
+ci-logs/ocr-b1.log:Traceback (most recent call last):
+ci-logs/ocr-b1.log:TypeError: The value of Det.model_type must be Enum Type.
