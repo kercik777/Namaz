@@ -514,11 +514,10 @@ public class Paginator {
         Bitmap bm;
         boolean isFig = false;
         if (src.startsWith("ill:fig:")) {
-            // рисунок из книги: фигурка человека (омовение, позы намаза)
+            // рисунок из книги: фигурка человека (омовение, позы намаза) — квадратный
             String name = src.substring(8);
-            int w = Math.max(120, o.width);
-            int h = Math.min(Math.round(w * 1.05f), Math.max(120, (int) (o.height * 0.62f)));
-            bm = Ill.renderFigure(app, name, w, h);
+            int side = Math.max(120, Math.min(o.width, (int) (o.height * 0.62f)));
+            bm = Ill.renderFigure(app, name, side, side);
             isFig = bm != null;
             if (!isFig) return null;
         } else if (src.startsWith("ill:")) {
