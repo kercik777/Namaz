@@ -109,16 +109,17 @@ public class ReaderActivity extends BaseActivity {
         Lib.Prog pr = Lib.get().prog(book.id);
         chapter = Math.max(0, getIntent().getIntExtra(Nav.EXTRA_CHAPTER, pr.chapter));
         if (chapter >= book.toc.size()) chapter = 0;
-        int startBlock = getIntent().getIntExtra(Nav.EXTRA_BLOCK, pr.block);
+        int start = getIntent().getIntExtra(Nav.EXTRA_BLOCK, pr.block);
         String find = getIntent() == null ? null : getIntent().getStringExtra(Nav.EXTRA_FIND);
         if (find != null && !find.trim().isEmpty()) {
             findText = find.trim();
             int at = locate(findText);          // точное место, где фраза напечатана
             if (at >= 0) {
-                startBlock = at;
+                start = at;
                 findFound = true;
             }
         }
+        final int startBlock = start;
 
         buildUi();
         applyKeepScreenOn();
