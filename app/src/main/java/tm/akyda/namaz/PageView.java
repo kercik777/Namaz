@@ -35,6 +35,9 @@ public class PageView extends View {
     private final Paint shadow = new Paint(Paint.ANTI_ALIAS_FLAG);
     private TextPaint footer;
     private TextPaint header;
+    private final Paint band = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint framePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private String findText = "";      // фраза, которую открыли (цитата дня)
     private BitmapShader grainShader;
     private final Paint grainPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Path clip = new Path();
@@ -62,6 +65,40 @@ public class PageView extends View {
         this.pageNumber = pageNumber;
         this.totalPages = totalPages;
         invalidate();
+    }
+
+    /** Фраза, которую нужно подсветить на этой странице (переход из «Günüň sözi»). */
+    public void setFind(String text) {
+        this.findText = text == null ? "" : text;
+        invalidate();
+    }
+
+    /**
+     * Подсвечивает строки, где напечатана найденная фраза — чтобы читатель
+     * сразу видел то самое место, откуда пришёл.
+     */
+    private void drawBand(Canvas c, Paginator.Item it, float y, float top, int theme) {
+        if (findText.isEmpty() || it.layout == null || U.empty(it.text)) return;
+        int at = it.text.indexOf(findText);
+        if (at < 0) {
+            // фраза могла переноситься по строкам внутри абзаца — ищем по началу
+            String head = findText.substring(0, Math.min(24, findText.length()));
+            at = it.text.indexOf(head);
+            if (at < 0) return;
+        }
+        Layout l = it.layout;
+        int last = Math.min(it.text.length() - 1, at + Math.max(1, findText.length() - 1));
+        if (last < 0) return;
+        int line1 = l.getLineForOffset(Math.max(0, Math.min(at, it.text.length() - 1)));
+        int line2 = l.getLineForOffset(last);
+        band.setColor(Skin.withAlpha(Skin.paperAccent(theme), 0.17f));
+        float r = U.dpf(getContext(), 3.5f);
+        for (int ln = line1; ln <= line2; ln++) {
+            float ly = y + (l.getLineTop(ln) - top);
+            float hh = l.getLineBottom(ln) - l.getLineTop(ln);
+            U.roundRect(c, -U.dpf(getContext(), 4f), ly - U.dpf(getContext(), 2f),
+                    opt.width + U.dpf(getContext(), 4f), ly + hh + U.dpf(getContext(), 2f), r, band);
+        }
     }
 
     /** Колонтитулы и номер страницы (их может рисовать рамка книги). */
@@ -125,6 +162,18 @@ public class PageView extends View {
         if (grainShader != null) c.drawRect(0, 0, w, h, grainPaint);
 
         if (page == null) return;
+
+        // Рамка страницы: тонкая линия по краю листа и вторая — чуть внутри
+        float fr = U.dpf(getContext(), 10f);
+        framePaint.setStyle(Paint.Style.STROKE);
+        framePaint.setStrokeWidth(Math.max(1f, U.dpf(getContext(), 0.9f)));
+        framePaint.setColor(Skin.withAlpha(Skin.paperLine(theme), 0.55f));
+        U.roundRect(c, fr, fr, w - fr, h - fr, U.dpf(getContext(), 3f), framePaint);
+        framePaint.setStrokeWidth(Math.max(1f, U.dpf(getContext(), 0.5f)));
+        framePaint.setColor(Skin.withAlpha(Skin.paperLine(theme), 0.28f));
+        U.roundRect(c, fr + U.dpf(getContext(), 3.5f), fr + U.dpf(getContext(), 3.5f),
+                w - fr - U.dpf(getContext(), 3.5f), h - fr - U.dpf(getContext(), 3.5f),
+                U.dpf(getContext(), 2f), framePaint);
 
         // Колонтитул
         if (chromeVisible) {
@@ -201,6 +250,8 @@ public class PageView extends View {
                 accent.setStrokeWidth(U.dpf(getContext(), 2.2f));
                 c.drawLine(U.dpf(getContext(), 2f), y + 2, U.dpf(getContext(), 2f), y + hh - 2, accent);
             }
+
+            drawBand(c, it, y, top, theme);
 
             c.save();
             clip.reset();

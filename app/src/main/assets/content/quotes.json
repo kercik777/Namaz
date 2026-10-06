@@ -1,1 +1,65 @@
-[{"tk":"Imanyň esaslary: Alla, pygamberler, kitaplar, ahyret we kadar baradaky on bir ders.","ru":"","src":"Akyda","book":"akyda","chapter":0,"block":1},{"tk":"Käbir ybadatlary berjaý etmek üçin täret alynmagyny we susul alynmagyny, suw tapylmadyk wagty teýemmümi zerur edýän hapalykdan arassalanmakdyr.","ru":"","src":"Namazlaryň wagtlary","book":"namaz_kitaby","chapter":23,"block":858},{"tk":"Mekruhyň hökümi: mekruh amaly eden ahyretde soraga çekilmez, ýöne pygamberimiziň şepagatyndan we sogapdan mahrum bolar.","ru":"","src":"2. YBADAT JOGAPKÄRÇILIGI","book":"namaz_kitaby","chapter":20,"block":755},{"tk":"Yslam diniňde akyly ýeriňde we kämillik ýasyňa ýeten her bir musulmana ybadatlary berjaý etmäge borçly (mükellef) kişi idilýär we oňa ybadat jogapkärçiligi śüklenyär.","ru":"","src":"III BÖLÜM","book":"namaz_kitaby","chapter":20,"block":688},{"tk":"Namaz okamaly adam namaza, susul almaly adam susul almaga, Gurhany Kerimi okamak isleyän adam bolsa Gurhany Kerimi okamaga ýörite niýet edip, teyemmüm almaly.","ru":"","src":"TEYEMMÜM","book":"namaz_kitaby","chapter":17,"block":573},{"tk":"Ertir namazy iki rekagat sünnetden we iki rekagat parzdan, ýagny jemi dört rekagatdan ybarat bolup, ilki iki rekagat sünnet okalýar.","ru":"","src":"Bä wagt namazyň rekagatlary","book":"namaz_kitaby","chapter":34,"block":1253},{"tk":"Ýalňyşyp ýa-da unudyp terk edilen wajyplardan şo sejde säw etmek wajypdyr.","ru":"","src":"NAMAZYN PARZLARY","book":"namaz_kitaby","chapter":24,"block":912},{"tk":"Istihaza – aýbaşy we çile hallaryndan başga wagtlarda hassalyk (uzur) sebpli ýatgydan gelýän gan.","ru":"","src":"HAKDYGYNA YNANMAK","book":"namaz_kitaby","chapter":8,"block":263}]
+[
+ {
+  "tk": "Her bir musulmanyň Allatagalanyň ähli kämil sypatlara eýedigine, ähli nogsanlyklardan päkdigine ynanmagy parzdyr.",
+  "src": "I BÖLÜM. IMAN-YNANÇ ESASLARY",
+  "book": "namaz_kitaby",
+  "chapter": 4,
+  "block": 119,
+  "page": 11,
+  "ru": ""
+ },
+ {
+  "tk": "Täretsiz adamyň namaz okamak, tiläwet sejdesini etmek, Gurhany Kerimi yüzünden okamak üçin täret almagy parzdyr.",
+  "src": "Täretiň alnyşy",
+  "book": "namaz_kitaby",
+  "chapter": 15,
+  "block": 514,
+  "page": 36,
+  "ru": ""
+ },
+ {
+  "tk": "Namaz okamaly adam namaza, susul almaly adam susul almaga, Gurhany Kerimi okamak isleyän adam bolsa Gurhany Kerimi okamaga ýörite niýet edip, teyemmüm almaly.",
+  "src": "TEYEMMÜM",
+  "book": "namaz_kitaby",
+  "chapter": 17,
+  "block": 612,
+  "page": 41,
+  "ru": ""
+ },
+ {
+  "tk": "Witir, sünnet we sepil namazlarynyn ähli rekagatlarynda, iki rekagatly parzlaryn her iki rekagatynda kyragat parzdyr.",
+  "src": "NAMAZYŇ PARZLARY",
+  "book": "namaz_kitaby",
+  "chapter": 23,
+  "block": 948,
+  "page": 63,
+  "ru": ""
+ },
+ {
+  "tk": "gaýry müekket sünnetdir, ýagny pygamberimiz Muhammet aleýhissalam ikindi namazynyn sünnetini köplenç okap, wagtalwagtal terk edipdir.",
+  "src": "Öýle namazynyň okalyş düzgüni",
+  "book": "namaz_kitaby",
+  "chapter": 35,
+  "block": 1514,
+  "page": 90,
+  "ru": ""
+ },
+ {
+  "tk": "Namazda säjde säw etmeklige sebäp boljak birnäçe säwlik goýberilen hem bolsa, olaryň ählisi üçin bir säjde säw edilýär.",
+  "src": "IKINJI BÖLÜM — dogalar we süreler",
+  "book": "namaz_kitaby",
+  "chapter": 39,
+  "block": 1887,
+  "page": 103,
+  "ru": ""
+ },
+ {
+  "tk": "Şony üçin ýolagçylyk, hassalyk ýaly sebäpler bilen orazasyny tutup bilmeýän adamlar hem ýagdaýy boldugyndan tarawa namazyny okamalydyrlar.",
+  "src": "TARAWA NAMAZY",
+  "book": "namaz_kitaby",
+  "chapter": 44,
+  "block": 2056,
+  "page": 112,
+  "ru": ""
+ }
+]

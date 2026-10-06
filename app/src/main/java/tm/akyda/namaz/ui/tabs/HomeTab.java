@@ -215,7 +215,7 @@ public class HomeTab implements TabPage {
             Ui.click(card, new Runnable() {
                 @Override
                 public void run() {
-                    Nav.openReader(host, q.bookId, q.chapter, q.block);
+                    Nav.openReader(host, q.bookId, q.chapter, q.block, q.tk);
                 }
             });
         }

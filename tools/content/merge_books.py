@@ -135,6 +135,19 @@ def merge(kitaby, second, dry=False):
         break
     body = second.get("blocks", [])[skip:]
 
+    # страницы второй части продолжают нумерацию первой: маркеры сдвигаем
+    page_offset = 0
+    for b in blocks:
+        if b.get("t") == "page":
+            page_offset = max(page_offset, int(b.get("n", 0)))
+    if page_offset:
+        for b in body:
+            if b.get("t") == "page":
+                b = dict(b)
+                b["n"] = int(b.get("n", 0)) + page_offset
+    body = [dict(b, n=int(b.get("n", 0)) + page_offset) if b.get("t") == "page" else b
+            for b in body]
+
     base = len(blocks)
     blocks.extend(body)
 

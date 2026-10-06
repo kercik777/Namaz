@@ -19,6 +19,68 @@ public class Book {
     public String script = "latin";     // latin | cyrillic | arabic
     public List<Block> blocks = new ArrayList<>();
     public List<Toc> toc = new ArrayList<>();
+    public List<Sheet> sheets = new ArrayList<>();   // страницы книги в порядке чтения
+
+    /**
+     * Страница книги: участок блоков между маркерами {"t":"page"}.
+     * Листание в приложении идёт ровно по этим страницам — как в печатной книге.
+     */
+    public static class Sheet {
+        public int number = 0;      // номер страницы (как напечатан в книге)
+        public int from = 0;        // первый блок страницы
+        public int to = 0;          // за последним блоком страницы
+        public int chapter = 0;     // глава, к которой относится страница
+
+        public int size() {
+            return Math.max(0, to - from);
+        }
+    }
+
+    /** Собирает страницы по маркерам. Вызывается один раз после загрузки. */
+    public void buildSheets() {
+        sheets.clear();
+        int from = -1, number = 0;
+        for (int i = 0; i < blocks.size(); i++) {
+            Block b = blocks.get(i);
+            if (!Block.PAGE.equals(b.type)) continue;
+            if (from >= 0 && i > from) {
+                Sheet sh = new Sheet();
+                sh.number = number;
+                sh.from = from;
+                sh.to = i;
+                sheets.add(sh);
+            }
+            from = i + 1;
+            number = b.pageNumber > 0 ? b.pageNumber : number + 1;
+        }
+        if (from >= 0 && from < blocks.size()) {
+            Sheet sh = new Sheet();
+            sh.number = number;
+            sh.from = from;
+            sh.to = blocks.size();
+            sheets.add(sh);
+        }
+        if (sheets.isEmpty() && !blocks.isEmpty()) {   // книга без маркеров — одна «страница»
+            Sheet sh = new Sheet();
+            sh.number = 1;
+            sh.from = 0;
+            sh.to = blocks.size();
+            sheets.add(sh);
+        }
+        for (Sheet sh : sheets) {
+            sh.chapter = chapterOf(sh.from);
+        }
+    }
+
+    /** Номер страницы книги (листа), в котором находится блок. */
+    public int sheetOf(int blockIndex) {
+        int best = 0;
+        for (int i = 0; i < sheets.size(); i++) {
+            if (sheets.get(i).from <= blockIndex) best = i;
+            else break;
+        }
+        return best;
+    }
     public int accent = 0;              // индивидуальный акцент обложки
 
     /** Пункт оглавления. */
@@ -109,6 +171,7 @@ public class Book {
             }
         }
         if (b.toc.isEmpty()) b.buildToc();
+        b.buildSheets();          // страницы книги — по маркерам оригинала
         return b;
     }
 

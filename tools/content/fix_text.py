@@ -119,6 +119,45 @@ WORDS = {
     "tekbirinišet": "tekbirini niýet",
 }
 
+# Заголовки: сверены по книге (в оглавлении они видны сразу, поэтому правятся точно).
+HEADINGS = [
+    ("KITABY", None),                                   # обрывок титула
+    ("JRAAAAnn", None),                                 # мусор распознавания
+    ("MANLYGYŇ ALLATAGALADANDYGYNA YNAN- MÄK",
+     "MANLYGYŇ ALLATAGALADANDYGYNA YNANMAK"),
+    ("MANLYGYŇ ALLATAGALADANDYGYNA YNAN-",
+     "MANLYGYŇ ALLATAGALADANDYGYNA YNANMAK"),
+    ("NAMAZYŇ OKALY DÜZGÜNI Ertir namazynyň okaly düzgüni",
+     "NAMAZYŇ OKALYŞ DÜZGÜNI"),
+    ("Ertir namazynyň okaly düzgüni", "Ertir namazynyň okalyş düzgüni"),
+    ("Öýle namazyny okaly d", "Öýle namazynyň okalyş düzgüni"),
+    ("Öýle namazynyň okaly d", "Öýle namazynyň okalyş düzgüni"),
+    ("Agam namazynyň", "Agşam namazynyň okalyş düzgüni"),
+    ("Agşam namazynyň okalyş d", "Agşam namazynyň okalyş düzgüni"),
+    ("Täretin parzlary", "Täretiň parzlary"),
+    ("Täretin alnyşy", "Täretiň alnyşy"),
+    ("Namazlaryň wagtlary", "Namazyň wagtlary"),
+    ("Namazyň görnüleri", "Namazyň görnüşleri"),
+    ("Bä wagt namazyň rekagatlary", "Bäş wagt namazyň rekagatlary"),
+    ("Yas ýerlerde okalýan", "Aýatlar we süreler"),
+    ("Yas ýerlerinde okalýan aýat we süreler", "Aýatlar we süreler"),
+    ("Çap nusgasy", None),
+    ("MAZMUNY", None),
+    ("TÜRKMENISTANYŇ MÜFTÜSINIŇ MÜDIRIÝETI NAMAZ KITABY", None),
+    ("TÜRKMENISTANYŇ MÜFTÜSINIŇ MÜDIRIÝETI", None),
+    ("IKINJI KITAP — dogalar we süreler", "IKINJI BÖLÜM — dogalar we süreler"),
+    ("I BÖLÜM IMAN-YNANÇ ESASLARY", "I BÖLÜM. IMAN-YNANÇ ESASLARY"),
+    ("II BÖLÜM TÄMIZLIK", "II BÖLÜM. TÄMIZLIK"),
+    ("ILI BÖLÜM", "III BÖLÜM"),
+    ("IL BÖLÜM", "II BÖLÜM"),
+    ("KYRK PARZ Ýedisi imanda", "KYRK PARZ"),
+    ("Ýedisi imanda", "Ýedisi imanda"),
+]
+
+# Заголовки-мусор со страниц арабской графики: слова из одной-двух букв.
+JUNK_HEADING = re.compile(r"^([A-Za-zÇÄŇŞÝÜÖŽçäňşýüöž]{1,2}\s+){2,}")
+
+
 # Фразы (арабская транслитерация), которые врозь не исправить.
 PHRASES = [
     ("müňe-neštä:", "mineş-şäýtä:"), ("müne-neštä:", "mineş-şäýtä:"),
@@ -368,6 +407,30 @@ def report_diacritics(blocks, freq):
     return changes
 
 
+# Родительный падеж в туркменском всегда пишется с «ň» на конце: -nyň / -ňyň.
+# В распознанном тексте знак теряется («namazlarynyn»), поэтому правило точное.
+RE_GENITIVE = re.compile(r"([a-zäöüçžşýň]{2,})nyn\b", re.IGNORECASE)
+RE_DOUBLE_N = re.compile(r"nn(?=[yý])", re.IGNORECASE)
+
+
+def fix_genitive(text: str):
+    """«namazlarynyn» -> «namazlarynyň»: возвращаем «ň» в родительном падеже.
+
+    Заодно убираем случайное удвоение «н» на стыке основы и окончания
+    («halkynnyn» -> «halkynyň») — в туркменском таких удвоений не бывает.
+    """
+    text = RE_DOUBLE_N.sub("n", text)
+    n = 0
+
+    def one(m):
+        nonlocal n
+        n += 1
+        return m.group(1) + "nyň"
+
+    out = RE_GENITIVE.sub(one, text)
+    return out, n
+
+
 def join_broken(blocks):
     """Перенос слова на границе блоков: «ynan-» + «mäk» -> «ynanmäk»."""
     out = []
@@ -386,13 +449,65 @@ def join_broken(blocks):
 
 
 def drop_noise_headings(blocks):
-    """Удаляем «заголовки», где вообще нет букв (страницы с арабской графикой)."""
+    """Убираем «заголовки»-мусор: без букв или из коротких обрывков."""
     out = []
     for b in blocks:
         if b.get("t") in ("h1", "h2"):
             x = (b.get("x") or "").strip()
             if not any(c.isalpha() for c in x):
                 continue
+            if JUNK_HEADING.match(x) and len(x) < 40:
+                continue
+            if len(KNOWN_WORDS(x)) == 0 and len(x) < 26:
+                continue
+        out.append(b)
+    return out
+
+
+def KNOWN_WORDS(text):
+    words = [w.lower() for w in RE_WORD.findall(text)]
+    return [w for w in words if len(w) >= 4]
+
+
+def words_known(text, vocab):
+    """Все ли слова заголовка есть в словаре или в самой книге."""
+    global DICT
+    if DICT is None:
+        DICT = dict_words()
+    words = [w.lower() for w in RE_WORD.findall(text) if len(w) >= 4]
+    if not words:
+        return False
+    good = 0
+    for w in words:
+        if w in DICT or w in vocab or w.rstrip("larlerdanymň") in DICT:
+            good += 1
+    return good >= max(1, (len(words) + 1) // 2)
+
+
+def fix_headings(blocks, vocab=()):
+    """Правка заголовков по таблице: видно в оглавлении, поэтому точно."""
+    out = []
+    for b in blocks:
+        if b.get("t") not in ("h1", "h2"):
+            out.append(b)
+            continue
+        if not words_known((b.get("x") or "").strip(" .:"), vocab) and len((b.get("x") or "").strip()) < 34:
+            continue
+        x = (b.get("x") or "").strip()
+        drop = False
+        for src, dst in HEADINGS:
+            if x == src or x.startswith(src):
+                if dst is None:
+                    if x == src:
+                        drop = True
+                        break
+                    continue
+                x = dst
+                break
+        if drop or not x:
+            continue
+        b = dict(b)
+        b["x"] = x
         out.append(b)
     return out
 
@@ -454,6 +569,19 @@ def process(path, freq_ref=None, verbose=True):
         DICT = dict_words()
     dia = report_diacritics(blocks, freq + (freq_ref or collections.Counter()))
 
+    genitive_fixed = 0
+    for b in blocks:
+        if b.get("x"):
+            b["x"], n = fix_genitive(b["x"])
+            genitive_fixed += n
+        if b.get("items"):
+            items = []
+            for it in b["items"]:
+                it2, n = fix_genitive(it)
+                genitive_fixed += n
+                items.append(it2)
+            b["items"] = items
+
     words_fixed = 0
     for b in blocks:
         if b.get("x"):
@@ -470,6 +598,16 @@ def process(path, freq_ref=None, verbose=True):
     blocks = CB.drop_junk(blocks)
     blocks = CB.merge_headings(blocks)
     blocks = CB.demote_bad_headings(blocks)
+    # словарь книги — только по обычному тексту: заголовки не должны
+    # подтверждать сами себя (иначе мусорные заголовки остаются в оглавлении)
+    vocab = set()
+    for b in blocks:
+        if b.get("t") not in ("p", "list", "note", "q", "a", "quote"):
+            continue
+        for w in RE_WORD.findall((b.get("x") or "") + " " + " ".join(b.get("items") or [])):
+            if len(w) >= 4:
+                vocab.add(w.lower())
+    blocks = fix_headings(blocks, vocab)
     blocks = drop_noise_headings(blocks)
     blocks = CB.join_fragments(blocks)
     blocks = CB.drop_duplicates(blocks)
@@ -484,7 +622,7 @@ def process(path, freq_ref=None, verbose=True):
         print("%s: символов %d -> %d, слов %d -> %d, блоков %d, пунктов оглавления %d"
               % (os.path.basename(path), before[0], after[0], before[1], after[1],
                  len(blocks), len(data["toc"])))
-        print("   проверенных слов: %d" % words_fixed)
+        print("   проверенных слов: %d, родительный падеж: %d" % (words_fixed, genitive_fixed))
         if dia:
             print("   без знаков (%d): %s" % (sum(dia.values()),
                   ", ".join("%s→%s" % (a, b_) for (a, b_), n in dia.most_common(40))))

@@ -101,17 +101,24 @@ def main() -> int:
     # Сначала собираем все значимые строки (учитывая, что в PDF каждая строка
     # отделена пустой строкой, а предложения переносятся по строкам).
     lines = []
-    for page in doc:
+    page_of = []          # у каждой строки — номер страницы PDF
+    for pno, page in enumerate(doc, 1):
         for line in page.get_text().split("\n"):
             c = clean(line)
             if not c or PAGE_NO.match(c):
                 continue
             lines.append(c)
+            page_of.append(pno)
 
     def next_line(i):
         return lines[i + 1] if i + 1 < len(lines) else ""
 
+    last_page = 0
     for i, s in enumerate(lines):
+        if page_of[i] != last_page:      # новая страница оригинала — новый лист
+            last_page = page_of[i]
+            if blocks:
+                blocks.append({"t": "page", "n": last_page})
         if DERS.match(s):
             close_current()
             blocks.append({"t": "h1", "x": re.sub(r"\s+", " ", s.strip().rstrip(":")).strip()})

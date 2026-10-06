@@ -147,13 +147,26 @@ public class Paginator {
         }
 
         for (int i = range[0]; i < range[1]; i++) {
-            Block b = book.blocks.get(i);
             int before = out.size();
+            int marker = appendBlock(book, i, o, out);
+            if (marker > 0) pendingMarker = marker;
+            for (int k = before; k < out.size(); k++) {
+                out.get(k).pageMarker = pendingMarker;
+            }
+        }
+        return out;
+    }
+
+    /**
+     * Строит элементы одного блока. Возвращает номер страницы оригинала,
+     * если это маркер страницы (иначе 0).
+     */
+    private int appendBlock(Book book, int i, Opt o, List<Item> out) {
+            Block b = book.blocks.get(i);
             switch (b.type) {
-                case Block.PAGE: {
-                    pendingMarker = b.pageNumber;
-                    break;
-                }
+
+                case Block.PAGE:
+                    break;            // маркер страницы обрабатывает вызывающий
                 case Block.GAP: {
                     Item g = new Item();
                     g.type = Block.GAP;
@@ -232,11 +245,49 @@ public class Paginator {
                     break;
                 }
             }
-            for (int k = before; k < out.size(); k++) {
-                out.get(k).pageMarker = pendingMarker;
-            }
+            return b.type.equals(Block.PAGE) ? b.pageNumber : 0;
+    }
+
+    /* ---------------- Страница книги: один лист ---------------- */
+
+    /**
+     * Одна страница книги целиком: все блоки участка [from, to) на одном листе.
+     * Именно так листается приложение — страница в страницу с печатной книгой,
+     * поэтому текст никогда не «переезжает» на соседний лист.
+     */
+    public Page compose(Book book, int from, int to, Opt o) {
+        List<Item> items = new ArrayList<>();
+        int number = 0;
+        int lo = Math.max(0, from);
+        int hi = Math.min(to, book.blocks.size());
+        for (int i = lo; i < hi; i++) {
+            int marker = appendBlock(book, i, o, items);
+            if (marker > 0) number = marker;
         }
-        return out;
+        Page p = new Page();
+        p.items = items;
+        p.firstBlock = lo;
+        p.lastBlock = Math.max(lo, hi - 1);
+        p.pageMarker = number;
+        for (Item it : items) p.lines += it.layout == null ? 0 : it.layout.getLineCount();
+        return p;
+    }
+
+    /** Высота всего содержимого страницы (px). */
+    public static float height(Page p) {
+        float h = 0f;
+        if (p == null) return h;
+        for (Item it : p.items) {
+            h += it.spaceBefore;
+            if (it.image != null) {
+                h += it.imageHeight;
+                if (it.captionLayout != null) h += it.captionHeight + 6f;
+            } else {
+                h += it.height;
+            }
+            h += it.spaceAfter;
+        }
+        return h;
     }
 
     /* ---------------- Разбивка на страницы ---------------- */

@@ -49,13 +49,14 @@ public class ReaderActivity extends BaseActivity {
 
     /** Во сколько раз книжный лист выше видимой части: остаток читается свайпом вниз. */
     private static final float LEAF = 1.55f;
+    /** Ниже этого размера текст на странице не уменьшаем — лучше прокрутка. */
+    private static final float MIN_TEXT_PX = 9f;
 
     private Book book;
     private Paginator paginator;
-    private Paginator.Result pages;
 
     private int chapter = 0;
-    private int pageIndex = 0;
+    private int sheetIndex = 0;      // текущая страница книги (лист)
 
     private FrameLayout root, stage;
     private PagesView viewer;
@@ -65,10 +66,15 @@ public class ReaderActivity extends BaseActivity {
     private TextView barTitle, pageLabel;
     private IconView markIcon;
 
+    private String findText = "";      // фраза из «Günüň sözi»: её подсвечиваем
+    private boolean findFound = false; // фраза на странице найдена
     private boolean chromeShown = true;
     private boolean ready = false;
     private long sessionStart = 0;
     private int chapterStartBlock = 0;
+
+    /** Подобранный размер шрифта для каждой страницы — чтобы не считать его заново. */
+    private final Map<String, Float> fitCache = new java.util.HashMap<String, Float>();
 
     private final Map<Integer, Bitmap> pageCache = new LinkedHashMap<Integer, Bitmap>(6, 0.75f, true) {
         @Override
@@ -103,7 +109,16 @@ public class ReaderActivity extends BaseActivity {
         Lib.Prog pr = Lib.get().prog(book.id);
         chapter = Math.max(0, getIntent().getIntExtra(Nav.EXTRA_CHAPTER, pr.chapter));
         if (chapter >= book.toc.size()) chapter = 0;
-        final int startBlock = getIntent().getIntExtra(Nav.EXTRA_BLOCK, pr.block);
+        int startBlock = getIntent().getIntExtra(Nav.EXTRA_BLOCK, pr.block);
+        String find = getIntent() == null ? null : getIntent().getStringExtra(Nav.EXTRA_FIND);
+        if (find != null && !find.trim().isEmpty()) {
+            findText = find.trim();
+            int at = locate(findText);          // точное место, где фраза напечатана
+            if (at >= 0) {
+                startBlock = at;
+                findFound = true;
+            }
+        }
 
         buildUi();
         applyKeepScreenOn();
@@ -114,6 +129,9 @@ public class ReaderActivity extends BaseActivity {
             public void run() {
                 ready = true;
                 rebuild(startBlock);
+                if (!findText.isEmpty() && findFound) {
+                    U.pill(ReaderActivity.this, getString(R.string.quote_found));
+                }
             }
         });
     }
@@ -306,24 +324,68 @@ public class ReaderActivity extends BaseActivity {
             w = U.screenW(this) - U.dp(this, 28);
             h = U.screenH(this) - U.dp(this, 150);
         }
-        // лист выше экрана: по вертикали читаем продолжение страницы
-        return SettingsPanel.opt(this, w, Math.round(h * LEAF));
+        return SettingsPanel.opt(this, w, h);
+    }
+
+    /** Ищет блок, в котором напечатана фраза (для перехода из «Günüň sözi»). */
+    private int locate(String phrase) {
+        String full = U.norm(phrase);
+        String[] probes = full.length() > 60
+                ? new String[]{full, full.substring(0, 60), full.substring(0, 36)}
+                : new String[]{full};
+        for (String probe : probes) {
+            if (probe.length() < 12) continue;
+            for (int i = 0; i < book.blocks.size(); i++) {
+                Block b = book.blocks.get(i);
+                if (!b.hasText()) continue;
+                if (U.norm(b.plain()).contains(probe)) return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Размер шрифта для страницы: пользовательский, а если текст не влезает —
+     * уменьшаем ровно настолько, чтобы страница книги целиком поместилась на лист.
+     */
+    private float fitSize(int index, Paginator.Opt o) {
+        Book.Sheet sh = book.sheets.get(Math.max(0, Math.min(index, book.sheets.size() - 1)));
+        String key = index + "|" + Math.round(o.textSize) + "|" + o.width + "x" + o.height;
+        Float done = fitCache.get(key);
+        if (done != null) return done;
+        float target = o.textSize;
+        float size = target;
+        for (int pass = 0; pass < 6; pass++) {
+            o.textSize = size;
+            float h = Paginator.height(paginator.compose(book, sh.from, sh.to, o));
+            if (h <= o.height) {
+                fitCache.put(key, size);
+                return size;
+            }
+            float guess = size * (float) Math.sqrt(o.height / Math.max(1f, h));
+            float next = Math.max(MIN_TEXT_PX, Math.min(target, guess));
+            if (Math.abs(next - size) < 0.25f) {
+                fitCache.put(key, next);
+                return next;
+            }
+            size = next;
+        }
+        fitCache.put(key, size);
+        return size;
     }
 
     private void rebuild(int startBlock) {
         if (!ready) return;
+        if (book.sheets.isEmpty()) book.buildSheets();
+        if (book.sheets.isEmpty()) return;
 
-        pages = paginator.paginate(book, chapter, opt());
-        if (pages.pages.isEmpty()) pages.pages.add(new Paginator.Page());
+        sheetIndex = book.sheetOf(Math.max(0, startBlock));
+        chapter = book.sheets.get(sheetIndex).chapter;
         Book.Toc toc = book.tocAt(chapter);
         chapterStartBlock = toc == null ? 0 : Math.max(0, toc.blockIndex);
 
-        int target = 0;
-        for (int i = 0; i < pages.pages.size(); i++) {
-            if (pages.pages.get(i).firstBlock <= startBlock) target = i;
-        }
-        pageIndex = Math.max(0, Math.min(pages.pages.size() - 1, target));
         pageCache.clear();
+        fitCache.clear();
         viewer.jump();
         preparePages();
         showPage();
@@ -331,12 +393,12 @@ public class ReaderActivity extends BaseActivity {
 
     /** Рисует текущую страницу и её соседей — листание получается мгновенным. */
     private void preparePages() {
-        if (pages == null || pages.pages.isEmpty()) return;
-        viewer.setPages(cache(pageIndex), cache(pageIndex + 1), cache(pageIndex - 1));
+        if (book.sheets.isEmpty()) return;
+        viewer.setPages(cache(sheetIndex), cache(sheetIndex + 1), cache(sheetIndex - 1));
     }
 
     private Bitmap cache(int index) {
-        if (pages == null || index < 0 || index >= pages.pages.size()) return null;
+        if (book.sheets.isEmpty() || index < 0 || index >= book.sheets.size()) return null;
         Bitmap bm = pageCache.get(index);
         if (bm != null && !bm.isRecycled()) return bm;
         bm = renderPage(index);
@@ -344,77 +406,83 @@ public class ReaderActivity extends BaseActivity {
         return bm;
     }
 
+    /**
+     * Рисует страницу книги. Лист получается ровно такой высоты, какая нужна
+     * тексту: если читатель увеличил шрифт, текст уходит ниже экрана, и лист
+     * прокручивается вверх-вниз.
+     */
     private Bitmap renderPage(int index) {
-        if (pages == null || index < 0 || index >= pages.pages.size()) return null;
+        if (book.sheets.isEmpty() || index < 0 || index >= book.sheets.size()) return null;
         int w = (int) viewer.pageRect().width();
         int h = (int) viewer.pageRect().height();
         if (w <= 0 || h <= 0) return null;
+
+        Paginator.Opt o = opt();
+        o.textSize = fitSize(index, o);
+        Book.Sheet sh = book.sheets.get(index);
+        Paginator.Page pg = paginator.compose(book, sh.from, sh.to, o);
+
+        float content = Paginator.height(pg);
+        float need = content + o.marginTop + U.dp(this, 50);
+        int bh = (int) Math.ceil(Math.max(h, need));
 
         if (renderer == null) {
             renderer = new PageView(this);
             renderer.setLayerType(View.LAYER_TYPE_NONE, null);
         }
-        renderer.setChromeVisible(false);      // название главы и номер рисуют панели
-        renderer.setPage(pages.pages.get(index), opt());
-        Book.Toc toc = book.tocAt(chapter);
-        renderer.setMeta(book.t(Loc.lang()), toc == null ? "" : toc.text, index + 1, pages.pages.size());
+        renderer.setChromeVisible(true);       // номер страницы печатаем на самом листе
+        boolean onThisPage = false;
+        for (Paginator.Item it : pg.items) {
+            if (!findText.isEmpty() && !U.empty(it.text) && U.norm(it.text).contains(U.norm(findText))) {
+                onThisPage = true;
+                break;
+            }
+        }
+        renderer.setFind(onThisPage ? findText : "");
+        renderer.setPage(pg, o);
+        Book.Toc toc = book.tocAt(sh.chapter);
+        renderer.setMeta(book.t(Loc.lang()), toc == null ? "" : toc.text, sh.number, book.sheets.size());
         renderer.measure(View.MeasureSpec.makeMeasureSpec(w, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(h, View.MeasureSpec.EXACTLY));
-        renderer.layout(0, 0, w, h);
+                View.MeasureSpec.makeMeasureSpec(bh, View.MeasureSpec.EXACTLY));
+        renderer.layout(0, 0, w, bh);
 
-        Bitmap bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Bitmap bm = Bitmap.createBitmap(w, bh, Bitmap.Config.ARGB_8888);
         renderer.draw(new Canvas(bm));
         return bm;
     }
 
     private void showPage() {
-        if (pages == null || pages.pages.isEmpty()) return;
-        pageIndex = Math.max(0, Math.min(pages.pages.size() - 1, pageIndex));
+        if (book.sheets.isEmpty()) return;
+        sheetIndex = Math.max(0, Math.min(book.sheets.size() - 1, sheetIndex));
+        Book.Sheet sh = book.sheets.get(sheetIndex);
+        chapter = sh.chapter;
         Book.Toc toc = book.tocAt(chapter);
         String title = toc == null ? book.t(Loc.lang()) : toc.text;
         viewer.setTheme(theme());
-        viewer.setMeta(title, pageIndex + 1, pages.pages.size());
-        viewer.setBookmarked(Lib.get().markAt(book.id, chapter, pageIndex) != null);
+        viewer.setMeta(title, sh.number, book.sheets.size());
+        viewer.setBookmarked(Lib.get().markAt(book.id, chapter, sheetIndex) != null);
         barTitle.setText(title);
-        pageLabel.setText(getString(R.string.page_of, pageIndex + 1, pages.pages.size()));
+        pageLabel.setText(getString(R.string.sheet_of, sh.number, book.sheets.size()));
         updateMarkIcon();
     }
 
     private void afterTurn(boolean forward) {
-        if (pages == null || pages.pages.isEmpty()) return;
+        if (book.sheets.isEmpty()) return;
         if (forward) {
-            if (pageIndex >= pages.pages.size() - 1) {
-                if (chapter + 1 < book.toc.size()) {
-                    chapter++;
-                    rebuild(book.tocAt(chapter).blockIndex);
-                    saveProgress();
-                } else {
-                    viewer.jump();
-                    preparePages();
-                    U.pill(this, getString(R.string.book_finished));
-                }
+            if (sheetIndex >= book.sheets.size() - 1) {
+                viewer.jump();
+                preparePages();
+                U.pill(this, getString(R.string.book_finished));
                 return;
             }
-            pageIndex++;
+            sheetIndex++;
         } else {
-            if (pageIndex <= 0) {
-                if (chapter > 0) {
-                    chapter--;
-                    rebuild(book.tocAt(chapter).blockIndex);
-                    if (pages != null && !pages.pages.isEmpty()) {
-                        pageIndex = pages.pages.size() - 1;
-                        viewer.jump();
-                        preparePages();
-                        showPage();
-                    }
-                    saveProgress();
-                } else {
-                    viewer.jump();
-                    preparePages();
-                }
+            if (sheetIndex <= 0) {
+                viewer.jump();
+                preparePages();
                 return;
             }
-            pageIndex--;
+            sheetIndex--;
         }
         preparePages();
         showPage();
@@ -423,8 +491,8 @@ public class ReaderActivity extends BaseActivity {
     }
 
     private void nextPage() {
-        if (pages == null || pages.pages.isEmpty()) return;
-        if (pageIndex >= pages.pages.size() - 1 && chapter + 1 >= book.toc.size()) {
+        if (book.sheets.isEmpty()) return;
+        if (sheetIndex >= book.sheets.size() - 1) {
             U.pill(this, getString(R.string.book_finished));
             return;
         }
@@ -432,8 +500,7 @@ public class ReaderActivity extends BaseActivity {
     }
 
     private void prevPage() {
-        if (pages == null || pages.pages.isEmpty()) return;
-        if (pageIndex <= 0 && chapter <= 0) return;
+        if (book.sheets.isEmpty() || sheetIndex <= 0) return;
         viewer.turn(false);
     }
 
@@ -457,18 +524,16 @@ public class ReaderActivity extends BaseActivity {
     }
 
     private void updateMarkIcon() {
-        boolean marked = Lib.get().markAt(book.id, chapter, pageIndex) != null;
+        boolean marked = Lib.get().markAt(book.id, chapter, sheetIndex) != null;
         markIcon.setColor(marked ? Skin.paperAccent(theme()) : Skin.paperInk(theme()));
         markIcon.setInset(marked ? 0.10f : 0.16f);
     }
 
     private void toggleBookmark() {
         Book.Toc toc = book.tocAt(chapter);
-        boolean added = Lib.get().toggleMark(book, chapter, pageIndex,
+        boolean added = Lib.get().toggleMark(book, chapter, sheetIndex,
                 toc == null ? "" : toc.text,
-                pages != null && !pages.pages.isEmpty()
-                        ? Paginator.pageText(pages.pages.get(Math.min(pageIndex, pages.pages.size() - 1)))
-                        : "");
+                Paginator.pageText(currentPage()));
         updateMarkIcon();
         viewer.setBookmarked(added);
         U.pill(this, getString(added ? R.string.bookmark_added : R.string.bookmark_removed));
@@ -536,16 +601,16 @@ public class ReaderActivity extends BaseActivity {
         slider.setColors(Skin.surface2(this), Skin.accent(this), Skin.surface(this));
         slider.setLayoutParams(Ui.llpMatchH(U.dp(this, 36)));
         c.addView(slider);
-        if (pages != null) {
-            final int total = pages.pages.size();
-            slider.set(total <= 1 ? 1f : pageIndex / (float) (total - 1));
+        if (!book.sheets.isEmpty()) {
+            final int total = book.sheets.size();
+            slider.set(total <= 1 ? 1f : sheetIndex / (float) (total - 1));
             slider.setListener(new Widgets.OnSlide() {
                 @Override
                 public void onSlide(float value, boolean fromUser) {
                     if (!fromUser) return;
                     int target = Math.min(total - 1, Math.round(value * (total - 1)));
-                    if (target != pageIndex) {
-                        pageIndex = target;
+                    if (target != sheetIndex) {
+                        sheetIndex = target;
                         pageCache.clear();
                         viewer.jump();
                         preparePages();
@@ -595,14 +660,23 @@ public class ReaderActivity extends BaseActivity {
         int block = currentBlock();
         paginator.clearCache();
         pageCache.clear();
+        fitCache.clear();
         rebuild(block);
         U.vibrate(this, 6);
     }
 
     private int currentBlock() {
-        if (pages == null || pages.pages.isEmpty()) return Math.max(0, chapterStartBlock);
-        int b = pages.pages.get(Math.max(0, Math.min(pageIndex, pages.pages.size() - 1))).firstBlock;
-        return Math.max(0, b < 0 ? chapterStartBlock : b);
+        if (book.sheets.isEmpty()) return Math.max(0, chapterStartBlock);
+        return Math.max(0, book.sheets.get(Math.max(0, Math.min(sheetIndex, book.sheets.size() - 1))).from);
+    }
+
+    /** Свёрстанная страница книги, которая сейчас на экране. */
+    private Paginator.Page currentPage() {
+        if (book == null || book.sheets.isEmpty()) return new Paginator.Page();
+        Paginator.Opt o = opt();
+        o.textSize = fitSize(sheetIndex, o);
+        Book.Sheet sh = book.sheets.get(Math.max(0, Math.min(sheetIndex, book.sheets.size() - 1)));
+        return paginator.compose(book, sh.from, sh.to, o);
     }
 
     /** Закладки этой книги. */
@@ -776,6 +850,7 @@ public class ReaderActivity extends BaseActivity {
             public void onChanged() {
                 paginator.clearCache();
                 pageCache.clear();
+                fitCache.clear();
                 applyReaderColors();
                 rebuild(currentBlock());
                 applyKeepScreenOn();
@@ -801,10 +876,10 @@ public class ReaderActivity extends BaseActivity {
         sb.append(getString(R.string.book_label)).append(": ").append(book.t(Loc.lang())).append('\n');
         Book.Toc t = book.tocAt(chapter);
         if (t != null) sb.append(getString(R.string.chapter)).append(": ").append(t.text).append('\n');
-        if (pages != null && !pages.pages.isEmpty()) {
-            sb.append(getString(R.string.page)).append(": ")
-                    .append(Math.min(pageIndex + 1, pages.pages.size())).append(" / ")
-                    .append(pages.pages.size()).append('\n');
+        if (!book.sheets.isEmpty()) {
+            Book.Sheet sh = book.sheets.get(Math.max(0, Math.min(sheetIndex, book.sheets.size() - 1)));
+            sb.append(getString(R.string.page)).append(": ").append(sh.number)
+                    .append(" / ").append(book.sheets.size()).append('\n');
         }
         String sample = currentSample();
         if (!U.empty(sample)) sb.append('\n').append(sample).append('\n');
@@ -822,8 +897,8 @@ public class ReaderActivity extends BaseActivity {
 
     private String currentSample() {
         StringBuilder sb = new StringBuilder();
-        if (pages == null || pages.pages.isEmpty()) return "";
-        Paginator.Page pg = pages.pages.get(Math.max(0, Math.min(pageIndex, pages.pages.size() - 1)));
+        if (book == null || book.sheets.isEmpty()) return "";
+        Paginator.Page pg = currentPage();
         for (Paginator.Item it : pg.items) {
             int bi = it.blockIndex;
             if (bi < 0 || bi >= book.blocks.size()) continue;
@@ -893,7 +968,7 @@ public class ReaderActivity extends BaseActivity {
         int block = Math.max(0, currentBlock());
         int percent = book.blocks.isEmpty() ? 0
                 : Math.max(0, Math.min(100, Math.round(block * 100f / book.blocks.size())));
-        Lib.get().saveProg(book.id, chapter, block, pageIndex, percent);
+        Lib.get().saveProg(book.id, chapter, block, sheetIndex, percent);
     }
 
     @Override

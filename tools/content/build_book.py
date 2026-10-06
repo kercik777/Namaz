@@ -132,6 +132,10 @@ def main(argv=None):
         page = by_name.get(name)
         if not page:
             continue
+        if any((b.get("text") or "").strip() for b in page.get("blocks", [])):
+            # маркер страницы оригинала: в приложении страница листается ровно
+            # как в книге — одна страница PDF, один лист
+            blocks.append({"t": "page", "n": idx})
         for b in page.get("blocks", []):
             text = (b.get("text") or "").strip()
             if not text:

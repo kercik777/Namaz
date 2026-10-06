@@ -40,6 +40,7 @@
     <string name="continue_reading">Okamagy dowam et</string>
     <string name="start_reading">Okamaga başla</string>
     <string name="quote_of_day">Günüň sözi</string>
+    <string name="quote_found">Günüň sözi kitapda şu ýerde ýazylan</string>
     <string name="quote_open">Kitapda aç</string>
     <string name="your_library">Siziň kitaphanaňyz</string>
     <string name="quick_sections">Bölümler</string>
@@ -96,6 +97,7 @@
     <!-- Okaýjy -->
     <string name="page">Sahypa</string>
     <string name="page_of">%1$d / %2$d</string>
+    <string name="sheet_of">Sahypa %1$d / %2$d</string>
     <string name="chapter">Bölüm</string>
     <string name="reading_settings">Okama sazlamalary</string>
     <string name="scan_mode">Suratly sahypa</string>

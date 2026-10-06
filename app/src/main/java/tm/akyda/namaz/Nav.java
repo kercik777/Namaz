@@ -17,6 +17,18 @@ public final class Nav {
     public static final String EXTRA_BOOK = "book_id";
     public static final String EXTRA_CHAPTER = "chapter";
     public static final String EXTRA_BLOCK = "block";
+    /** Текст, который нужно найти и подсветить, открыв книгу (цитата дня). */
+    public static final String EXTRA_FIND = "find";
+
+    /** Открыть книгу и подсветить фразу (например, «Günüň sözi» с главного экрана). */
+    public static void openReader(Activity a, String bookId, int chapter, int block, String find) {
+        Intent i = new Intent(a, tm.akyda.namaz.ui.ReaderActivity.class);
+        i.putExtra(EXTRA_BOOK, bookId);
+        i.putExtra(EXTRA_CHAPTER, chapter);
+        i.putExtra(EXTRA_BLOCK, block);
+        i.putExtra(EXTRA_FIND, find);
+        a.startActivity(i);
+    }
 
     public static void openReader(Activity a, String bookId, int chapter, int block) {
         Intent i = new Intent(a, ReaderActivity.class);
