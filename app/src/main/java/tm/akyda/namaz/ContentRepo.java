@@ -222,17 +222,6 @@ public class ContentRepo {
         return quotes.get(day % quotes.size());
     }
 
-    /* ---------------- Сканы страниц ---------------- */
-
-    public String scanPath(String bookId, int page) {
-        if (page < 1) return null;
-        return "pages/" + bookId + "/" + page + ".webp";
-    }
-
-    public boolean hasScan(Book b) {
-        return b != null && b.hasScan;
-    }
-
     /** Книги, отсортированные по времени последнего открытия. */
     public List<Book> recent() {
         final Lib lib = Lib.get();

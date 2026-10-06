@@ -17,8 +17,6 @@ public class Book {
     public Map<String, String> author = new HashMap<>();
     public Map<String, String> edition = new HashMap<>();
     public String script = "latin";     // latin | cyrillic | arabic
-    public boolean hasScan = false;     // есть ли постраничные сканы
-    public int scanPages = 0;
     public List<Block> blocks = new ArrayList<>();
     public List<Toc> toc = new ArrayList<>();
     public int accent = 0;              // индивидуальный акцент обложки
@@ -86,8 +84,6 @@ public class Book {
         Book b = new Book();
         b.id = o.optString("id", "");
         b.script = o.optString("script", "latin");
-        b.hasScan = o.optBoolean("has_scan", false);
-        b.scanPages = o.optInt("scan_pages", 0);
         b.accent = o.optInt("accent", 0);
         b.title = readMap(o.optJSONObject("title"));
         b.subtitle = readMap(o.optJSONObject("subtitle"));
