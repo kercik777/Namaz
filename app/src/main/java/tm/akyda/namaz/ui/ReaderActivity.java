@@ -855,11 +855,14 @@ public class ReaderActivity extends BaseActivity {
         if (pages == null || pages.pages.isEmpty()) return "";
         int idx = Math.max(0, Math.min(pageIndex, pages.pages.size() - 1));
         StringBuilder sb = new StringBuilder();
-        for (Paginator.Item it : pages.pages.get(idx).items) {
-            if (it.block == null || U.empty(it.block.plain())) continue;
-            sb.append(it.block.plain());
+        Paginator.Page pg = pages.pages.get(idx);
+        for (Paginator.Item it : pg.items) {
+            int bi = it.blockIndex;
+            if (book == null || bi < 0 || bi >= book.blocks.size()) continue;
+            String line = book.blocks.get(bi).plain();
+            if (U.empty(line)) continue;
+            sb.append(line).append(' ');
             if (sb.length() > 220) break;
-            sb.append(' ');
         }
         return U.trimTo(sb.toString().trim(), 260);
     }

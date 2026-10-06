@@ -189,6 +189,47 @@ def check_platform_imports(problems):
                 problems.append("{}: класс {} не импортирован".format(os.path.relpath(path, ROOT), name))
 
 
+
+def class_fields(code):
+    """Имена полей класса (объявления с модификаторами или без них)."""
+    names = set()
+    for line in code.split("\n"):
+        m = re.match(r"\s*(?:public|protected|private|static|final|volatile|transient|\s)+"
+                     r"[\w<>\[\],.\s]+?\s+([a-zA-Z_][\w]*)\s*(?:=|;)", line)
+        if m:
+            names.add(m.group(1))
+        else:
+            m2 = re.match(r"^\s{4,8}([\w<>\[\],.]+)\s+([a-zA-Z_][\w]*)\s*(?:=|;)", line)
+            if m2:
+                names.add(m2.group(2))
+    return names
+
+
+def check_member_access(classes, problems):
+    """Обращение к полю своей переменной: var.field, где field не объявлен."""
+    by_name = {}
+    for k in classes.values():
+        if "." not in k.dotted:
+            by_name.setdefault(k.dotted, k)
+    fields = {}
+    for name, k in by_name.items():
+        fields[name] = class_fields(strip_code(open(k.path, encoding="utf-8").read()))
+    for path in glob.glob(os.path.join(SRC, "**", "*.java"), recursive=True):
+        code = strip_code(open(path, encoding="utf-8").read())
+        decls = {}
+        for m in re.finditer(r"\b(" + "|".join(re.escape(n) for n in by_name) + r")\s+([a-zA-Z_][\w]*)\s*(?:=|;|\))", code):
+            decls.setdefault(m.group(2), set()).add(m.group(1))
+        for var, clss in decls.items():
+            for m in re.finditer(r"\b{}\s*\.\s*([a-zA-Z_][\w]*)".format(re.escape(var)), code):
+                member = m.group(1)
+                tail = code[m.end():m.end() + 1]
+                if tail == "(":
+                    continue  # вызов метода
+                if not any(member in fields.get(c, set()) for c in clss):
+                    problems.append("{}: {}.{} — поле не найдено в {}".format(
+                        os.path.relpath(path, ROOT), var, member, " / ".join(sorted(clss))))
+
+
 def main():
     classes = collect_classes()
     simple = {}
@@ -306,6 +347,7 @@ def main():
                 problems.append("{}: нет ресурса R.{}.{}".format(
                     os.path.relpath(path, ROOT), kind, name))
 
+    check_member_access(classes, problems)
     check_platform_imports(problems)
     check_xml_references(res_dir, problems)
     check_manifest_classes(problems)
