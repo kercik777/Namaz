@@ -1,0 +1,12 @@
+страниц: 4 потоков: 1
+  найдены enum-типы RapidOCR: ['LangDet', 'LangRec', 'ModelType', 'OCRVersion']
+[0;93m2026-10-06 17:55:13.627700458 [W:onnxruntime:Default, device_discovery.cc:146 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
+  модель det  готова (enums=True, rec_only=False)
+  модель rec latin готова (enums=True, rec_only=True)
+  модель rec cyrillic готова (enums=True, rec_only=True)
+  модель rec arabic готова (enums=True, rec_only=True)
+[1/4] 0001l: блоков 25
+[2/4] 0002r: блоков 12
+[3/4] 0003l: блоков 17
+[4/4] 0004r: блоков 23
+сохранено: work/smoke.json страниц: 4 символов: 4620
