@@ -101,6 +101,11 @@ jobs:
           python tools/content/build_book.py --work work/b2 --pages work/pages/b2 \
             --ocr content/ocr/b2.json --assets app/src/main/assets --book b2 --correct --limit "$LIMIT"
 
+      - name: Чистка текста и расстановка иллюстраций
+        run: |
+          python tools/content/mark_junk.py
+          python tools/content/add_ills.py
+
       - name: Публикация результата в репозиторий
         if: env.LIMIT == '0'
         run: |
