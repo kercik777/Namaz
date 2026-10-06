@@ -65,7 +65,7 @@ WORDS = {
     # «id...» — распознавание переставило «ди» в начале слова
     "idñe": "diňe", "idip": "diýip", "idilýär": "diýilýär", "idilýän": "diýilýän",
     "idšilýär": "diýilýär", "idšilýän": "diýilýän", "idšilyr": "diýilýär",
-    "idğilýär": "diýilýär", "idśip": "diýip", "idšip": "diýip", "idóip": "diýip",
+    "idğilýär": "diýilýär", "idśip": "diýip", "idšip": "diýip", "idóip": "diýip", "dióip": "diýip",
     "idślip": "diýlip", "idšlip": "diýlip", "idšen": "diýen", "idśer": "diýer",
     "idšýar": "diýär", "idśýar": "diýär", "idipdir": "diýipdir",
     "idómeli": "diýmeli", "idšilýär.": "diýilýär.",
@@ -78,8 +78,8 @@ WORDS = {
     "perideler": "perişdeler", "perideleri": "perişdeleri",
     "peridelerine": "perişdelerine", "peridelerini": "perişdelerini",
     "perideleriň": "perişdeleriň", "peridelerinden": "perişdelerinden",
-    "peridesi": "perişdesi", "sejde": "säjde", "sejdesi": "säjdesi",
-    "sejdäni": "säjdesini", "sejdede": "säjdede", "sejdeler": "säjdeler",
+    "peridesi": "perişdesi", "sejde": "sejde", "sejdesi": "sejdesi",
+    "sejdäni": "sejdesini", "sejdede": "sejdede", "sejdeler": "sejdeler",
     "teyemmum": "teýemmüm", "teyemmümi": "teýemmümi", "bismilla": "bismillä",
     "bismillä": "bismillä", "allahumme": "Allahümme", "aleyhissalam": "aleýhissalam",
     "äleğhissalam": "aleýhissalam", "ğerinden": "ýerinden", "öšla": "öýle",
@@ -113,7 +113,7 @@ WORDS = {
     "njğet": "niýet", "nešśidinä": "neşşidinä", "kürsišyuhussemä": "kürsiýyühussemä",
     "haýše": "haýýe", "mekgeši": "mekgei", "lušäter": "luşäter",
     "lihaýśinä": "lihayýinä", "meýśitinä": "meýýitinä", "äheýśtehu": "ahyýtehu",
-    "teweffeśtehü": "teweffeýtehü", "lideýśe": "lideýe", "merzyśýeb": "merzyýeb",
+    "teweffeśtehü": "teweffeýtehü", "merzyśýeb": "merzyýeb",
     "hiše": "hiýe", "käýśimeh": "käýýimeh", "luğüraw": "luğüraw",
     "śünfehu": "şünfehu", "šušyiratil": "şuşyiratil", "lušüzhirahu": "luşüzhirahu",
     "tekbirinišet": "tekbirini niýet",
@@ -261,22 +261,23 @@ def score(cand, raw, freq, prefixes):
 
 
 def words_index():
-    """Проверенные слова и в исходном написании, и после замены ñ -> ň и т. п."""
+    """Проверенные слова: ключ — написание без диакритики, поэтому находится
+    и «Teyemmüm», и «teyemmum», и «Teyemmüm»."""
     out = {}
     for k, v in WORDS.items():
-        out[k] = v
-        out.setdefault(fix_chars(k), fix_chars(v))
+        out[strip_diacritics(k)] = v
+        out.setdefault(strip_diacritics(fix_chars(k)), fix_chars(v))
     return out
 
 
 WORDS_IDX = {}
 
 
-def look_up(low: str):
+def look_up(word: str):
     global WORDS_IDX
     if not WORDS_IDX:
         WORDS_IDX = words_index()
-    return WORDS_IDX.get(low)
+    return WORDS_IDX.get(strip_diacritics(word))
 
 
 RE_TRANSLIT = re.compile(r"(?:[a-zäöüňşýžç]{1,4}:){2,}", re.IGNORECASE)
@@ -377,6 +378,97 @@ def dia_variants(word: str, limit=90):
         if len(out) > limit:
             return out[:limit]
     return out
+
+
+DIA_CHARS = "äöüňşýžç"
+
+
+def dia_count(text: str) -> int:
+    """Сколько туркменских знаков в слове (регистр не важен)."""
+    low = text.lower()
+    return sum(1 for ch in low if ch in DIA_CHARS)
+
+# Пары, где корректор ошибается, а проверить нечем: такие слова не трогаем.
+BAD_DIA = {
+    "gecen", "gelen", "alan", "bolan", "eden", "açan", "beren", "gören",
+    "okan", "ýazan", "duran", "gelýän", "bolýan", "alanlar",
+}
+
+
+def restore_diacritics(blocks, freq, corrector):
+    """Возвращает туркменскую диакритику там, где её не хватает.
+
+    Правило простое и проверяемое: слово меняется только если
+      * набор букв (без знаков) у варианта тот же — «okalyar» -> «okalýar» можно,
+      * а «gusul» -> «susul», «ekber» -> «keber» нельзя: разные буквы;
+      * сам вариант встречается в книге не меньше двух раз — то есть он есть
+        в распознанном тексте, а не выдуман словарём.
+    Так «gelen» никогда не станет «geleň» (в книге такого слова нет), а
+    «okalyar» станет «okalýar» (в книге так написано много раз).
+    """
+    accepted = {}
+    for b in blocks:
+        if b.get("t") in ("title", "center", "img", "ar", "page"):
+            continue
+        for text in [b.get("x") or ""] + (b.get("items") or []):
+            if not text or is_transliteration(text):
+                continue
+            cand = corrector.correct_text(text, freq)[0]
+            if cand == text:
+                continue
+            src_words = RE_WORD.findall(text)
+            new_words = RE_WORD.findall(cand)
+            if len(src_words) != len(new_words):
+                continue
+            for a, c in zip(src_words, new_words):
+                if a == c:
+                    continue
+                low_a, low_c = a.lower(), c.lower()
+                if strip_diacritics(low_c) != strip_diacritics(low_a):
+                    continue          # сменились сами буквы — не наше дело
+                if dia_count(low_c) <= dia_count(low_a):
+                    continue          # знаки можно только добавлять, снимать нельзя:
+                                      # «görä» -> «gora» и «örän» -> «oran» — это ошибки
+                if low_c.endswith("ň") and low_a.endswith("n") and freq.get(low_c, 0) < 2:
+                    # «gelen» -> «geleň» нельзя: такой формы в книге нет.
+                    # А «namazyn» -> «namazyň» можно: в книге так написано.
+                    continue
+                if low_a in BAD_DIA:
+                    continue
+                if strip_diacritics(low_c) == low_a and not freq.get(low_c, 0):
+                    continue          # корректор ничего не добавил по делу
+                accepted[low_a] = c
+    n = 0
+    for b in blocks:
+        for key in ("x", "items"):
+            if key == "x":
+                if not b.get("x"):
+                    continue
+                b["x"], k = replace_words(b["x"], accepted)
+                n += k
+            else:
+                items = []
+                for it in (b.get("items") or []):
+                    it2, k = replace_words(it, accepted)
+                    n += k
+                    items.append(it2)
+                b["items"] = items
+    return n, accepted
+
+
+def replace_words(text, table):
+    n = 0
+
+    def one(m):
+        nonlocal n
+        w = m.group(0)
+        new = table.get(w.lower())
+        if new and new.lower() != w.lower():
+            n += 1
+            return cap(new, w)
+        return w
+
+    return RE_WORD.sub(one, text), n
 
 
 def report_diacritics(blocks, freq):
@@ -528,7 +620,7 @@ def fix_case_headings(blocks):
     return blocks
 
 
-def process(path, freq_ref=None, verbose=True):
+def process(path, freq_ref=None, verbose=True, corrector=None):
     data = json.load(open(path, encoding="utf-8"))
     if isinstance(data, list):
         data = data[0]
@@ -567,7 +659,12 @@ def process(path, freq_ref=None, verbose=True):
     global DICT
     if DICT is None:
         DICT = dict_words()
-    dia = report_diacritics(blocks, freq + (freq_ref or collections.Counter()))
+    all_freq = freq + (freq_ref or collections.Counter())
+    dia_n, dia_pairs = restore_diacritics(blocks, all_freq, corrector) \
+        if corrector is not None else (0, {})
+    if dia_pairs:
+        freq = build_frequency(blocks)
+    dia = {}
 
     genitive_fixed = 0
     for b in blocks:
@@ -654,8 +751,17 @@ def main(argv=None):
             data = data[0]
         freq += build_frequency(data.get("blocks", []))
 
+    corrector = None
+    try:
+        sys.path.insert(0, os.path.join(HERE, ".."))
+        import tkcorrect  # noqa: PLC0415
+        corrector = tkcorrect.TurkmenCorrector(os.path.join(HERE, "..", "data", "tk_TM.dic"),
+                                              os.path.join(HERE, "..", "data", "tk_TM.aff"))
+    except Exception as e:  # noqa: BLE001
+        print("внимание: словарный корректор недоступен:", e)
+
     for path in targets:
-        data, _, _ = process(path, freq_ref=freq)
+        data, _, _ = process(path, freq_ref=freq, corrector=corrector)
         if not a.dry:
             with open(path, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, separators=(",", ":"))

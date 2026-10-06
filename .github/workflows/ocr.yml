@@ -92,10 +92,13 @@ jobs:
 
       - name: Сборка книг для приложения
         run: |
+          # Без ключа --correct: словарный корректор менял верные слова на неверные
+          # («gelen» -> «geleň», «süresini» -> «širesini»). Диакритику возвращает
+          # tools/content/fix_text.py — по доказательствам из самой книги.
           python tools/content/build_book.py --work work/b1 --pages work/pages/b1 \
-            --ocr content/ocr/b1.json --assets app/src/main/assets --book b1 --correct --limit "$LIMIT"
+            --ocr content/ocr/b1.json --assets app/src/main/assets --book b1 --limit "$LIMIT"
           python tools/content/build_book.py --work work/b2 --pages work/pages/b2 \
-            --ocr content/ocr/b2.json --assets app/src/main/assets --book b2 --correct --limit "$LIMIT"
+            --ocr content/ocr/b2.json --assets app/src/main/assets --book b2 --limit "$LIMIT"
 
       - name: Чистка текста и расстановка иллюстраций
         run: |
