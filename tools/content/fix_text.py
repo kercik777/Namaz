@@ -89,6 +89,8 @@ WORDS = {
     "gölšazmalar": "golýazmalar", "häsišetlerden": "häsiýetlerden",
     "hasiýetlerden": "häsiýetlerden", "mukaýšat": "mukayýat",
     "elleriñişi": "elleriňizi", "ädiñ": "ediň", "açšandygyna": "aşandygyna",
+    # в книге напечатано «aýynda», а не «aýyňda» (проверено по PDF)
+    "aýyňda": "aýynda", "ýagdaýyňdaky": "ýagdaýyndaky",
     "hz": "Hz.", "HZ": "Hz.",
     # проверено по смыслу предложения
     "tahyýšat": "tahyýat", "tabyśýat": "tahyýat", "tabyšýat": "tahyýat",
