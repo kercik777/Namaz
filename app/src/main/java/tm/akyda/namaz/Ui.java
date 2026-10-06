@@ -234,8 +234,21 @@ public final class Ui {
         return iv;
     }
 
-    /** Круглая «кнопка-иконка» с подложкой. */
-    public static FrameLayout iconButton(Context c, int resId, int tint, int bg, float sizeDp) {
+    /** Круглая «кнопка-иконка» с подложкой. iconCode — код из класса {@link Ico}. */
+    public static FrameLayout iconButton(Context c, int iconCode, int tint, int bg, float sizeDp) {
+        FrameLayout f = new FrameLayout(c);
+        int s = U.dp(c, sizeDp);
+        f.setLayoutParams(new LinearLayout.LayoutParams(s, s));
+        f.setBackground(U.round(bg, sizeDp / 2f, c));
+        tm.akyda.namaz.IconView iv = new tm.akyda.namaz.IconView(c, iconCode, tint, sizeDp * 0.46f);
+        iv.setLayoutParams(new FrameLayout.LayoutParams(U.dp(c, sizeDp * 0.46f),
+                U.dp(c, sizeDp * 0.46f), Gravity.CENTER));
+        f.addView(iv);
+        return f;
+    }
+
+    /** Кнопка с настоящей drawable-иконкой (например, логотипом приложения). */
+    public static FrameLayout drawableButton(Context c, int resId, int tint, int bg, float sizeDp) {
         FrameLayout f = new FrameLayout(c);
         int s = U.dp(c, sizeDp);
         f.setLayoutParams(new LinearLayout.LayoutParams(s, s));

@@ -148,15 +148,26 @@ public final class Chrome {
             });
 
             box = Ui.col(c);
-            box.setBackground(U.round(Skin.surface(c), 26f, c));
-            U.shadow(box, 16f);
+            // скругление только сверху: снизу панель прилегает к краю экрана
+            box.setBackground(U.roundTop(Skin.surface(c), 28f, c));
+            U.shadow(box, 18f);
             int pad = U.dp(c, 20);
-            box.setPadding(pad, U.dp(c, 8), pad, U.dp(c, 18));
+            box.setPadding(pad, U.dp(c, 10), pad, U.dp(c, 20));
+
+            // тонкая золотая линия у верхней кромки панели
+            View gold = new View(c);
+            LinearLayout.LayoutParams glp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, U.dp(c, 2f));
+            gold.setLayoutParams(glp);
+            gold.setBackground(U.gradientRect(Skin.withAlpha(Skin.accent(c), 0f),
+                    Skin.withAlpha(Skin.accent(c), 0.85f), 0f, c, true));
+            box.addView(gold);
 
             // «Ручка»
             View handle = new View(c);
-            LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(U.dp(c, 42), U.dp(c, 4.5f));
+            LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(U.dp(c, 44), U.dp(c, 4.5f));
             hlp.gravity = Gravity.CENTER_HORIZONTAL;
+            hlp.topMargin = U.dp(c, 8);
             hlp.bottomMargin = U.dp(c, 12);
             handle.setLayoutParams(hlp);
             handle.setBackground(U.round(Skin.withAlpha(Skin.sub(c), 0.42f), 3f, c));

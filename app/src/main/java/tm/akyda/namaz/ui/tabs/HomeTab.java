@@ -104,8 +104,8 @@ public class HomeTab implements TabPage {
         LinearLayout col = Ui.col(host);
         TextView greet = Ui.title(host, U.greeting(host), 23f);
         col.addView(greet);
-        TextView sub = Ui.tv(host, new SimpleDateFormat("EEEE, d MMMM", new Locale("ru"))
-                .format(new Date()) + " · " + getString(R.string.home_subtitle), 12.5f, Skin.sub(host), U.ui(host));
+        TextView sub = Ui.tv(host, U.todayTk() + " · " + getString(R.string.home_subtitle),
+                12.5f, Skin.sub(host), U.ui(host));
         LinearLayout.LayoutParams slp = Ui.llpMatch();
         slp.topMargin = U.dp(host, 4);
         col.addView(sub, slp);

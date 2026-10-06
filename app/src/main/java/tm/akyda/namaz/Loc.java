@@ -5,21 +5,21 @@ import android.content.res.Configuration;
 
 import java.util.Locale;
 
-/** Язык интерфейса: русский и туркменский (переключается в приложении). */
+/** Язык приложения: туркменский (tk). Тексты книг — на туркменском языке. */
 public final class Loc {
 
-    public static final String RU = "ru";
     public static final String TK = "tk";
+    public static final String RU = "tk";   // совместимость: русский больше не используется
 
     public static String lang() {
-        return P.s(P.lang, RU);
+        return TK;
     }
 
     public static Locale locale() {
-        return new Locale(lang());
+        return new Locale("tk", "TM");
     }
 
-    /** Обёртка контекста с нужной локалью (работает на всех версиях, начиная с API 17). */
+    /** Обёртка контекста с туркменской локалью (работает на всех версиях, начиная с API 17). */
     public static Context wrap(Context base) {
         Locale l = locale();
         Locale.setDefault(l);
@@ -31,8 +31,9 @@ public final class Loc {
         return base.createConfigurationContext(cfg);
     }
 
+    /** Оставлено для совместимости: язык всегда туркменский. */
     public static void set(Context c, String code) {
-        P.ss(P.lang, code);
-        Locale.setDefault(new Locale(code));
+        P.ss(P.lang, TK);
+        Locale.setDefault(locale());
     }
 }

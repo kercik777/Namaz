@@ -69,11 +69,29 @@ def draw_gold_shape(size, draw_fn, mask_fn):
 
 
 def emblem(size, scale=1.0):
-    """Эмблема: полумесяц со звездой над раскрытой книгой. Возвращает RGBA."""
+    """Эмблема: полумесяц со звездой над раскрытой книгой. Возвращает RGBA.
+
+    scale < 1 уменьшает весь рисунок и центрирует его — нужно для безопасной зоны
+    адаптивной иконки, иначе система обрезает края логотипа.
+    """
+    full = emblem_base(size)
+    if scale >= 0.999:
+        return full
+    S = size
+    small = full.resize((max(1, int(round(S * scale))), max(1, int(round(S * scale)))),
+                        Image.LANCZOS)
+    out = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    off = (S - small.size[0]) // 2
+    out.alpha_composite(small, (off, off))
+    return out
+
+
+def emblem_base(size):
+    """Рисунок эмблемы на весь квадрат (без масштабирования)."""
     S = size
     img = Image.new("RGBA", (S, S), (0, 0, 0, 0))
     cx = S / 2.0
-    k = (S / 1024.0) * scale
+    k = (S / 1024.0) * 0.72
 
     # --- книга (нижняя часть) ---
     book_top = S * 0.60
@@ -148,7 +166,7 @@ def make_legacy(size):
     gd = ImageDraw.Draw(glow)
     gd.ellipse([S * 0.05, -S * 0.45, S * 0.95, S * 0.55], fill=(30, 120, 88, 70))
     bg.alpha_composite(glow)
-    bg.alpha_composite(emblem(S, scale=0.94))
+    bg.alpha_composite(emblem(S, scale=0.72))
     bg.putalpha(rounded_mask(S, int(S * 0.225)))
     return bg.resize((size, size), Image.LANCZOS)
 
@@ -157,7 +175,7 @@ def make_round(size):
     ss = 4
     S = size * ss
     bg = gradient_vertical(S, EMERALD_TOP, EMERALD_BOT)
-    bg.alpha_composite(emblem(S, scale=0.86))
+    bg.alpha_composite(emblem(S, scale=0.66))
     bg.putalpha(circle_mask(S, S / 2, S / 2, S / 2 - 1))
     return bg.resize((size, size), Image.LANCZOS)
 
@@ -166,7 +184,9 @@ def make_foreground(size=432):
     ss = 4
     S = size * ss
     img = Image.new("RGBA", (S, S), (0, 0, 0, 0))
-    img.alpha_composite(emblem(S, scale=0.62))
+    # логотип должен умещаться в «безопасную зону» адаптивной иконки (~66%),
+    # иначе система обрезает края рисунка
+    img.alpha_composite(emblem(S, scale=0.58))
     return img.resize((size, size), Image.LANCZOS)
 
 
@@ -174,7 +194,7 @@ def make_mono(size=432):
     ss = 4
     S = size * ss
     img = Image.new("RGBA", (S, S), (0, 0, 0, 0))
-    e = emblem(S, scale=0.62)
+    e = emblem(S, scale=0.58)
     # всё белым по альфе
     white = Image.new("RGBA", (S, S), (255, 255, 255, 255))
     white.putalpha(e.split()[3])

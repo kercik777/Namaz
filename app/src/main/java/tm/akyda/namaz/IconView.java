@@ -11,6 +11,7 @@ public class IconView extends View {
     private int icon;
     private int color = 0xFF000000;
     private float inset = 0.16f;
+    private float fallbackDp = 20f;
     private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
     private float degrees = 0f;
 
@@ -19,6 +20,7 @@ public class IconView extends View {
         this.icon = icon;
         this.color = color;
         int s = U.dp(c, sizeDp);
+        fallbackDp = sizeDp;
         setLayoutParams(new android.widget.LinearLayout.LayoutParams(s, s));
     }
 
@@ -54,6 +56,7 @@ public class IconView extends View {
     protected void onMeasure(int w, int h) {
         super.onMeasure(w, h);
         int s = Math.min(getMeasuredWidth(), getMeasuredHeight());
+        if (s <= 0) s = U.dp(getContext(), fallbackDp);   // не даём иконке схлопнуться в ноль
         setMeasuredDimension(s, s);
     }
 

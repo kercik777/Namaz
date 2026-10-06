@@ -508,13 +508,24 @@ public class Paginator {
     private Item image(Block b, Opt o) {
         String src = b.source;
         if (U.empty(src)) return null;
-        String path = "images/" + src;
-        Bitmap bm = imageCache.get(path);
-        if (bm == null) {
-            bm = decode(path, o.width);
-            if (bm == null) return null;
-            if (imageCache.size() > 6) imageCache.clear();
-            imageCache.put(path, bm);
+        Bitmap bm;
+        if (src.startsWith("ill:")) {
+            // собственная векторная иллюстрация приложения
+            int id = Ill.idOf(src.substring(4));
+            if (id < 0) return null;
+            int w = Math.max(120, o.width);
+            int h = Math.max(120, Math.round(w * 0.72f));
+            bm = Ill.render(app, id, w, h, o.theme);
+            if (U.empty(b.caption)) b.caption = Ill.caption(id);
+        } else {
+            String path = "images/" + src;
+            bm = imageCache.get(path);
+            if (bm == null) {
+                bm = decode(path, o.width);
+                if (bm == null) return null;
+                if (imageCache.size() > 6) imageCache.clear();
+                imageCache.put(path, bm);
+            }
         }
         Item it = new Item();
         it.type = Block.IMG;

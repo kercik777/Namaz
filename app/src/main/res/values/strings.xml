@@ -1,225 +1,206 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Akyda we Namaz</string>
-    <string name="app_tagline">Книги вероучения и намаза</string>
+    <string name="app_tagline">Akyda we namaz kitaplary</string>
 
-    <!-- Навигация -->
-    <string name="nav_home">Главная</string>
-    <string name="nav_library">Книги</string>
-    <string name="nav_search">Поиск</string>
-    <string name="nav_saved">Избранное</string>
-    <string name="nav_more">Ещё</string>
+    <!-- Nawigasiýa -->
+    <string name="nav_home">Baş sahypa</string>
+    <string name="nav_library">Kitaplar</string>
+    <string name="nav_search">Gözleg</string>
+    <string name="nav_saved">Saýlananlar</string>
+    <string name="nav_more">Ýene</string>
 
-    <!-- Приветствие -->
-    <string name="greeting_morning">Доброе утро</string>
-    <string name="greeting_day">Добрый день</string>
-    <string name="greeting_evening">Добрый вечер</string>
-    <string name="greeting_night">Спокойной ночи</string>
-    <string name="home_subtitle">Продолжайте чтение — знания ждут вас</string>
-    <string name="just_now">только что</string>
+    <!-- Salamlama -->
+    <string name="greeting_morning">Ertiriňiz haýyrly</string>
+    <string name="greeting_day">Günüňiz haýyrly</string>
+    <string name="greeting_evening">Agşamyňyz haýyrly</string>
+    <string name="greeting_night">Gije rahat bolsun</string>
+    <string name="home_subtitle">Okamagy dowam ediň — bilim sizi garaşýar</string>
+    <string name="just_now">häzir</string>
     <plurals name="min_ago">
-        <item quantity="one">%d минуту назад</item>
-        <item quantity="few">%d минуты назад</item>
-        <item quantity="many">%d минут назад</item>
-        <item quantity="other">%d мин. назад</item>
+        <item quantity="other">%d minut öň</item>
     </plurals>
     <plurals name="hours_ago">
-        <item quantity="one">%d час назад</item>
-        <item quantity="few">%d часа назад</item>
-        <item quantity="many">%d часов назад</item>
-        <item quantity="other">%d ч. назад</item>
+        <item quantity="other">%d sagat öň</item>
     </plurals>
     <plurals name="days_ago">
-        <item quantity="one">%d день назад</item>
-        <item quantity="few">%d дня назад</item>
-        <item quantity="many">%d дней назад</item>
-        <item quantity="other">%d дн. назад</item>
+        <item quantity="other">%d gün öň</item>
     </plurals>
     <plurals name="pages_read">
-        <item quantity="one">%d страница</item>
-        <item quantity="few">%d страницы</item>
-        <item quantity="many">%d страниц</item>
-        <item quantity="other">%d стр.</item>
+        <item quantity="other">%d sahypa</item>
     </plurals>
     <plurals name="minutes_read">
-        <item quantity="one">%d минута</item>
-        <item quantity="few">%d минуты</item>
-        <item quantity="many">%d минут</item>
-        <item quantity="other">%d мин.</item>
+        <item quantity="other">%d minut</item>
     </plurals>
     <plurals name="days_streak">
-        <item quantity="one">%d день подряд</item>
-        <item quantity="few">%d дня подряд</item>
-        <item quantity="many">%d дней подряд</item>
-        <item quantity="other">%d дн. подряд</item>
+        <item quantity="other">%d gün yzygider</item>
     </plurals>
 
-    <!-- Главная -->
-    <string name="continue_reading">Продолжить чтение</string>
-    <string name="start_reading">Начать чтение</string>
-    <string name="quote_of_day">Цитата дня</string>
-    <string name="your_library">Ваша библиотека</string>
-    <string name="quick_sections">Разделы книг</string>
-    <string name="statistics">Статистика</string>
-    <string name="stat_pages">Страниц прочитано</string>
-    <string name="stat_minutes">Минут чтения</string>
-    <string name="stat_streak">Серия дней</string>
-    <string name="stat_last">Последнее чтение</string>
-    <string name="never_opened">Вы ещё не открывали эту книгу</string>
-    <string name="open_book">Открыть книгу</string>
+    <!-- Baş sahypa -->
+    <string name="continue_reading">Okamagy dowam et</string>
+    <string name="start_reading">Okamaga başla</string>
+    <string name="quote_of_day">Günüň sözi</string>
+    <string name="your_library">Siziň kitaphanaňyz</string>
+    <string name="quick_sections">Bölümler</string>
+    <string name="statistics">Statistika</string>
+    <string name="stat_pages">Okalan sahypalar</string>
+    <string name="stat_minutes">Okalan minutlar</string>
+    <string name="stat_streak">Yzygider günler</string>
+    <string name="stat_last">Soňky okama</string>
+    <string name="never_opened">Bu kitap heniz açylmady</string>
+    <string name="open_book">Kitaby aç</string>
 
-    <!-- Библиотека -->
-    <string name="library">Библиотека</string>
-    <string name="library_subtitle">Три книги в одном приложении</string>
-    <string name="read_book">Читать</string>
-    <string name="read_continue">Продолжить</string>
-    <string name="book_actions">Действия с книгой</string>
-    <string name="contents">Оглавление</string>
-    <string name="reset_progress">Сбросить прогресс</string>
-    <string name="book_progress">Прочитано %d%%</string>
-    <string name="book_not_started">Не начата</string>
+    <!-- Kitaphana -->
+    <string name="library">Kitaphana</string>
+    <string name="library_subtitle">Bir programmada üç kitap</string>
+    <string name="read_book">Oka</string>
+    <string name="read_continue">Dowam et</string>
+    <string name="book_actions">Kitap amallary</string>
+    <string name="contents">Mazmuny</string>
+    <string name="reset_progress">Okamany noldan başla</string>
+    <string name="book_progress">Okaldy %d%%</string>
+    <string name="book_not_started">Başlanmady</string>
 
-    <!-- Поиск -->
-    <string name="search">Поиск</string>
-    <string name="search_hint">Слово или фраза…</string>
-    <string name="search_placeholder_title">Поиск по всем книгам</string>
-    <string name="search_placeholder_text">Введите слово — например «намаз», «тәрет», «иман». Поиск понимает туркменские буквы и без диакритики.</string>
-    <string name="search_recent">Недавние запросы</string>
-    <string name="search_clear">Очистить</string>
-    <string name="search_nothing">Ничего не найдено</string>
-    <string name="search_nothing_hint">Попробуйте другое слово или проверьте написание.</string>
-    <string name="search_found">Найдено: %d</string>
-    <string name="search_in_book">Искать в книге</string>
-    <string name="search_close">Закрыть поиск</string>
+    <!-- Gözleg -->
+    <string name="search">Gözleg</string>
+    <string name="search_hint">Söz ýa-da jümle…</string>
+    <string name="search_placeholder_title">Ähli kitaplardan gözle</string>
+    <string name="search_placeholder_text">Söz ýazyň — meselem «namaz», «täret», «iman». Gözleg türkmen harplaryny hem düşünýär.</string>
+    <string name="search_recent">Soňky gözlegler</string>
+    <string name="search_clear">Arassala</string>
+    <string name="search_nothing">Hiç zat tapylmady</string>
+    <string name="search_nothing_hint">Başga sözi synanyşyň ýa-da ýazylyşyny barlaň.</string>
+    <string name="search_found">Tapyldy: %d</string>
+    <string name="search_in_book">Kitapdan gözle</string>
+    <string name="search_close">Gözlegi ýap</string>
 
-    <!-- Избранное -->
-    <string name="saved">Избранное</string>
-    <string name="tab_bookmarks">Закладки</string>
-    <string name="tab_quotes">Цитаты</string>
-    <string name="no_bookmarks">Пока нет закладок</string>
-    <string name="no_bookmarks_hint">Нажмите на флажок в читалке — и страница сохранится здесь.</string>
-    <string name="no_quotes">Пока нет цитат</string>
-    <string name="no_quotes_hint">Удерживайте палец на абзаце в книге, чтобы сохранить цитату.</string>
-    <string name="bookmark_added">Закладка добавлена</string>
-    <string name="bookmark_removed">Закладка удалена</string>
-    <string name="quote_saved">Цитата сохранена</string>
-    <string name="quote_removed">Цитата удалена</string>
-    <string name="delete">Удалить</string>
-    <string name="copy">Копировать</string>
-    <string name="share">Поделиться</string>
-    <string name="copied">Скопировано</string>
-    <string name="save_quote">Сохранить цитату</string>
+    <!-- Saýlananlar -->
+    <string name="saved">Saýlananlar</string>
+    <string name="tab_bookmarks">Bellikler</string>
+    <string name="tab_quotes">Sözler</string>
+    <string name="no_bookmarks">Bellik ýok</string>
+    <string name="no_bookmarks_hint">Okaýyşda bellik goýuň — sahypa şu ýerde saklanar.</string>
+    <string name="no_quotes">Söz ýok</string>
+    <string name="no_quotes_hint">Sözi saklamak üçin abzasa barmagyňyzy uzak basyň.</string>
+    <string name="bookmark_added">Bellik goşuldy</string>
+    <string name="bookmark_removed">Bellik aýryldy</string>
+    <string name="quote_saved">Söz saklandy</string>
+    <string name="quote_removed">Söz aýryldy</string>
+    <string name="delete">Aýyr</string>
+    <string name="copy">Göçür</string>
+    <string name="share">Paýlaş</string>
+    <string name="copied">Göçürildi</string>
+    <string name="save_quote">Sözi sakla</string>
 
-    <!-- Читалка -->
-    <string name="page">Страница</string>
-    <string name="page_of">%1$d из %2$d</string>
-    <string name="chapter">Глава</string>
-    <string name="reading_settings">Настройки чтения</string>
-    <string name="scan_mode">Оригинал</string>
-    <string name="text_mode">Текст</string>
-    <string name="scan_hint">Страница из печатного издания. Увеличивайте щипком.</string>
-    <string name="scan_missing">Скан этой страницы недоступен</string>
-    <string name="font">Шрифт</string>
-    <string name="font_serif">С засечками</string>
-    <string name="font_sans">Без засечек</string>
-    <string name="font_condensed">Узкий</string>
-    <string name="text_size">Размер текста</string>
-    <string name="line_spacing">Межстрочный интервал</string>
-    <string name="page_margins">Поля страницы</string>
-    <string name="page_theme">Цвет страницы</string>
-    <string name="theme_paper">Бумага</string>
-    <string name="theme_sepia">Сепия</string>
-    <string name="theme_emerald">Изумруд</string>
-    <string name="theme_dark">Тёмная</string>
-    <string name="theme_night">Ночь</string>
-    <string name="reading_mode">Режим чтения</string>
-    <string name="mode_pages">Страницы</string>
-    <string name="mode_scroll">Прокрутка</string>
-    <string name="page_animation">Перелистывание</string>
-    <string name="anim_slide">Сдвиг</string>
-    <string name="anim_fade">Затухание</string>
-    <string name="anim_none">Без анимации</string>
-    <string name="page_sound">Звук страницы</string>
-    <string name="keep_screen_on">Не гасить экран</string>
-    <string name="brightness">Затемнение</string>
-    <string name="fullscreen_reading">Скрывать панели</string>
-    <string name="dim_on">Яркость приглушена</string>
-    <string name="book_finished">Книга прочитана</string>
-    <string name="chapter_finished">Глава завершена</string>
+    <!-- Okaýjy -->
+    <string name="page">Sahypa</string>
+    <string name="page_of">%1$d / %2$d</string>
+    <string name="chapter">Bölüm</string>
+    <string name="reading_settings">Okama sazlamalary</string>
+    <string name="scan_mode">Asyl nusga</string>
+    <string name="text_mode">Tekst</string>
+    <string name="scan_hint">Çap nusgasyndan sahypa. Ulaltmak üçin iki barmak bilen açyň.</string>
+    <string name="scan_missing">Bu sahypanyň skany ýok</string>
+    <string name="font">Şrift</string>
+    <string name="font_serif">Çyzykly</string>
+    <string name="font_sans">Çyzyksyz</string>
+    <string name="font_condensed">Dar</string>
+    <string name="text_size">Tekstiň ululygy</string>
+    <string name="line_spacing">Setir aralygy</string>
+    <string name="page_margins">Sahypa gyralary</string>
+    <string name="page_theme">Sahypa reňki</string>
+    <string name="theme_paper">Kagyz</string>
+    <string name="theme_sepia">Sepiýa</string>
+    <string name="theme_emerald">Zümerret</string>
+    <string name="theme_dark">Garaňky</string>
+    <string name="theme_night">Gije</string>
+    <string name="reading_mode">Okama tertibi</string>
+    <string name="mode_pages">Sahypalar</string>
+    <string name="mode_scroll">Süýşürme</string>
+    <string name="page_animation">Sahypa geçişi</string>
+    <string name="anim_slide">Süýşme</string>
+    <string name="anim_fade">Ýitme</string>
+    <string name="anim_none">Animasiýasyz</string>
+    <string name="page_sound">Sahypa sesi</string>
+    <string name="keep_screen_on">Ekran öçmesin</string>
+    <string name="brightness">Garaňkylyk</string>
+    <string name="fullscreen_reading">Panelleri gizle</string>
+    <string name="dim_on">Ýagtylyk peseldildi</string>
+    <string name="book_finished">Kitap okaldy</string>
+    <string name="chapter_finished">Bölüm tamamlandy</string>
 
-    <!-- Ещё / настройки -->
-    <string name="more">Ещё</string>
-    <string name="appearance">Оформление</string>
-    <string name="app_theme">Тема приложения</string>
-    <string name="theme_light">Светлая</string>
-    <string name="theme_system">Как в системе</string>
-    <string name="interface_language">Язык интерфейса</string>
-    <string name="lang_ru">Русский</string>
-    <string name="lang_tk">Türkmençe</string>
-    <string name="language_note">Текст книг остаётся на языке оригинала.</string>
-    <string name="reading_defaults">Настройки чтения по умолчанию</string>
-    <string name="my_data">Мои данные</string>
-    <string name="reset_all">Сбросить все данные</string>
-    <string name="reset_all_question">Удалить прогресс, закладки, цитаты и статистику? Это действие нельзя отменить.</string>
-    <string name="reset_done">Данные сброшены</string>
-    <string name="about_app">О приложении</string>
-    <string name="privacy">Политика конфиденциальности</string>
-    <string name="feedback">Сообщить об ошибке</string>
-    <string name="rate">Оценить в Google Play</string>
-    <string name="share_app">Поделиться приложением</string>
-    <string name="version">Версия</string>
-    <string name="cancel">Отмена</string>
-    <string name="ok">Понятно</string>
-    <string name="close">Закрыть</string>
-    <string name="back">Назад</string>
-    <string name="confirm">Подтвердить</string>
-    <string name="yes">Да</string>
-    <string name="no">Нет</string>
-    <string name="all_books">Все книги</string>
+    <!-- Ýene / sazlamalar -->
+    <string name="more">Ýene</string>
+    <string name="appearance">Görnüş</string>
+    <string name="app_theme">Programma temasy</string>
+    <string name="theme_light">Ýagty</string>
+    <string name="theme_system">Ulgam ýaly</string>
+    <string name="reading_defaults">Adaty okama sazlamalary</string>
+    <string name="my_data">Meniň maglumatlarym</string>
+    <string name="reset_all">Ähli maglumatlary arassala</string>
+    <string name="reset_all_question">Okama ýagdaýy, bellikler, sözler we statistika aýrylsynmy? Bu yzyna alynmaýar.</string>
+    <string name="reset_done">Maglumatlar arassalandy</string>
+    <string name="about_app">Programma hakynda</string>
+    <string name="privacy">Gizlinlik syýasaty</string>
+    <string name="feedback">Ýalňyşlyk barada habar ber</string>
+    <string name="rate">Google Play-de baha ber</string>
+    <string name="share_app">Programmany paýlaş</string>
+    <string name="version">Wersiýa</string>
+    <string name="cancel">Ýatyryň</string>
+    <string name="ok">Düşündim</string>
+    <string name="close">Ýap</string>
+    <string name="back">Yza</string>
+    <string name="confirm">Tassykla</string>
+    <string name="yes">Hawa</string>
+    <string name="no">Ýok</string>
+    <string name="all_books">Ähli kitaplar</string>
 
-    <!-- О приложении -->
-    <string name="about_title">О приложении</string>
-    <string name="about_intro">«Akyda we Namaz» — офлайн-собрание книг о вероучении и намазе на туркменском языке. Приложение работает без интернета, не содержит рекламы и не запрашивает ни одного разрешения.</string>
-    <string name="about_features">Три книги</string>
-    <string name="about_features_text">«Акыда» — основы вероучения, «Намаз китабы» — намаз, омовение и правила, «Намаз» — молитвы и суры с постраничными сканами печатного издания.</string>
-    <string name="about_features2">Чтение без границ</string>
-    <string name="about_features2_text">Пять цветов страницы, три шрифта, гибкие размеры текста и полей, режимы «страницы» и «прокрутка», закладки, цитаты, поиск по всем книгам, статистика чтения.</string>
-    <string name="about_sources">Источники</string>
-    <string name="about_sources_text">Тексты взяты из печатных изданий: «Namaz kitaby» (Türkmenistanyň Müftüsiniň Müdirligi, Aşgabat, 2016) и «Akyda bölümi». Изображения и постраничные сканы приведены в исходном виде. Права на печатные издания принадлежат их правообладателям.</string>
-    <string name="about_disclaimer">Текст распознан из печатных сканов. Возможны отдельные неточности — в каждой книге доступен режим «Оригинал», где можно сверить страницу с печатным изданием.</string>
-    <string name="about_thanks">Пусть знания принесут пользу.</string>
+    <!-- Programma hakynda -->
+    <string name="about_title">Programma hakynda</string>
+    <string name="about_intro">«Akyda we Namaz» — akyda we namaz baradaky kitaplaryň oflaýn ýygyndysy. Programma internetsiz işleýär, mahabat ýok we hiç bir rugsat talap etmeýär.</string>
+    <string name="about_features">Üç kitap</string>
+    <string name="about_features_text">«Akyda» — akydanyň esaslary, «Namaz kitaby» — namaz, täret we kadalar, «Namaz» — dogalar we sureler, çap nusgasynyň sahypalary bilen.</string>
+    <string name="about_features2">Çäksiz okama</string>
+    <string name="about_features2_text">Bäş sahypa reňki, üç şrift, tekstiň ululygy we gyralary, «sahypalar» hem «süýşürme» tertipleri, bellikler, sözler, ähli kitaplardan gözleg, okama statistikasy.</string>
+    <string name="about_sources">Çeşmeler</string>
+    <string name="about_sources_text">Tekstler çap edilen kitaplardan alyndy: «Namaz kitaby» (Türkmenistanyň Müftüsiniň Müdirligi, Aşgabat, 2016) we «Akyda bölümi». Suratlar we sahypa skanlary asyl görnüşinde berilýär. Çap nusgalarynyň hukuklary olaryň eýelerine degişlidir.</string>
+    <string name="about_disclaimer">Tekst çap skanlaryndan tanaldy. Aýry-aýry ýalňyşlyklar bolup biler — her kitapda «Asyl nusga» tertibi bar, ol ýerde sahypany çap nusgasy bilen deňeşdirip bolýar.</string>
+    <string name="about_thanks">Bilim peýdaly bolsun.</string>
 
-    <!-- Конфиденциальность -->
-    <string name="privacy_title">Политика конфиденциальности</string>
-    <string name="privacy_text">Приложение «Akyda we Namaz» не собирает, не хранит и не передаёт никакие персональные данные.\n\n• Приложение не запрашивает разрешений.\n• Нет доступа к интернету: все книги встроены в приложение.\n• Настройки, закладки, цитаты и статистика хранятся только на вашем устройстве и удаляются вместе с приложением или кнопкой «Сбросить все данные».\n• Нет рекламы, аналитики и сторонних библиотек.\n• Кнопки «Поделиться» и «Сообщить об ошибке» передают текст только в выбранное вами приложение.\n\nЕсли у вас есть вопросы, напишите разработчику.</string>
+    <!-- Gizlinlik -->
+    <string name="privacy_title">Gizlinlik syýasaty</string>
+    <string name="privacy_text">«Akyda we Namaz» programmasy hiç hili şahsy maglumat ýygnamaýar, saklamaýar we geçirmeýär.\n\n• Programma hiç hili rugsat talap etmeýär.\n• Internete giriş ýok: ähli kitaplar programmanyň içinde.\n• Sazlamalar, bellikler, sözler we statistika diňe siziň enjamyňyzda saklanýar we programma aýrylanda ýa-da «Ähli maglumatlary arassala» düwmesi bilen pozulýar.\n• Mahabat, analitika we üçünji tarap kitaphanalary ýok.\n• «Paýlaş» we «Habar ber» düwmeleri teksti diňe siziň saýlan programmaňyza geçirýär.\n\nSoraglaryňyz bar bolsa, döredijä ýazyň.</string>
 
-    <!-- Первый запуск -->
-    <string name="onb_next">Далее</string>
-    <string name="onb_skip">Пропустить</string>
-    <string name="onb_start">Начать чтение</string>
-    <string name="onb1_title">Ассалам алейкум!</string>
-    <string name="onb1_text">Перед вами собрание книг о вероучении и намазе — красивая читалка, созданная специально для них.</string>
-    <string name="onb2_title">Настройте под себя</string>
-    <string name="onb2_text">Выберите язык интерфейса и оформление. Всё можно изменить позже.</string>
-    <string name="onb3_title">Всё под рукой</string>
-    <string name="onb3_text">Три книги, поиск по всем текстам, закладки, цитаты, иллюстрации и постраничные сканы печатного издания. Работает без интернета и без разрешений.</string>
+    <!-- Ilkinji açylyş -->
+    <string name="onb_next">Indiki</string>
+    <string name="onb_skip">Geçmek</string>
+    <string name="onb_start">Okamaga başla</string>
+    <string name="onb1_title">Essalamu aleýkum!</string>
+    <string name="onb1_text">Bu akyda we namaz baradaky kitaplaryň ýygyndysy — olar üçin ýörite döredilen owadan okaýjy.</string>
+    <string name="onb2_title">Özüňize sazlaň</string>
+    <string name="onb2_text">Interfeýs dilini we görnüşi saýlaň. Soň hem üýtgedip bilersiňiz.</string>
+    <string name="onb3_title">Hemmesi eliňizde</string>
+    <string name="onb3_text">Üç kitap, ähli tekstlerden gözleg, bellikler, sözler, suratlar we çap nusgasynyň sahypalary. Internetsiz we rugsatsyz işleýär.</string>
 
-    <!-- Прочее -->
-    <string name="share_via">Поделиться через</string>
-    <string name="error_report_title">Сообщение об ошибке</string>
-    <string name="error_report_text">Пришлите письмо с описанием неточности: укажите книгу и страницу. Это поможет сделать приложение точнее.</string>
-    <string name="email_hint">Написать разработчику</string>
-    <string name="no_email_app">Почтовое приложение не найдено</string>
-    <string name="no_store_app">Google Play не найден на устройстве</string>
-    <string name="yes_remove">Да, удалить</string>
-    <string name="sources_note">Издание: %s</string>
-    <string name="press_again_exit">Нажмите «Назад» ещё раз, чтобы выйти</string>
+    <!-- Beýlekiler -->
+    <string name="share_via">Paýlaşmak üçin</string>
+    <string name="error_report_title">Ýalňyşlyk hakynda habar</string>
+    <string name="error_report_text">Ýalňyşlygy beýan edip hat iberiň: kitaby we sahypany görkeziň. Bu programmany has takyk etmäge kömek eder.</string>
+    <string name="email_hint">Döredijä ýazmak</string>
+    <string name="no_email_app">Poçta programmasy tapylmady</string>
+    <string name="no_store_app">Enjamda Google Play tapylmady</string>
+    <string name="yes_remove">Hawa, aýyr</string>
+    <string name="sources_note">Neşir: %s</string>
+    <string name="press_again_exit">Çykmak üçin «Yza» düwmesine ýene bassyň</string>
     <!-- Адрес для обратной связи: впишите свою почту, чтобы письмо
          из приложения открывалось с уже заполненным получателем. -->
     <string name="dev_email" translatable="false"></string>
     <string name="github_page">GitHub</string>
-    <string name="report_typo">Сообщить об опечатке</string>
-    <string name="report_typo_head">Опечатка или ошибка в тексте книги:</string>
-    <string name="report_typo_hint">Опишите ошибку здесь и отправьте удобным способом.</string>
-    <string name="book_label">Книга</string>
+    <string name="report_typo">Ýalňyşlyk barada habar ber</string>
+    <string name="report_typo_head">Kitapdaky ýalňyşlyk:</string>
+    <string name="report_typo_hint">Ýalňyşlygy şu ýerde ýazyň we amatly usul bilen iberiň.</string>
+    <string name="book_label">Kitap</string>
+    <string name="settings_note">Ähli sazlamalar diňe siziň enjamyňyzda saklanýar. Programma internetsiz işleýär.</string>
+    <string name="onb_books_title">Üç kitap — bir programmada</string>
+    <string name="onb_books_text">«Namaz kitaby», onuň ikinji kitaby we «Akyda»: doly tekst, çap nusgasynyň sahypalary we günüň sözi.</string>
 </resources>

@@ -74,7 +74,7 @@ public class SettingsActivity extends BaseActivity {
         data.addView(reset);
         content.addView(data);
 
-        TextView foot = Ui.tv(this, getString(R.string.language_note), 11.5f, Skin.sub(this), U.ui(this));
+        TextView foot = Ui.tv(this, getString(R.string.settings_note), 11.5f, Skin.sub(this), U.ui(this));
         foot.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams flp = Ui.llpMatch();
         flp.topMargin = U.dp(this, 18);

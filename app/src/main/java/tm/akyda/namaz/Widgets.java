@@ -243,7 +243,7 @@ public final class Widgets {
             float ty = h * 0.30f;
             drawWrapped(c, title, t1, pad, ty, w - pad * 2, h * 0.10f);
             if (t2 != null && !t2.isEmpty()) {
-                String s = t2.toUpperCase(new java.util.Locale("ru"));
+                String s = t2.toUpperCase(new java.util.Locale("tk", "TM"));
                 sub.setTextSize(Math.min(w * 0.045f, h * 0.033f));
                 c.drawText(s, pad, h - pad * 1.6f, sub);
             }

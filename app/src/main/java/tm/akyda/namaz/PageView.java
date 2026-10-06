@@ -27,6 +27,7 @@ public class PageView extends View {
     private int totalPages = 1;
     private float pageTurn = 0f;      // -1..1 сдвиг при анимации
     private int turnDir = 0;
+    private boolean chromeVisible = true;   // колонтитулы рисует BookView, когда false
 
     private final Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint soft = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -60,6 +61,12 @@ public class PageView extends View {
         this.chapterTitle = chapterTitle == null ? "" : chapterTitle;
         this.pageNumber = pageNumber;
         this.totalPages = totalPages;
+        invalidate();
+    }
+
+    /** Колонтитулы и номер страницы (их может рисовать рамка книги). */
+    public void setChromeVisible(boolean visible) {
+        this.chromeVisible = visible;
         invalidate();
     }
 
@@ -120,11 +127,12 @@ public class PageView extends View {
         if (page == null) return;
 
         // Колонтитул
+        if (chromeVisible) {
         int padH = U.dp(getContext(), 22);
         float headerY = U.dp(getContext(), 30);
         headerPaint().setTextSize(U.sp(getContext(), 10.5f));
         headerPaint().setColor(Skin.paperSub(theme));
-        String head = chapterTitle.toUpperCase(new java.util.Locale("ru"));
+        String head = chapterTitle.toUpperCase(new java.util.Locale("tk", "TM"));
         float headW = headerPaint().measureText(head);
         float maxHead = w - padH * 4;
         if (headW > maxHead) {
@@ -136,6 +144,7 @@ public class PageView extends View {
         accent.setStrokeWidth(Math.max(1f, U.dpf(getContext(), 0.8f)));
         float lineW = U.dpf(getContext(), 34f);
         c.drawLine(w / 2f - lineW, headerY + U.dp(getContext(), 8), w / 2f + lineW, headerY + U.dp(getContext(), 8), accent);
+        }
 
         // Текст
         c.save();
@@ -207,6 +216,7 @@ public class PageView extends View {
         c.restore();
 
         // Нижний колонтитул: номер страницы с орнаментом
+        if (chromeVisible) {
         float footY = h - U.dp(getContext(), 26);
         footerPaint().setTextSize(U.sp(getContext(), 11f));
         footerPaint().setColor(Skin.paperSub(theme));
@@ -228,6 +238,7 @@ public class PageView extends View {
             c.drawLine(0, h - 1, w, h - 1, accent);
             accent.setColor(Skin.withAlpha(Skin.paperAccent(theme), 0.55f));
             c.drawLine(0, h - 1, Math.max(2f, w * frac), h - 1, accent);
+        }
         }
     }
 

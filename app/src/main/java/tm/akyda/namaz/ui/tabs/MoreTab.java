@@ -82,39 +82,6 @@ public class MoreTab implements TabPage {
         }
         themeWrap.addView(themes);
 
-        themeWrap.addView(Ui.space(host, 16));
-        themeWrap.addView(Ui.tv(host, host.getString(R.string.interface_language), 14.5f, Skin.ink(host), U.uiMed(host)));
-        LinearLayout langs = Ui.row(host);
-        LinearLayout.LayoutParams llp = Ui.llpMatch();
-        llp.topMargin = U.dp(host, 12);
-        langs.setLayoutParams(llp);
-        final TextView ru = Ui.chip(host, host.getString(R.string.lang_ru), Loc.RU.equals(Loc.lang()));
-        final TextView tk = Ui.chip(host, host.getString(R.string.lang_tk), Loc.TK.equals(Loc.lang()));
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp.rightMargin = U.dp(host, 8);
-        ru.setLayoutParams(lp);
-        langs.addView(ru);
-        langs.addView(tk);
-        Ui.click(ru, new Runnable() {
-            @Override
-            public void run() {
-                Loc.set(host, Loc.RU);
-                host.restartApp();
-            }
-        });
-        Ui.click(tk, new Runnable() {
-            @Override
-            public void run() {
-                Loc.set(host, Loc.TK);
-                host.restartApp();
-            }
-        });
-        themeWrap.addView(langs);
-        TextView note = Ui.tv(host, host.getString(R.string.language_note), 11.5f, Skin.sub(host), U.ui(host));
-        LinearLayout.LayoutParams nlp = Ui.llpMatch();
-        nlp.topMargin = U.dp(host, 10);
-        themeWrap.addView(note, nlp);
         list.addView(themeWrap);
         list.addView(Ui.space(host, 18));
 

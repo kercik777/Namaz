@@ -13,10 +13,8 @@ android {
         applicationId "tm.akyda.namaz"
         minSdk 21
         targetSdk 34
-        versionCode 2
-        versionName "1.0.1"
-        // В сборку войдут только нужные языковые ресурсы
-        resConfigs "ru", "tk", "en"
+        versionCode 3
+        versionName "1.1.0"
     }
 
     buildFeatures {

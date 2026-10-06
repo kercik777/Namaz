@@ -448,6 +448,6 @@ public class Lib {
     }
 
     public String dateOf(long time) {
-        return new SimpleDateFormat("d MMMM, HH:mm", new Locale("ru")).format(new Date(time));
+        return U.dateTimeTk(time);
     }
 }

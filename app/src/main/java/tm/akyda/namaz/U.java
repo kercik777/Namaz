@@ -217,13 +217,13 @@ public final class U {
 
     public static String cap(String s) {
         if (s == null || s.isEmpty()) return s;
-        return s.substring(0, 1).toUpperCase(new Locale("ru")) + s.substring(1);
+        return s.substring(0, 1).toUpperCase(new Locale("tk", "TM")) + s.substring(1);
     }
 
     /** Убирает диакритику — для «мягкого» поиска (ä → a, ň → n, ş → s, ý → y …). */
     public static String norm(String s) {
         if (s == null) return "";
-        String t = s.toLowerCase(new Locale("ru"));
+        String t = s.toLowerCase(new Locale("tk", "TM"));
         StringBuilder b = new StringBuilder(t.length());
         for (int i = 0; i < t.length(); i++) {
             char ch = t.charAt(i);
@@ -258,7 +258,46 @@ public final class U {
         if (h < 24) return c.getResources().getQuantityString(R.plurals.hours_ago, (int) h, (int) h);
         long days = h / 24;
         if (days < 30) return c.getResources().getQuantityString(R.plurals.days_ago, (int) days, (int) days);
-        return new SimpleDateFormat("d MMMM yyyy", new Locale("ru")).format(new Date(when));
+        return dateTk(when);
+    }
+
+
+    /* ==================== Даты по-туркменски ==================== */
+
+    public static final String[] MONTHS_TK = {
+            "ýanwar", "fewral", "mart", "aprel", "maý", "iýun",
+            "iýul", "awgust", "sentýabr", "oktýabr", "noýabr", "dekabr"
+    };
+
+    public static final String[] DAYS_TK = {
+            "ýekşenbe", "duşenbe", "sişenbe", "çarşenbe", "penşenbe", "anna", "şenbe"
+    };
+
+    /** «6 oktýabr 2026». */
+    public static String dateTk(long when) {
+        java.util.Calendar c = java.util.Calendar.getInstance();
+        c.setTimeInMillis(when);
+        return c.get(java.util.Calendar.DAY_OF_MONTH) + " " + MONTHS_TK[c.get(java.util.Calendar.MONTH)]
+                + " " + c.get(java.util.Calendar.YEAR);
+    }
+
+    /** «6 oktýabr, 14:05». */
+    public static String dateTimeTk(long when) {
+        java.util.Calendar c = java.util.Calendar.getInstance();
+        c.setTimeInMillis(when);
+        String hh = String.format(java.util.Locale.US, "%02d", c.get(java.util.Calendar.HOUR_OF_DAY));
+        String mm = String.format(java.util.Locale.US, "%02d", c.get(java.util.Calendar.MINUTE));
+        return c.get(java.util.Calendar.DAY_OF_MONTH) + " " + MONTHS_TK[c.get(java.util.Calendar.MONTH)]
+                + ", " + hh + ":" + mm;
+    }
+
+    /** «şenbe, 6 oktýabr» — для приветствия на главной. */
+    public static String todayTk() {
+        java.util.Calendar c = java.util.Calendar.getInstance();
+        int dow = c.get(java.util.Calendar.DAY_OF_WEEK) - 1;
+        if (dow < 0 || dow >= DAYS_TK.length) dow = 0;
+        return DAYS_TK[dow] + ", " + c.get(java.util.Calendar.DAY_OF_MONTH) + " "
+                + MONTHS_TK[c.get(java.util.Calendar.MONTH)];
     }
 
     public static String greeting(Context c) {
@@ -326,6 +365,15 @@ public final class U {
     }
 
     /* ---------- Рисование ---------- */
+
+    /** Фон со скруглением только сверху — для нижних панелей (снизу панель «прилипает» к краю). */
+    public static GradientDrawable roundTop(int color, float radiusDp, Context c) {
+        GradientDrawable d = new GradientDrawable();
+        d.setColor(color);
+        float r = dpf(c, radiusDp);
+        d.setCornerRadii(new float[]{r, r, r, r, 0f, 0f, 0f, 0f});
+        return d;
+    }
 
     public static void roundRect(Canvas c, float l, float t, float r, float b, float rad, Paint p) {
         c.drawRoundRect(new RectF(l, t, r, b), rad, rad, p);
