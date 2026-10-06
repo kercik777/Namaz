@@ -195,7 +195,7 @@ public class PageView extends View {
 
             c.save();
             clip.reset();
-            clip.addRect(0, y, opt.width, y + hh);
+            clip.addRect(0f, y, opt.width, y + hh, Path.Direction.CW);
             c.clipPath(clip);
             c.translate(0, y - top);
             it.layout.draw(c);

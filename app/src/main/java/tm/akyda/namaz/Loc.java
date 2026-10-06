@@ -32,7 +32,7 @@ public final class Loc {
     }
 
     public static void set(Context c, String code) {
-        P.s(P.lang, code);
+        P.ss(P.lang, code);
         Locale.setDefault(new Locale(code));
     }
 }

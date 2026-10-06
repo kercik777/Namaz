@@ -157,10 +157,10 @@ public class HomeTab implements TabPage {
 
         Book.Toc toc = b.tocAt(p.chapter);
         if (toc != null) {
-            TextView ch = Ui.tv(host, toc.text, 12.5f, 0xCCF7F1E2, U.ui(host));
+            TextView chTv = Ui.tv(host, toc.text, 12.5f, 0xCCF7F1E2, U.ui(host));
             LinearLayout.LayoutParams hlp = Ui.llpMatch();
             hlp.topMargin = U.dp(host, 3);
-            col.addView(ch, hlp);
+            col.addView(chTv, hlp);
         }
 
         // Прогресс
@@ -188,7 +188,7 @@ public class HomeTab implements TabPage {
             }
         });
 
-        TextView pct = Ui.tv(host, getString(R.string.book_progress, p.percent), 11.5f,
+        TextView pct = Ui.tv(host, host.getString(R.string.book_progress, p.percent), 11.5f,
                 Skin.withAlpha(0xFFF7F1E2, 0.75f), U.ui(host));
         LinearLayout.LayoutParams plp = Ui.llpMatch();
         plp.topMargin = U.dp(host, 6);

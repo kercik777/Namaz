@@ -13,6 +13,7 @@ import tm.akyda.namaz.IconView;
 import tm.akyda.namaz.Lib;
 import tm.akyda.namaz.Loc;
 import tm.akyda.namaz.Nav;
+import tm.akyda.namaz.P;
 import tm.akyda.namaz.R;
 import tm.akyda.namaz.Skin;
 import tm.akyda.namaz.U;
@@ -73,7 +74,7 @@ public class MoreTab implements TabPage {
             Ui.click(chip, new Runnable() {
                 @Override
                 public void run() {
-                    tm.akyda.namaz.P.i(tm.akyda.namaz.P.appTheme, m);
+                    P.si(P.appTheme, m);
                     host.restartApp();
                 }
             });

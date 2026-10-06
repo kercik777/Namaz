@@ -82,7 +82,7 @@ public class Lib {
             o.put("pr", p.percent);
             o.put("t", p.time);
             all.put(bookId, o);
-            P.s(K_PROG, all.toString());
+            P.ss(K_PROG, all.toString());
         } catch (Exception ignored) {
         }
     }
@@ -170,7 +170,7 @@ public class Lib {
                 o.put("t", m.time);
                 arr.put(o);
             }
-            P.s(K_MARKS, arr.toString());
+            P.ss(K_MARKS, arr.toString());
             marksCache = list;
         } catch (Exception ignored) {
         }
@@ -275,7 +275,7 @@ public class Lib {
                 o.put("t", q.time);
                 arr.put(o);
             }
-            P.s(K_QUOTES, arr.toString());
+            P.ss(K_QUOTES, arr.toString());
             quotesCache = list;
         } catch (Exception ignored) {
         }
@@ -336,7 +336,7 @@ public class Lib {
             JSONObject o = statsObj();
             o.put("pages", o.optInt("pages", 0) + 1);
             touchDay(o);
-            P.s(K_STATS, o.toString());
+            P.ss(K_STATS, o.toString());
         } catch (Exception ignored) {
         }
     }
@@ -347,7 +347,7 @@ public class Lib {
             JSONObject o = statsObj();
             o.put("ms", o.optLong("ms", 0) + ms);
             touchDay(o);
-            P.s(K_STATS, o.toString());
+            P.ss(K_STATS, o.toString());
         } catch (Exception ignored) {
         }
     }
@@ -428,11 +428,11 @@ public class Lib {
         while (h.size() > 12) h.remove(h.size() - 1);
         JSONArray arr = new JSONArray();
         for (String s : h) arr.put(s);
-        P.s(K_HIST, arr.toString());
+        P.ss(K_HIST, arr.toString());
     }
 
     public void clearSearchHistory() {
-        P.s(K_HIST, "[]");
+        P.ss(K_HIST, "[]");
     }
 
     /** Сброс всех пользовательских данных. */

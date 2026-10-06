@@ -143,7 +143,7 @@ public class OnboardActivity extends BaseActivity {
     }
 
     private void finishOnboarding() {
-        P.b(P.onboarded, true);
+        P.sb(P.onboarded, true);
         startActivity(new Intent(this, MainActivity.class));
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         finish();
@@ -248,7 +248,7 @@ public class OnboardActivity extends BaseActivity {
             Ui.click(chips[i], new Runnable() {
                 @Override
                 public void run() {
-                    P.i(P.appTheme, m);
+                    P.si(P.appTheme, m);
                     restart();
                 }
             });

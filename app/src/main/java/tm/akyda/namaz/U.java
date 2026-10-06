@@ -262,7 +262,7 @@ public final class U {
     }
 
     public static String greeting(Context c) {
-        int h = new java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY);
+        int h = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY);
         if (h >= 5 && h < 12) return c.getString(R.string.greeting_morning);
         if (h >= 12 && h < 17) return c.getString(R.string.greeting_day);
         if (h >= 17 && h < 23) return c.getString(R.string.greeting_evening);

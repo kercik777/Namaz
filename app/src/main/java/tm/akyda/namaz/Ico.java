@@ -23,7 +23,7 @@ public final class Ico {
 
     private static final Path P = new Path();
     private static final RectF R = new RectF();
-    private static final float U = 1f / 24f;   // сетка 24×24
+    private static final float G = 1f / 24f;   // сетка 24×24
 
     private static float x(float v, float cx, float s) {
         return cx + (v - 12f) * s;
@@ -42,7 +42,7 @@ public final class Ico {
      * @param p    краска (цвет)
      */
     public static void draw(Canvas c, int icon, float cx, float cy, float size, Paint p) {
-        float s = size * U * 1.0f;
+        float s = size * G;
         p.setStyle(Paint.Style.STROKE);
         p.setStrokeWidth(Math.max(1.4f, size * 0.085f));
         p.setStrokeCap(Paint.Cap.ROUND);

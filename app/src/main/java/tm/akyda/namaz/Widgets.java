@@ -499,7 +499,6 @@ public final class Widgets {
 
         @Override
         public boolean onTouchEvent(MotionEvent e) {
-            scaleDet.onScaleEnd(null);
             scaleDet.onTouchEvent(e);
             tapDet.onTouchEvent(e);
             switch (e.getActionMasked()) {

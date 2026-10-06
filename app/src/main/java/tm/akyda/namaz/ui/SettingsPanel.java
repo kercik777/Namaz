@@ -47,7 +47,7 @@ public final class SettingsPanel {
             Ui.click(chip, new Runnable() {
                 @Override
                 public void run() {
-                    P.i(P.readerFont, f);
+                    P.si(P.readerFont, f);
                     listener.onChanged();
                     refreshChips(chip);
                 }
@@ -64,7 +64,7 @@ public final class SettingsPanel {
                     @Override
                     public void onSlide(float value, boolean fromUser) {
                         int v = 14 + Math.round(value * 12);
-                        P.i(P.readerSize, v);
+                        P.si(P.readerSize, v);
                         listener.onChanged();
                     }
                 }));
@@ -75,7 +75,7 @@ public final class SettingsPanel {
                 (line - 120) / 80f, new Widgets.OnSlide() {
                     @Override
                     public void onSlide(float value, boolean fromUser) {
-                        P.i(P.readerLine, 120 + Math.round(value * 80));
+                        P.si(P.readerLine, 120 + Math.round(value * 80));
                         listener.onChanged();
                     }
                 }));
@@ -86,7 +86,7 @@ public final class SettingsPanel {
                 (margin - 12) / 28f, new Widgets.OnSlide() {
                     @Override
                     public void onSlide(float value, boolean fromUser) {
-                        P.i(P.readerMargin, 12 + Math.round(value * 28));
+                        P.si(P.readerMargin, 12 + Math.round(value * 28));
                         listener.onChanged();
                     }
                 }));
@@ -129,7 +129,7 @@ public final class SettingsPanel {
             Ui.click(sw, new Runnable() {
                 @Override
                 public void run() {
-                    P.i(P.readerTheme, t);
+                    P.si(P.readerTheme, t);
                     listener.onChanged();
                 }
             });
@@ -153,7 +153,7 @@ public final class SettingsPanel {
             Ui.click(chip, new Runnable() {
                 @Override
                 public void run() {
-                    P.i(P.readerMode, m);
+                    P.si(P.readerMode, m);
                     listener.onChanged();
                     refreshChips(chip);
                 }
@@ -178,7 +178,7 @@ public final class SettingsPanel {
             Ui.click(chip, new Runnable() {
                 @Override
                 public void run() {
-                    P.i(P.readerAnim, an);
+                    P.si(P.readerAnim, an);
                     listener.onChanged();
                     refreshChips(chip);
                 }
@@ -289,7 +289,7 @@ public final class SettingsPanel {
             @Override
             public void run() {
                 state[0] = !state[0];
-                P.b(key, state[0]);
+                P.sb(key, state[0]);
                 sw.setChecked(state[0]);
             }
         });

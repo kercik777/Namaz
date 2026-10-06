@@ -98,9 +98,9 @@ public class StatsActivity extends BaseActivity {
             card.addView(head);
 
             FrameLayout track = Ui.frame(this);
-            LinearLayout.LayoutParams tlp = Ui.llpMatchH(U.dp(this, 5));
-            tlp.topMargin = U.dp(this, 10);
-            track.setLayoutParams(tlp);
+            LinearLayout.LayoutParams trackLp = Ui.llpMatchH(U.dp(this, 5));
+            trackLp.topMargin = U.dp(this, 10);
+            track.setLayoutParams(trackLp);
             View bg = new View(this);
             bg.setBackground(U.round(Skin.surface2(this), 3f, this));
             track.addView(bg, Ui.flp(FrameLayout.LayoutParams.MATCH_PARENT, U.dp(this, 5), Gravity.CENTER));

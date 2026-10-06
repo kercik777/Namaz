@@ -956,7 +956,8 @@ public class ReaderActivity extends BaseActivity {
             this.pad = pad;
             int h = 6;
             if (item.image != null) {
-                h = item.imageHeight + U.dp(c, 24) + (item.captionLayout != null ? item.captionHeight : 0);
+                h = (int) item.imageHeight + U.dp(c, 24)
+                        + Math.round(item.captionLayout != null ? item.captionHeight : 0f);
             } else if (item.layout != null) {
                 h = item.layout.getHeight() + (int) (item.spaceBefore + item.spaceAfter);
             } else {

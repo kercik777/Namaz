@@ -42,7 +42,7 @@ public final class P {
         return sp.getInt(k, def);
     }
 
-    public static void i(String k, int v) {
+    public static void si(String k, int v) {
         sp.edit().putInt(k, v).apply();
     }
 
@@ -50,7 +50,7 @@ public final class P {
         return sp.getString(k, def);
     }
 
-    public static void s(String k, String v) {
+    public static void ss(String k, String v) {
         sp.edit().putString(k, v).apply();
     }
 
@@ -58,7 +58,7 @@ public final class P {
         return sp.getBoolean(k, def);
     }
 
-    public static void b(String k, boolean v) {
+    public static void sb(String k, boolean v) {
         sp.edit().putBoolean(k, v).apply();
     }
 
@@ -66,7 +66,7 @@ public final class P {
         return sp.getLong(k, def);
     }
 
-    public static void l(String k, long v) {
+    public static void sl(String k, long v) {
         sp.edit().putLong(k, v).apply();
     }
 
