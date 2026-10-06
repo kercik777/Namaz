@@ -242,6 +242,17 @@ def main():
         "drawable": {os.path.basename(f).split(".")[0] for f in glob.glob(os.path.join(res_dir, "drawable-*", "*"))},
         "string": set(), "plurals": set(),
     }
+    # дубликаты имён внутри одного файла строк -- AAPT падает
+    for f in glob.glob(os.path.join(res_dir, "values*", "strings.xml")):
+        text = open(f, encoding="utf-8").read()
+        names = re.findall(r'<(string|plurals)\s+name="([^"]+)"', text)
+        seen = set()
+        for tag, name in names:
+            if (tag, name) in seen:
+                problems.append("{}: повторяется {} {}".format(
+                    os.path.relpath(f, ROOT), tag, name))
+            seen.add((tag, name))
+
     for kind in ("string", "plurals"):
         for f in glob.glob(os.path.join(res_dir, "values*", "strings.xml")):
             files_index[kind] |= set(re.findall(
