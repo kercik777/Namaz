@@ -28,3 +28,6 @@ output.json
 /tmp_build/
 tools/**/__pycache__/
 tools/**/*.pyc
+
+# Рабочие каталоги конвейера OCR
+/work/

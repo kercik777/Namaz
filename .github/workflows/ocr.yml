@@ -1,22 +1,35 @@
-name: OCR книг (распознавание текста)
+name: OCR книг (сканы -> текст)
 
-# Запускается вручную (Actions → OCR книг → Run workflow) или при изменении скриптов OCR.
-# В раннере есть полный доступ в интернет, поэтому модели PP-OCRv5
+# Запускается вручную (Actions → OCR книг → Run workflow) или при изменении инструментов.
+# На раннере есть интернет, поэтому мультиязычные модели PP-OCRv5
 # (латиница / кириллица / арабица) скачиваются автоматически.
 on:
   workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Сколько страниц обработать (0 = все, для проверки)'
+        required: false
+        default: '0'
   push:
     paths:
       - 'tools/ocr/**'
+      - 'tools/content/build_book.py'
+      - 'tools/build_pages.py'
       - '.github/workflows/ocr.yml'
 
 permissions:
   contents: write
 
+concurrency:
+  group: ocr-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   ocr:
     runs-on: ubuntu-latest
     timeout-minutes: 350
+    env:
+      LIMIT: ${{ github.event.inputs.limit || '0' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -32,26 +45,51 @@ jobs:
       - name: Python-зависимости
         run: |
           python -m pip install --upgrade pip
-          pip install pymupdf pillow numpy "rapidocr>=3.4" onnxruntime
+          pip install pymupdf pillow numpy "rapidocr>=3.4" onnxruntime rapidfuzz
 
-      - name: Распознавание
-        run: python tools/ocr/run_ocr.py 2>&1 | tee ocr.log
-
-      - name: Публикация результата
+      - name: Нарезка сканов (страницы из разворотов)
         run: |
-          ls -la content/ocr || true
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A content/ocr
-          git commit -m "OCR: результаты распознавания книг (автоматически)" || echo "нет изменений"
-          git push
+          mkdir -p work
+          python tools/build_pages.py --pdf "1Namaz_compressed.pdf" --book b1 \
+            --out-assets work/pages/b1 --out-work work/b1 --dpi 300 --target-w 1400 2>&1 | tail -5
+          python tools/build_pages.py --pdf "2Namaz 2_compressed.pdf" --book b2 \
+            --out-assets work/pages/b2 --out-work work/b2 --dpi 300 --target-w 1400 2>&1 | tail -5
+
+      - name: Распознавание текста
+        run: |
+          set -o pipefail
+          python tools/ocr/recognize.py --work work/b1 --pages work/b1 --book b1 \
+            --out content/ocr/b1.json --workers 2 --limit "$LIMIT" 2>&1 | tee ocr-b1.log
+          python tools/ocr/recognize.py --work work/b2 --pages work/b2 --book b2 \
+            --out content/ocr/b2.json --workers 2 --limit "$LIMIT" 2>&1 | tee ocr-b2.log
+
+      - name: Сборка книг для приложения
+        run: |
+          python tools/content/build_book.py --work work/b1 --pages work/pages/b1 \
+            --ocr content/ocr/b1.json --assets app/src/main/assets --book b1 --correct
+          python tools/content/build_book.py --work work/b2 --pages work/pages/b2 \
+            --ocr content/ocr/b2.json --assets app/src/main/assets --book b2 --correct
+
+      - name: Публикация результата в репозиторий
+        run: |
+          mkdir -p ci-logs
+          tail -c 200000 ocr-b1.log > ci-logs/ocr-b1.log || true
+          tail -c 200000 ocr-b2.log > ci-logs/ocr-b2.log || true
+          du -sh app/src/main/assets/pages/* app/src/main/assets/content/* 2>/dev/null || true
+          git config user.name "ci-bot"
+          git config user.email "ci-bot@users.noreply.github.com"
+          git add -A content/ocr app/src/main/assets ci-logs
+          git commit -m "OCR: распознанный текст и сканы книг (автоматически) [skip ci]" || echo "нет изменений"
+          git pull --rebase --autostash || true
+          git push || echo "push не удался"
 
       - name: Лог ошибок в репозиторий (нужен для отладки)
         if: failure()
         run: |
           mkdir -p ci-logs
-          tail -c 300000 ocr.log > ci-logs/ocr.log || true
-          grep -aE "Error|error|Traceback|Exception|ОШИБКА" ocr.log | sort -u | head -200 > ci-logs/ocr-errors.txt || true
+          tail -c 200000 ocr-b1.log > ci-logs/ocr-b1.log || true
+          tail -c 200000 ocr-b2.log > ci-logs/ocr-b2.log || true
+          grep -aiE "error|traceback|exception|ОШИБКА" ci-logs/ocr-*.log 2>/dev/null | sort -u | head -100 > ci-logs/ocr-errors.txt || true
           git config user.name "ci-bot"
           git config user.email "ci-bot@users.noreply.github.com"
           git add -f ci-logs
@@ -64,5 +102,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ocr-result
-          path: content/ocr
+          path: |
+            content/ocr
+            work/*/meta.json
           if-no-files-found: warn
