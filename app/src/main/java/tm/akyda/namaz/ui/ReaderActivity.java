@@ -76,10 +76,16 @@ public class ReaderActivity extends BaseActivity {
     /** Подобранный размер шрифта для каждой страницы — чтобы не считать его заново. */
     private final Map<String, Float> fitCache = new java.util.HashMap<String, Float>();
 
-    private final Map<Integer, Bitmap> pageCache = new LinkedHashMap<Integer, Bitmap>(6, 0.75f, true) {
+    /** Готовые листы: держим немного и в «лёгком» формате — память важнее оттенков. */
+    private final Map<Integer, Bitmap> pageCache = new LinkedHashMap<Integer, Bitmap>(4, 0.75f, true) {
         @Override
         protected boolean removeEldestEntry(Map.Entry<Integer, Bitmap> eldest) {
-            return size() > 6;
+            if (size() > 4) {
+                Bitmap b = eldest.getValue();
+                if (b != null && !b.isRecycled()) b.recycle();
+                return true;
+            }
+            return false;
         }
     };
 
@@ -447,7 +453,7 @@ public class ReaderActivity extends BaseActivity {
                 View.MeasureSpec.makeMeasureSpec(bh, View.MeasureSpec.EXACTLY));
         renderer.layout(0, 0, w, bh);
 
-        Bitmap bm = Bitmap.createBitmap(w, bh, Bitmap.Config.ARGB_8888);
+        Bitmap bm = Bitmap.createBitmap(w, bh, Bitmap.Config.RGB_565);
         renderer.draw(new Canvas(bm));
         return bm;
     }
