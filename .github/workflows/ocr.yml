@@ -19,6 +19,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: ocr-${{ github.ref }}
@@ -114,6 +115,12 @@ jobs:
           git commit -m "OCR: распознанный текст и сканы книг (автоматически) [skip ci]" || echo "нет изменений"
           git pull --rebase --autostash || true
           git push || echo "push не удался"
+
+      - name: Пересобрать APK с новым содержимым
+        if: env.LIMIT == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run android-ci.yml --ref "${GITHUB_REF_NAME}" || echo "не удалось запустить сборку"
 
       - name: Лог ошибок в репозиторий (нужен для отладки)
         if: failure()
