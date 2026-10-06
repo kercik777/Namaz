@@ -186,9 +186,9 @@ def save_outputs(rgb: np.ndarray, webp_path: str, jpg_path: str, target_w: int =
         img = img.resize((target_w, max(1, int(img.height * scale))), Image.LANCZOS)
     if img.mode != "L" and colorfulness(np.asarray(img)) < 0.0045:
         img = img.convert("L")
-        img.save(webp_path, "WEBP", quality=64, method=6)
+        img.save(webp_path, "WEBP", quality=64, method=4)
     else:
-        img.save(webp_path, "WEBP", quality=74, method=6)
+        img.save(webp_path, "WEBP", quality=74, method=4)
 
 
 def process_pdf(pdf_path: str, book: str, out_assets: str, out_work: str,

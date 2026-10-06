@@ -33,53 +33,161 @@ LATIN = re.compile(r"[A-Za-zäňşýöüžçÄŇŞÝÖÜŽÇ]")
 _ENGINES = None
 
 
+def _find_enums():
+    """Ищет enum-типы RapidOCR в разных версиях библиотеки."""
+    found = {}
+    names = ("LangDet", "LangRec", "ModelType", "OCRVersion")
+    try:
+        import rapidocr
+        for n in names:
+            if hasattr(rapidocr, n):
+                found[n] = getattr(rapidocr, n)
+    except Exception:  # noqa: BLE001
+        pass
+    for mod in ("rapidocr.utils.typings", "rapidocr.utils.typings_enum",
+                "rapidocr.utils.parse_parameters", "rapidocr.typings"):
+        try:
+            m = __import__(mod, fromlist=["*"])
+        except Exception:  # noqa: BLE001
+            continue
+        for n in names:
+            if n not in found and hasattr(m, n):
+                found[n] = getattr(m, n)
+    return found
+
+
+def _pick(enum_cls, *names):
+    for n in names:
+        if hasattr(enum_cls, n):
+            return getattr(enum_cls, n)
+    return None
+
+
+def _lang_value(enum_cls, lang):
+    if lang == "latin":
+        return _pick(enum_cls, "LATIN", "latin", "EN", "en")
+    if lang == "cyrillic":
+        return _pick(enum_cls, "CYRILLIC", "cyrillic", "ESLAV", "east_slavic")
+    return _pick(enum_cls, "ARABIC", "arabic", "AR")
+
+
+class Rec:
+    """Распознавание строк: сначала пытаемся только распознавание, затем полный конвейер."""
+
+    def __init__(self, engine, rec_only=True):
+        self.engine = engine
+        self.rec_only = rec_only
+
+    def __call__(self, img):
+        return self.run(img)
+
+    def run(self, img):
+        if self.rec_only:
+            try:
+                return self.engine(img, use_det=False, use_cls=False, use_rec=True)
+            except TypeError:
+                pass
+            except Exception:  # noqa: BLE001
+                return None
+        try:
+            return self.engine(img)
+        except Exception:  # noqa: BLE001
+            return None
+
+
+def _params(kind, lang=None, enums=None, use_enums=True):
+    p = {"Global.log_level": "error", "Global.text_score": 0.25}
+    if kind == "det":
+        p["Det.limit_side_len"] = 1600
+        p["Det.limit_type"] = "min"
+        p["Det.unclip_ratio"] = 1.7
+    else:
+        p["Global.text_score"] = 0.0
+        p["Global.use_cls"] = False
+        p["Rec.rec_img_shape"] = [3, 48, 320]
+    if not use_enums:
+        if kind == "det":
+            p["Det.lang_type"] = "ch"
+            p["Det.model_type"] = "mobile"
+            p["Det.ocr_version"] = "PP-OCRv5"
+        else:
+            p["Rec.lang_type"] = lang
+            p["Rec.model_type"] = "mobile"
+            p["Rec.ocr_version"] = "PP-OCRv5"
+        return p
+    enums = enums or {}
+    mt = _pick(enums.get("ModelType"), "MOBILE", "mobile") if enums.get("ModelType") else None
+    ov = _pick(enums.get("OCRVersion"), "PPOCRV5", "PP_OCRv5", "v5") if enums.get("OCRVersion") else None
+    if kind == "det":
+        lt = _pick(enums.get("LangDet"), "CH", "ch", "MULTI", "multi") if enums.get("LangDet") else None
+        if mt is not None:
+            p["Det.model_type"] = mt
+        if ov is not None:
+            p["Det.ocr_version"] = ov
+        if lt is not None:
+            p["Det.lang_type"] = lt
+    else:
+        lt = _lang_value(enums.get("LangRec"), lang) if enums.get("LangRec") else None
+        if mt is not None:
+            p["Rec.model_type"] = mt
+        if ov is not None:
+            p["Rec.ocr_version"] = ov
+        if lt is not None:
+            p["Rec.lang_type"] = lt
+    return p
+
+
 def engines():
-    """Детектор (один) + распознаватели по языкам."""
+    """Детектор (один) + распознаватели по языкам. Подстраивается под версию RapidOCR."""
     global _ENGINES
     if _ENGINES is not None:
         return _ENGINES
     from rapidocr import RapidOCR
 
-    det = RapidOCR(params={
-        "Global.text_score": 0.25,
-        "Global.log_level": "error",
-        "Det.lang_type": "ch",
-        "Det.model_type": "mobile",
-        "Det.ocr_version": "PP-OCRv5",
-        "Det.limit_side_len": 1600,
-        "Det.limit_type": "min",
-        "Det.unclip_ratio": 1.7,
-        "Rec.lang_type": "latin",
-        "Rec.model_type": "mobile",
-        "Rec.ocr_version": "PP-OCRv5",
-    })
+    enums = _find_enums()
+    print("  найдены enum-типы RapidOCR:", sorted(enums.keys()), flush=True)
+
+    def build(kind, lang=None):
+        last = None
+        for use_enums in (True, False):
+            if use_enums and not enums:
+                continue
+            for rec_only in ((True, False) if kind == "rec" else (False,)):
+                params = _params(kind, lang, enums, use_enums)
+                if rec_only:
+                    params["Global.use_det"] = False
+                try:
+                    eng = RapidOCR(params=params)
+                    print("  модель", kind, lang or "", "готова (enums=%s, rec_only=%s)"
+                          % (use_enums, rec_only), flush=True)
+                    return Rec(eng, rec_only=rec_only)
+                except Exception as e:  # noqa: BLE001
+                    last = e
+        print("  ВНИМАНИЕ: не удалось настроить", kind, lang, "->", last, flush=True)
+        return None
+
+    det = build("det")
     recs = {}
     for lang in ("latin", "cyrillic", "arabic"):
-        try:
-            recs[lang] = RapidOCR(params={
-                "Global.text_score": 0.0,
-                "Global.use_det": False,
-                "Global.use_cls": False,
-                "Global.log_level": "error",
-                "Rec.lang_type": lang,
-                "Rec.model_type": "mobile",
-                "Rec.ocr_version": "PP-OCRv5",
-                "Rec.rec_img_shape": [3, 48, 320],
-            })
-            print("  модель распознавания готова:", lang, flush=True)
-        except Exception as e:  # noqa: BLE001
-            print("  ВНИМАНИЕ: модель", lang, "недоступна:", e, flush=True)
+        r = build("rec", lang)
+        if r is not None:
+            recs[lang] = r
+    if det is None:
+        det = RapidOCR(params={"Global.log_level": "error"})
+    if not recs:
+        print("  ВНИМАНИЕ: языковые модели недоступны, используется модель по умолчанию", flush=True)
+        base = RapidOCR(params={"Global.log_level": "error"})
+        for lang in ("latin", "cyrillic", "arabic"):
+            recs[lang] = Rec(base, rec_only=False)
     _ENGINES = (det, recs)
     return _ENGINES
 
 
 def rec_text(model, img):
-    try:
-        res = model(img, use_det=False, use_cls=False, use_rec=True)
-    except TypeError:
-        res = model(img)
-    except Exception:  # noqa: BLE001
-        return None
+    if isinstance(model, Rec):
+        res = model.run(img)
+    else:
+        res = model.run(img) if hasattr(model, "run") else model(img)
     if res is None:
         return None
     txts = getattr(res, "txts", None)
@@ -150,7 +258,7 @@ def process_page(job):
     img = np.array(Image.open(path).convert("RGB"))
     h, w = img.shape[:2]
     OP.OcrEngine._engine = det
-    lines = OP.detect_lines(img, min_conf=0.20)
+    lines = OP.detect_lines(img, min_conf=0.0)
     ar_frac, cy_frac = page_script(lines)
     langs = ["latin"]
     if ar_frac > 0.15:
