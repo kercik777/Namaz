@@ -21,8 +21,6 @@ public final class P {
     public static final String readerSize = "reader_size";      // sp в тексте
     public static final String readerLine = "reader_line";      // множитель интервала
     public static final String readerMargin = "reader_margin";  // отступ страницы, dp
-    public static final String readerMode = "reader_mode";      // 0 страницы, 1 прокрутка
-    public static final String readerAnim = "reader_anim";      // 0 слайд, 1 затухание, 2 без анимации
     public static final String readerSound = "reader_sound";    // звук перелистывания
     public static final String readerKeepOn = "reader_keep_on";  // не гасить экран
     public static final String readerBrightness = "reader_dim";   // затемнение поверх текста, %

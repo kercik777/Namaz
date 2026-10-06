@@ -10,19 +10,19 @@
 # ---------- палитра ----------
 
 INK = "#4A3B2E"          # тёплый контур
-SKIN = "#EBB98A"
-SKIN_D = "#D49E6C"
-BEARD = "#493728"
-KAMIS = "#FBF7ED"        # мужская рубаха
+SKIN = "#E7B189"
+SKIN_D = "#CF9569"
+BEARD = "#3A2A20"
+KAMIS = "#FDFAF3"        # мужская рубаха
 KAMIS_D = "#DCD2BE"
-TROUSER = "#3E4E5E"
-TROUSER_D = "#33414F"
-CAP = "#F2EBD9"
-CAP_D = "#D9CEB4"
-DRESS = "#3F7089"        # женское платье
-DRESS_D = "#335C71"
-SCARF = "#BC5740"        # платок
-SCARF_D = "#9A4230"
+TROUSER = "#33414E"
+TROUSER_D = "#26313B"
+CAP = "#F7F3E8"
+CAP_D = "#DED6C2"
+DRESS = "#2F6076"        # женское платье
+DRESS_D = "#24495A"
+SCARF = "#B2523C"        # платок
+SCARF_D = "#8E3F2E"
 SHOE = "#8A5A3B"
 SHOE_D = "#6E462A"
 GOLD = "#C9A24A"
@@ -32,11 +32,11 @@ GOLD = "#C9A24A"
 
 def seg(s, a, b, w, color, ink=INK, sw=1.0):
     """Толстая линия с круглыми концами: контур + цвет."""
-    s.path("M %g %g L %g %g" % (a[0], a[1], b[0], b[1]), stroke=ink, sw=w + sw * 1.7)
+    s.path("M %g %g L %g %g" % (a[0], a[1], b[0], b[1]), stroke=ink, sw=w + sw * 2.0)
     return s.path("M %g %g L %g %g" % (a[0], a[1], b[0], b[1]), stroke=color, sw=w)
 
 
-def strokes(s, parts, ink=INK, sw=1.6):
+def strokes(s, parts, ink=INK, sw=1.8):
     """Группа линий: сначала все контуры, потом все цвета — суставы остаются чистыми.
 
     parts — список (точка, точка, толщина, цвет).
@@ -194,6 +194,12 @@ def head_woman(s, c, r=6.6, face=1.0, tilt=0.0):
 
 # ---------- туловище ----------
 
+SLEEVE = "#EDE4CD"       # рукав чуть темнее халата: рука читается даже в мелком размере
+
+SASH = "#2E5B45"
+SASH_D = "#244A38"
+
+
 def body_man(s, neck, sh1, sh2, hem_y, hem_w=6.4):
     """Рубаха-камис: плечи, рукава, подол."""
     smooth(s, [(sh1[0] - 2.6, sh1[1] - 1.4), (sh1[0] - 5.2, sh1[1] + 12), (sh1[0] - hem_w, hem_y),
@@ -209,6 +215,13 @@ def body_man(s, neck, sh1, sh2, hem_y, hem_w=6.4):
     s.path("M %g %g Q %g %g %g %g" % (sh1[0] - 1.6, sh1[1] + 7, sh1[0] - 4.0, hem_y - 13,
                                       sh1[0] - hem_w + 1.4, hem_y - 1.4),
            stroke=KAMIS_D, sw=0.9)
+    # пояс: тёмно-зелёная лента, по ней силуэт читается даже в мелком размере
+    by = sh1[1] + (hem_y - sh1[1]) * 0.45
+    bw = (sh2[0] - sh1[0]) / 2.0 + hem_w - 2.6
+    s.path("M %g %g H %g V %g H %g Z" % (neck[0] - bw, by - 1.1, neck[0] + bw, by + 1.5,
+                                         neck[0] - bw), fill=SASH, stroke=INK, sw=0.6)
+    s.path("M %g %g H %g" % (neck[0] - bw + 0.6, by + 0.9, neck[0] + bw - 0.6),
+           stroke=SASH_D, sw=0.6)
 
 
 def body_woman(s, neck, sh1, sh2, hem_y, hem_w=8.0):
@@ -265,19 +278,23 @@ def draw_stand(s, man=True, hands="fold", hip=44.0):
     hem = hip + (6.0 if man else 32.0)
     s.shadow_fig(50, 81.5, rx=13, ry=2.2)
 
-    if hands == "fold":
+    sleeve = SLEEVE if man else DRESS_D
+    far_arm, near_arm = [], []
+    if hands == "none":
+        pass
+    elif hands == "fold":
         wy = 45.5 if man else 36.0
-        far_arm = [(b["sh2"], (57.0, 39.5), 3.7, cloth), ((57.0, 39.5), (52.4, wy), 3.0, SKIN)]
-        near_arm = [(b["sh1"], (43.0, 39.5), 3.7, cloth), ((43.0, 39.5), (47.6, wy + 1.0), 3.0, SKIN)]
+        far_arm = [(b["sh2"], (58.2, 39.8), 3.3, sleeve), ((58.2, 39.8), (52.6, wy), 2.8, SKIN)]
+        near_arm = [(b["sh1"], (41.8, 39.8), 3.3, sleeve), ((41.8, 39.8), (47.4, wy + 1.0), 2.8, SKIN)]
     elif hands == "down":
-        far_arm = [(b["sh2"], (58.6, 40.0), 3.7, cloth), ((58.6, 40.0), (58.4, 51.0), 2.9, SKIN)]
-        near_arm = [(b["sh1"], (41.4, 40.0), 3.7, cloth), ((41.4, 40.0), (41.6, 51.0), 2.9, SKIN)]
+        far_arm = [(b["sh2"], (61.4, 40.2), 3.4, sleeve), ((61.4, 40.2), (60.8, 51.6), 2.7, SKIN)]
+        near_arm = [(b["sh1"], (38.6, 40.2), 3.4, sleeve), ((38.6, 40.2), (39.2, 51.6), 2.7, SKIN)]
     elif hands == "raise":            # такбир: ладони у ушей
-        far_arm = [(b["sh2"], (61.4, 34.0), 3.7, cloth), ((61.4, 34.0), (56.4, 24.6), 2.9, SKIN)]
-        near_arm = [(b["sh1"], (38.6, 34.0), 3.7, cloth), ((38.6, 34.0), (43.6, 24.6), 2.9, SKIN)]
+        far_arm = [(b["sh2"], (61.4, 34.0), 3.6, sleeve), ((61.4, 34.0), (56.4, 24.6), 2.9, SKIN)]
+        near_arm = [(b["sh1"], (38.6, 34.0), 3.6, sleeve), ((38.6, 34.0), (43.6, 24.6), 2.9, SKIN)]
     elif hands == "palms":            # ладони раскрыты перед грудью
-        far_arm = [(b["sh2"], (60.0, 37.0), 3.7, cloth), ((60.0, 37.0), (55.6, 45.4), 2.9, SKIN)]
-        near_arm = [(b["sh1"], (40.0, 37.0), 3.7, cloth), ((40.0, 37.0), (44.4, 45.4), 2.9, SKIN)]
+        far_arm = [(b["sh2"], (60.0, 37.0), 3.6, sleeve), ((60.0, 37.0), (55.6, 45.4), 2.9, SKIN)]
+        near_arm = [(b["sh1"], (40.0, 37.0), 3.6, sleeve), ((40.0, 37.0), (44.4, 45.4), 2.9, SKIN)]
 
     far = [(b["hip2"], b["knee2"], 4.4, leg), (b["knee2"], b["ankle2"], 3.8, leg)] + far_arm
     near = [(b["hip1"], b["knee1"], 4.4, leg), (b["knee1"], b["ankle1"], 3.8, leg)] + near_arm
@@ -287,15 +304,19 @@ def draw_stand(s, man=True, hands="fold", hip=44.0):
     strokes(s, near)
     shoe(s, b["ankle1"], b["toe1"])
 
-    if hands == "fold":
+    sleeve = SLEEVE if man else DRESS_D
+    far_arm, near_arm = [], []
+    if hands == "none":
+        pass
+    elif hands == "fold":
         wy = 45.5 if man else 36.0
         s.path("M %g %g a %g %g 0 1 0 %g 0 a %g %g 0 1 0 -%g 0 Z"
                % (47.0, wy + 0.4, 2.3, 2.7, 4.6, 2.3, 2.7, 4.6),
                fill=SKIN, stroke=INK, sw=0.8)
         s.path("M %g %g L %g %g" % (47.4, wy + 1.0, 52.6, wy + 0.2), stroke=SKIN_D, sw=0.45)
     elif hands == "down":
-        hand(s, (58.4, 52.0), 1.9)
-        hand(s, (41.6, 52.0), 1.9)
+        hand(s, (60.8, 52.4), 1.85)
+        hand(s, (39.2, 52.4), 1.85)
     elif hands == "raise":
         hand(s, (56.4, 24.0), 1.85, palm=False)
         hand(s, (43.6, 24.0), 1.85, palm=False)
@@ -371,17 +392,18 @@ def draw_sit(s, man=True, hands="knees", turn=0.0):
     b = {"man": man, "neck": (49.8, 37.0),
          "sh1": (43.0, 39.6), "sh2": (56.6, 39.6)}
     draw_body(s, b, man and 66.0 or 78.0)
+    sleeve = SLEEVE if man else DRESS_D
     if hands == "knees":
         strokes(s, [
-            (b["sh2"], (56.2, 50.0), 3.9, cloth), ((56.2, 50.0), (56.6, 58.0), 3.0, SKIN),
-            (b["sh1"], (43.4, 50.0), 3.9, cloth), ((43.4, 50.0), (49.6, 58.4), 3.0, SKIN),
+            (b["sh2"], (56.2, 50.0), 3.6, sleeve), ((56.2, 50.0), (56.6, 58.0), 2.9, SKIN),
+            (b["sh1"], (43.4, 50.0), 3.6, sleeve), ((43.4, 50.0), (49.6, 58.4), 2.9, SKIN),
         ])
         hand(s, (57.0, 59.0), 1.9)
         hand(s, (50.4, 59.4), 1.9)
     elif hands == "up":
         strokes(s, [
-            (b["sh2"], (56.4, 49.6), 3.9, cloth), ((56.4, 49.6), (54.4, 52.6), 3.0, SKIN),
-            (b["sh1"], (43.2, 49.6), 3.9, cloth), ((43.2, 49.6), (45.2, 52.6), 3.0, SKIN),
+            (b["sh2"], (56.4, 49.6), 3.6, sleeve), ((56.4, 49.6), (54.4, 52.6), 2.9, SKIN),
+            (b["sh1"], (43.2, 49.6), 3.6, sleeve), ((43.2, 49.6), (45.2, 52.6), 2.9, SKIN),
         ])
         for x in (45.2, 54.4):
             s.path("M %g %g a %g %g 0 1 0 %g 0 a %g %g 0 1 0 -%g 0 Z"

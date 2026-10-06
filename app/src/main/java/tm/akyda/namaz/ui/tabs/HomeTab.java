@@ -208,7 +208,7 @@ public class HomeTab implements TabPage {
     /* ============ Цитата дня ============ */
 
     private View quoteCard(final ContentRepo.Quote q) {
-        final String txt = tm.akyda.namaz.Loc.TK.equals(tm.akyda.namaz.Loc.lang()) && !U.empty(q.tk) ? q.tk : q.ru;
+        final String txt = U.empty(q.tk) ? "" : q.tk;   // программа только на туркменском
         LinearLayout card = Ui.card(host);
         if (q.located()) {
             // нажатие открывает то самое место в книге

@@ -39,9 +39,9 @@ RUG_D = "#8A2C27"
 RUG_G = "#D8B675"
 WATER = "#5AA8D6"
 WATER_L = "#9FD3EC"
-CARD = "#F6EEDD"
-CARD_D = "#EADFC7"
-ARCH = "#EFE3CC"
+CARD = "#F1E6D2"
+CARD_D = "#E4D6BB"
+ARCH = "#E9DCC1"
 JUG = "#C9CDD2"
 JUG_SH = "#A9AFB6"
 OUTLINE = "#C9B79A"
@@ -193,9 +193,14 @@ def cloth(man):
 
 
 def arm_at(s, sh, elbow, wrist, man, hand_size=2.7, palm=True):
-    """Рука по трём точкам: плечо (в рукаве), предплечье и кисть."""
-    H.seg(s, sh, elbow, 4.4, cloth(man))
-    H.seg(s, elbow, wrist, 3.6, H.SKIN)
+    """Рука по трём точкам: короткий рукав у плеча, предплечье и кисть.
+
+    Рукав рисуем более тёмным тоном и узким контуром — иначе на светлом халате
+    остаётся пустой «овал» и рука не читается.
+    """
+    sleeve = H.SLEEVE if man else H.DRESS_D
+    H.seg(s, sh, elbow, 3.2, sleeve, sw=0.6)
+    H.seg(s, elbow, wrist, 2.6, H.SKIN, sw=0.6)
     H.hand(s, wrist, hand_size, palm)
 
 
@@ -246,7 +251,7 @@ def abl_scene(s, man=True):
 def wudu(s, man=True, part="hands"):
     """Омовение: человек стоит у чаши, вода льётся на нужную часть тела."""
     abl_scene(s, man)
-    b = H.draw_stand(s, man, hands="down")
+    b = H.draw_stand(s, man, hands="none")   # руки рисуем сами: по одной нужной
     sh1, sh2, neck = b["sh1"], b["sh2"], b["neck"]
     hip = b["hip1"][1]
     if part == "hands":
@@ -257,16 +262,16 @@ def wudu(s, man=True, part="hands"):
         H.water(s, 70.0, 52.0, 55.6)
         H.drops(s, 62.0, 61.6, 3, spread=5.0)
     elif part == "mouth":
-        arm_at(s, sh2, (sh2[0] + 2.0, sh2[1] + 7.0), (neck[0] + 1.6, neck[1] - 9.4), man, 2.5)
+        arm_at(s, sh2, (sh2[0] - 0.6, sh2[1] + 6.4), (neck[0] + 1.6, neck[1] - 9.4), man, 2.4)
         H.water(s, neck[0] + 3.0, neck[1] - 12.0, neck[1] - 8.6, 2.0)
         H.sparkle(s, neck[0] + 2.4, neck[1] - 6.0)
     elif part == "nose":
-        arm_at(s, sh2, (sh2[0] + 2.0, sh2[1] + 6.0), (neck[0] + 1.2, neck[1] - 11.0), man, 2.4)
+        arm_at(s, sh2, (sh2[0] - 0.6, sh2[1] + 5.6), (neck[0] + 1.2, neck[1] - 11.0), man, 2.4)
         H.water(s, neck[0] + 3.4, neck[1] - 13.0, neck[1] - 10.4, 1.8)
         H.sparkle(s, neck[0] + 2.0, neck[1] - 8.4)
     elif part == "face":
-        arm_at(s, sh1, (sh1[0] + 2.0, sh1[1] + 7.0), (neck[0] - 2.0, neck[1] - 10.6), man, 2.4)
-        arm_at(s, sh2, (sh2[0] + 1.6, sh2[1] + 7.0), (neck[0] + 2.0, neck[1] - 10.6), man, 2.4)
+        arm_at(s, sh1, (sh1[0] - 0.6, sh1[1] + 6.4), (neck[0] - 2.0, neck[1] - 10.6), man, 2.4)
+        arm_at(s, sh2, (sh2[0] + 0.4, sh2[1] + 6.4), (neck[0] + 2.0, neck[1] - 10.6), man, 2.4)
         H.water(s, neck[0] + 4.0, neck[1] - 13.6, neck[1] - 9.0, 1.8)
         H.sparkle(s, neck[0] - 2.6, neck[1] - 8.0)
     elif part == "arm":
@@ -277,12 +282,12 @@ def wudu(s, man=True, part="hands"):
         H.water(s, 64.0, 50.0, 55.0, 2.2)
         H.drops(s, 64.0, 58.0, 3, spread=5.0)
     elif part == "head":
-        arm_at(s, sh1, (sh1[0] + 1.0, sh1[1] + 6.0), (neck[0] - 3.0, neck[1] - 13.0), man, 2.4)
-        arm_at(s, sh2, (sh2[0] - 1.0, sh2[1] + 6.0), (neck[0] + 3.0, neck[1] - 13.0), man, 2.4)
+        arm_at(s, sh1, (sh1[0] - 0.4, sh1[1] + 5.6), (neck[0] - 3.0, neck[1] - 13.0), man, 2.4)
+        arm_at(s, sh2, (sh2[0] + 0.4, sh2[1] + 5.6), (neck[0] + 3.0, neck[1] - 13.0), man, 2.4)
         H.water(s, neck[0] + 4.4, neck[1] - 16.0, neck[1] - 12.4, 1.8)
         H.sparkle(s, neck[0] + 2.0, neck[1] - 10.0)
     elif part == "ear":
-        arm_at(s, sh2, (sh2[0] + 1.0, sh2[1] + 5.0), (neck[0] + 6.0, neck[1] - 8.0), man, 2.4)
+        arm_at(s, sh2, (sh2[0] - 0.4, sh2[1] + 4.6), (neck[0] + 6.0, neck[1] - 8.0), man, 2.4)
         H.water(s, neck[0] + 8.0, neck[1] - 12.0, neck[1] - 9.0, 1.8)
         H.sparkle(s, neck[0] + 6.4, neck[1] - 6.6)
     elif part == "foot":
@@ -290,7 +295,7 @@ def wudu(s, man=True, part="hands"):
         s.rect(28, 72, 32, 5, "#C9B99A", rx=2)
         s.rect(30, 77, 4, 6, "#B5A488", rx=1)
         s.rect(54, 77, 4, 6, "#B5A488", rx=1)
-        H.draw_sit(s, man, hands="knees")
+        H.draw_sit(s, man, hands="none")
         arm_at(s, (56.0, 42.0), (60.0, 50.0), (64.0, 58.0), man, 2.0)
         H.shoe(s, (62.0, 62.0), (68.0, 59.0))
         H.water(s, 66.0, 50.0, 57.0, 2.2)
@@ -309,7 +314,7 @@ def tayammum(s, man=True, part="intent"):
     if part == "intent":
         H.draw_stand(s, man, hands="palms")
     elif part == "hands":
-        H.draw_sit(s, man, hands="knees")
+        H.draw_sit(s, man, hands="none")
         sh1, sh2 = (42.6, 53.0), (56.6, 53.0)
         arm_at(s, sh1, (sh1[0] - 3.0, sh1[1] + 12.0), (44.0, 80.0), man, 2.5, palm=False)
         arm_at(s, sh2, (sh2[0] - 1.0, sh1[1] + 13.0), (54.0, 81.4), man, 2.5, palm=False)
@@ -317,14 +322,14 @@ def tayammum(s, man=True, part="intent"):
             for k in (-1, 0, 1):
                 s.line(x + k * 1.4, 82.6, x + k * 1.4, 84.4, 0.6, "#C6B183")
     elif part == "face":
-        H.draw_sit(s, man, hands="knees")
+        H.draw_sit(s, man, hands="none")
         sh1, sh2, neck = (42.6, 53.0), (56.6, 53.0), (49.8, 49.8)
         arm_at(s, sh1, (sh1[0] + 2.0, sh1[1] + 8.0), (neck[0] - 2.2, neck[1] - 10.0), man, 2.4)
         arm_at(s, sh2, (sh2[0] - 1.0, sh2[1] + 8.0), (neck[0] + 2.2, neck[1] - 10.0), man, 2.4)
         for (dx, dy) in ((-3.2, -11.0), (2.6, -12.0), (0.4, -9.0), (-1.6, -13.4)):
             s.circle(neck[0] + dx, neck[1] + dy, 0.75, "#D8C79B")
     else:   # arm
-        H.draw_sit(s, man, hands="knees")
+        H.draw_sit(s, man, hands="none")
         sh1, sh2 = (42.6, 53.0), (56.6, 53.0)
         arm_at(s, sh2, (sh2[0] + 3.0, sh2[1] + 10.0), (60.0, 74.0), man, 2.5, palm=False)
         s.path("M %g %g L %g %g" % (sh2[0] + 5.0, sh2[1] + 8.4, 58.0, 72.0), stroke=H.KAMIS_D, sw=1.4)

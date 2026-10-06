@@ -53,7 +53,7 @@
 
     <!-- Kitaphana -->
     <string name="library">Kitaphana</string>
-    <string name="library_subtitle">Bir programmada üç kitap</string>
+    <string name="library_subtitle">Bir programmada iki kitap</string>
     <string name="read_book">Oka</string>
     <string name="read_continue">Dowam et</string>
     <string name="book_actions">Kitap amallary</string>
@@ -159,12 +159,12 @@
     <!-- Programma hakynda -->
     <string name="about_title">Programma hakynda</string>
     <string name="about_intro">«Akyda we Namaz» — akyda we namaz baradaky kitaplaryň oflaýn ýygyndysy. Programma internetsiz işleýär, mahabat ýok we hiç bir rugsat talap etmeýär.</string>
-    <string name="about_features">Üç kitap</string>
-    <string name="about_features_text">«Akyda» — akydanyň esaslary, «Namaz kitaby» — namaz, täret we kadalar, «Namaz» — dogalar we süreler, öz elimiz bilen çyzylan suratlar bilen.</string>
+    <string name="about_features">Iki kitap</string>
+    <string name="about_features_text">«Akyda» — akydanyň esaslary, «Namaz kitaby» — täret, namaz we dogalar, öz elimiz bilen çyzylan suratlar bilen.</string>
     <string name="about_features2">Çäksiz okama</string>
-    <string name="about_features2_text">Bäş sahypa reňki, üç şrift, tekstiň ululygy we gyralary, «sahypalar» hem «süýşürme» tertipleri, bellikler, sözler, ähli kitaplardan gözleg, okama statistikasy.</string>
+    <string name="about_features2_text">Bäş sahypa reňki, üç şrift, tekstiň ululygy, bellikler, sözler, ähli kitaplardan gözleg, okama statistikasy.</string>
     <string name="about_sources">Çeşmeler</string>
-    <string name="about_sources_text">Tekstler çap edilen kitaplardan alyndy: «Namaz kitaby» (Türkmenistanyň Müftüsiniň Müdirligi, Aşgabat, 2016), «Namaz kitaby — ikinji kitap» we «Akyda bölümi». Suratlar programmada täzeden, wektor görnüşinde çyzylan. Çap nusgalarynyň hukuklary olaryň eýelerine degişlidir.</string>
+    <string name="about_sources_text">Tekstler çap edilen kitaplardan alyndy: «Namaz kitaby» (Türkmenistanyň Müftüsiniň Müdirligi, Aşgabat, 2016) we «Akyda bölümi». Suratlar programmada täzeden, wektor görnüşinde çyzylan. Çap nusgalarynyň hukuklary olaryň eýelerine degişlidir.</string>
     <string name="about_disclaimer">Tekst çap edilen kitaplardan tanaldy. Gurhanyň arapça aýatlary ýerleşýän bölekler arap ýazuwynda bolany üçin doly berilmeýär — şol ýerler aýratyn bellenýär. Başga ýalňyşlyk görseňiz, «Ýalňyşlyk barada habar ber» düwmesi bilen bize ýazyň.</string>
     <string name="about_thanks">Bilim peýdaly bolsun.</string>
 

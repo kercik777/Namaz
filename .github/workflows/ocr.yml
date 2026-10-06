@@ -106,6 +106,9 @@ jobs:
           python tools/content/mark_junk.py
           python tools/content/add_ills.py
           python tools/content/add_figs.py
+          python tools/content/merge_books.py
+          python tools/content/fix_text.py --all app/src/main/assets/content
+          python tools/content/link_quotes.py
 
       - name: Публикация результата в репозиторий
         if: env.LIMIT == '0'
