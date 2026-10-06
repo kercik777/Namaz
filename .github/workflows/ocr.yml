@@ -108,11 +108,12 @@ jobs:
           tail -c 200000 smoke.log > ci-logs/smoke.log || true
           tail -c 200000 ocr-b1.log > ci-logs/ocr-b1.log || true
           tail -c 200000 ocr-b2.log > ci-logs/ocr-b2.log || true
-          du -sh app/src/main/assets/pages/* app/src/main/assets/content/* 2>/dev/null || true
+          rm -rf app/src/main/assets/pages
+          du -sh app/src/main/assets/content/* 2>/dev/null || true
           git config user.name "ci-bot"
           git config user.email "ci-bot@users.noreply.github.com"
           git add -A content/ocr app/src/main/assets ci-logs
-          git commit -m "OCR: распознанный текст и сканы книг (автоматически) [skip ci]" || echo "нет изменений"
+          git commit -m "OCR: распознанный текст книг (автоматически) [skip ci]" || echo "нет изменений"
           git pull --rebase --autostash || true
           git push || echo "push не удался"
 

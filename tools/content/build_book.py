@@ -85,24 +85,14 @@ def correct_latin(blocks, corrector, freq):
     return fixed
 
 
-def copy_pages(meta, pages_dir, out_dir, limit=0):
-    """Копирует сканы в assets подряд: 1.webp, 2.webp, ... (порядок чтения)."""
-    os.makedirs(out_dir, exist_ok=True)
+def page_order(meta, limit=0):
+    """Порядок страниц книги (сканы в приложение не копируются — там свои рисунки)."""
     names = []
     for m in meta.get("pages", []):
-        src = os.path.join(pages_dir, m["name"] + ".webp")
-        if not os.path.exists(src):
-            continue
         names.append(m["name"])
-        if limit and len(names) > limit:
-            names.pop()
+        if limit and len(names) >= limit:
             break
-    order = {}
-    for i, name in enumerate(names, 1):
-        shutil.copyfile(os.path.join(pages_dir, name + ".webp"),
-                        os.path.join(out_dir, str(i) + ".webp"))
-        order[name] = i
-    return order
+    return {name: i for i, name in enumerate(names, 1)}
 
 
 def main(argv=None):
@@ -128,8 +118,7 @@ def main(argv=None):
     ocr = json.load(open(args.ocr, encoding="utf-8"))
     by_name = {p["name"]: p for p in ocr.get("pages", [])}
 
-    out_dir = os.path.join(args.assets, "pages", cfg["id"])
-    order = copy_pages(meta, args.pages, out_dir, limit=args.limit)
+    order = page_order(meta, limit=args.limit)
     scan_pages = len(order)
 
     blocks = []
@@ -140,7 +129,6 @@ def main(argv=None):
     arabic_count = 0
 
     for name, idx in sorted(order.items(), key=lambda kv: kv[1]):
-        blocks.append({"t": "page", "n": idx})
         page = by_name.get(name)
         if not page:
             continue
@@ -191,8 +179,6 @@ def main(argv=None):
         "v": 1,
         "id": cfg["id"],
         "script": cfg["script"],
-        "has_scan": scan_pages > 0,
-        "scan_pages": scan_pages,
         "accent": cfg["accent"],
         "title": cfg["title"],
         "subtitle": cfg["subtitle"],

@@ -56,15 +56,12 @@ public class ReaderActivity extends BaseActivity {
 
     private int chapter = 0;
     private int pageIndex = 0;
-    private int scanPage = 1;
 
     private FrameLayout stage;
     private BookView bookView;
     private PageView renderer;          // невидимый «печатник» страниц в битмапы
     private ScrollView scrollWrap;
     private LinearLayout scrollList;
-    private FrameLayout scanWrap;
-    private Widgets.Zoom zoom;
     private View dim;
 
     private LinearLayout topBar, bottomBar;
@@ -73,7 +70,6 @@ public class ReaderActivity extends BaseActivity {
     private Widgets.Slider slider;
 
     private boolean barsVisible = true;
-    private boolean scanMode = false;
     private boolean scrollMode = false;
     private boolean ready = false;
 
@@ -109,7 +105,6 @@ public class ReaderActivity extends BaseActivity {
         chapter = Math.max(0, getIntent().getIntExtra(Nav.EXTRA_CHAPTER, Lib.get().prog(book.id).chapter));
         if (chapter >= book.toc.size()) chapter = 0;
         final int startBlock = getIntent().getIntExtra(Nav.EXTRA_BLOCK, Lib.get().prog(book.id).block);
-        scanPage = Math.max(1, Lib.get().prog(book.id).page);
 
         buildUi();
         applyKeepScreenOn();
@@ -213,14 +208,6 @@ public class ReaderActivity extends BaseActivity {
                 searchSheet();
             }
         }));
-        if (book.hasScan) {
-            topBar.addView(barButton(Ico.IMAGE, new Runnable() {
-                @Override
-                public void run() {
-                    toggleScan();
-                }
-            }));
-        }
         topBar.addView(barButton(Ico.GEAR, new Runnable() {
             @Override
             public void run() {
@@ -438,10 +425,6 @@ public class ReaderActivity extends BaseActivity {
 
     private void tapAt(float x, float y) {
         float w = bookView.getWidth();
-        if (scanMode) {
-            toggleBars();
-            return;
-        }
         if (x < w * 0.28f) {
             prevPage();
         } else if (x > w * 0.72f) {
@@ -490,10 +473,6 @@ public class ReaderActivity extends BaseActivity {
     }
 
     private void nextPage() {
-        if (scanMode) {
-            slideScan(1);
-            return;
-        }
         if (scrollMode) {
             scrollWrap.smoothScrollBy(0, (int) (scrollWrap.getHeight() * 0.82f));
             return;
@@ -515,10 +494,6 @@ public class ReaderActivity extends BaseActivity {
     }
 
     private void prevPage() {
-        if (scanMode) {
-            slideScan(-1);
-            return;
-        }
         if (scrollMode) {
             scrollWrap.smoothScrollBy(0, -(int) (scrollWrap.getHeight() * 0.82f));
             return;
@@ -539,15 +514,6 @@ public class ReaderActivity extends BaseActivity {
         }
         bookView.flipBack(BookView.DIR_LEFT);
         playTurnFeedback();
-    }
-
-    private void slideScan(int dir) {
-        int target = Math.max(1, Math.min(book.scanPages, scanPage + dir));
-        if (target != scanPage) {
-            scanPage = target;
-            showScan();
-            if (slider != null) slider.set(book.scanPages <= 1 ? 1f : scanPage / (float) (book.scanPages - 1));
-        }
     }
 
     private void countPage() {
@@ -595,14 +561,6 @@ public class ReaderActivity extends BaseActivity {
             @Override
             public void onSlide(float value, boolean fromUser) {
                 if (!fromUser) return;
-                if (scanMode) {
-                    int target = 1 + Math.round(value * Math.max(1, book.scanPages - 1));
-                    if (target != scanPage) {
-                        scanPage = target;
-                        showScan();
-                    }
-                    return;
-                }
                 if (scrollMode) {
                     if (scrollList != null && scrollWrap != null) {
                         int total = scrollList.getHeight() - scrollWrap.getHeight();
@@ -768,82 +726,6 @@ public class ReaderActivity extends BaseActivity {
         if (toc != null) barTitle.setText(toc.text);
     }
 
-
-    /* ==================== Оригинал (скан) ==================== */
-
-    private void toggleScan() {
-        scanMode = !scanMode;
-        if (scanMode) {
-            bookView.setVisibility(View.GONE);
-            if (scrollWrap != null) scrollWrap.setVisibility(View.GONE);
-            if (scanWrap == null) {
-                scanWrap = Ui.frame(this);
-                zoom = new Widgets.Zoom(this);
-                scanWrap.addView(zoom, Ui.flp(FrameLayout.LayoutParams.MATCH_PARENT,
-                        FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER));
-                stage.addView(scanWrap, Ui.flp(FrameLayout.LayoutParams.MATCH_PARENT,
-                        FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER));
-            }
-            scanWrap.setVisibility(View.VISIBLE);
-            int marker = pageMarkerOf(pageIndex);
-            if (marker > 0) scanPage = Math.min(book.scanPages, marker);
-            if (slider != null) {
-                slider.set(book.scanPages <= 1 ? 1f : scanPage / (float) (book.scanPages - 1));
-            }
-            showScan();
-        } else {
-            if (scanWrap != null) scanWrap.setVisibility(View.GONE);
-            if (scrollMode) {
-                scrollWrap.setVisibility(View.VISIBLE);
-            } else {
-                bookView.setVisibility(View.VISIBLE);
-                prepareNeighbours();
-            }
-        }
-    }
-
-    private int pageMarkerOf(int index) {
-        if (pages == null || pages.pages.isEmpty()) return -1;
-        return pages.pages.get(Math.max(0, Math.min(index, pages.pages.size() - 1))).pageMarker;
-    }
-
-    private void showScan() {
-        Bitmap bm = decodeScan(book.id, scanPage);
-        if (bm == null) {
-            U.pill(this, getString(R.string.scan_missing));
-            return;
-        }
-        zoom.setBitmap(bm);
-        pageLabel.setText(getString(R.string.page_of, scanPage, book.scanPages));
-    }
-
-    private Bitmap decodeScan(String bookId, int page) {
-        String path = ContentRepo.get().scanPath(bookId, page);
-        if (path == null) return null;
-        AssetManager am = getAssets();
-        InputStream is = null;
-        try {
-            is = am.open(path);
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(is, null, o);
-            is.close();
-            int sample = 1;
-            int target = U.screenW(this) * 2;
-            while (o.outWidth / (sample * 2) > target) sample *= 2;
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize = sample;
-            is = am.open(path);
-            return BitmapFactory.decodeStream(is, null, o2);
-        } catch (Exception e) {
-            return null;
-        } finally {
-            try {
-                if (is != null) is.close();
-            } catch (Exception ignored) {
-            }
-        }
-    }
 
     /* ==================== Панели ==================== */
 
@@ -1216,7 +1098,7 @@ public class ReaderActivity extends BaseActivity {
         int block = Math.max(0, currentBlock());
         int percent = book.blocks.isEmpty() ? 0
                 : Math.max(0, Math.min(100, Math.round(block * 100f / book.blocks.size())));
-        Lib.get().saveProg(book.id, chapter, block, scanMode ? scanPage : pageIndex, percent);
+        Lib.get().saveProg(book.id, chapter, block, pageIndex, percent);
     }
 
     @Override

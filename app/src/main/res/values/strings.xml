@@ -97,10 +97,10 @@
     <string name="page_of">%1$d / %2$d</string>
     <string name="chapter">Bölüm</string>
     <string name="reading_settings">Okama sazlamalary</string>
-    <string name="scan_mode">Asyl nusga</string>
+    <string name="scan_mode">Suratly sahypa</string>
     <string name="text_mode">Tekst</string>
-    <string name="scan_hint">Çap nusgasyndan sahypa. Ulaltmak üçin iki barmak bilen açyň.</string>
-    <string name="scan_missing">Bu sahypanyň skany ýok</string>
+    <string name="scan_hint">Kitaplaryň suratlary öz elimiz bilen çyzylan wektor şekillerdir — PDF-den alnan surat ýok.</string>
+    <string name="scan_missing">Surat tapylmady</string>
     <string name="font">Şrift</string>
     <string name="font_serif">Çyzykly</string>
     <string name="font_sans">Çyzyksyz</string>
@@ -159,12 +159,12 @@
     <string name="about_title">Programma hakynda</string>
     <string name="about_intro">«Akyda we Namaz» — akyda we namaz baradaky kitaplaryň oflaýn ýygyndysy. Programma internetsiz işleýär, mahabat ýok we hiç bir rugsat talap etmeýär.</string>
     <string name="about_features">Üç kitap</string>
-    <string name="about_features_text">«Akyda» — akydanyň esaslary, «Namaz kitaby» — namaz, täret we kadalar, «Namaz» — dogalar we sureler, çap nusgasynyň sahypalary bilen.</string>
+    <string name="about_features_text">«Akyda» — akydanyň esaslary, «Namaz kitaby» — namaz, täret we kadalar, «Namaz» — dogalar we süreler, öz elimiz bilen çyzylan suratlar bilen.</string>
     <string name="about_features2">Çäksiz okama</string>
     <string name="about_features2_text">Bäş sahypa reňki, üç şrift, tekstiň ululygy we gyralary, «sahypalar» hem «süýşürme» tertipleri, bellikler, sözler, ähli kitaplardan gözleg, okama statistikasy.</string>
     <string name="about_sources">Çeşmeler</string>
-    <string name="about_sources_text">Tekstler çap edilen kitaplardan alyndy: «Namaz kitaby» (Türkmenistanyň Müftüsiniň Müdirligi, Aşgabat, 2016) we «Akyda bölümi». Suratlar we sahypa skanlary asyl görnüşinde berilýär. Çap nusgalarynyň hukuklary olaryň eýelerine degişlidir.</string>
-    <string name="about_disclaimer">Tekst çap skanlaryndan tanaldy. Aýry-aýry ýalňyşlyklar bolup biler — her kitapda «Asyl nusga» tertibi bar, ol ýerde sahypany çap nusgasy bilen deňeşdirip bolýar.</string>
+    <string name="about_sources_text">Tekstler çap edilen kitaplardan alyndy: «Namaz kitaby» (Türkmenistanyň Müftüsiniň Müdirligi, Aşgabat, 2016), «Namaz kitaby — ikinji kitap» we «Akyda bölümi». Suratlar programmada täzeden, wektor görnüşinde çyzylan. Çap nusgalarynyň hukuklary olaryň eýelerine degişlidir.</string>
+    <string name="about_disclaimer">Tekst çap edilen kitaplardan tanaldy, şonuň üçin aýry-aýry harplar ýalňyş bolup biler. Ýalňyşlyk görseňiz — «Ýalňyşlyk barada habar ber» düwmesi bilen bize ýazyň.</string>
     <string name="about_thanks">Bilim peýdaly bolsun.</string>
 
     <!-- Gizlinlik -->
@@ -180,7 +180,7 @@
     <string name="onb2_title">Özüňize sazlaň</string>
     <string name="onb2_text">Interfeýs dilini we görnüşi saýlaň. Soň hem üýtgedip bilersiňiz.</string>
     <string name="onb3_title">Hemmesi eliňizde</string>
-    <string name="onb3_text">Üç kitap, ähli tekstlerden gözleg, bellikler, sözler, suratlar we çap nusgasynyň sahypalary. Internetsiz we rugsatsyz işleýär.</string>
+    <string name="onb3_text">Üç kitap, ähli tekstlerden gözleg, bellikler, sözler we öz elimiz bilen çyzylan suratlar. Internetsiz we rugsatsyz işleýär.</string>
 
     <!-- Beýlekiler -->
     <string name="share_via">Paýlaşmak üçin</string>
@@ -202,5 +202,5 @@
     <string name="book_label">Kitap</string>
     <string name="settings_note">Ähli sazlamalar diňe siziň enjamyňyzda saklanýar. Programma internetsiz işleýär.</string>
     <string name="onb_books_title">Üç kitap — bir programmada</string>
-    <string name="onb_books_text">«Namaz kitaby», onuň ikinji kitaby we «Akyda»: doly tekst, çap nusgasynyň sahypalary we günüň sözi.</string>
+    <string name="onb_books_text">«Namaz kitaby», onuň ikinji kitaby we «Akyda»: doly tekst, öz elimiz bilen çyzylan suratlar we günüň sözi.</string>
 </resources>
