@@ -17,13 +17,13 @@ Akyda we Namaz
 ## Краткое описание (до 80 символов)
 
 ```
-Намаз китабы и Акыда: полный текст, оригинал сканов, поиск и закладки. Офлайн.
+Namaz kitaby we Akyda: üç kitap, doly tekst, gözleg we bellikler. Of-laýn.
 ```
 
-Вариант для туркменского рынка:
+Вариант (короче):
 
 ```
-Namaz kitaby we Akyda: doly tekst, asyl nusga, gözleg we bellikler. Of-laýn.
+Üç yslam kitaby bir programmada: doly tekst, gözleg, bellikler. Internetsiz.
 ```
 
 ---
@@ -31,76 +31,59 @@ Namaz kitaby we Akyda: doly tekst, asyl nusga, gözleg we bellikler. Of-laýn.
 ## Полное описание (до 4000 символов)
 
 ```
-«Akyda we Namaz» — это книги «Namaz kitaby» и «Akyda (Aqyda bölümi)» в одном приложении: полный распознанный текст, оригинальные страницы сканов, удобная читалка и полная работа без интернета.
-
-ЧТО ВНУТРИ
-• «Namaz kitaby» — намаз, омовение, условия и порядок поклонения.
-• «Akyda» — одиннадцать уроков основ вероучения.
-• Вторая книга — кириллица и арабская графика (в процессе переноса в приложение).
-• Цитата дня — короткие напоминания из книг.
-
-ЧИТАЛКА
-• Два режима: листание страницами и плавная прокрутка.
-• Режим «Оригинал» — можно посмотреть отсканированную страницу книги и сравнить с текстом.
-• Пять тем оформления: Бумага, Сепия, Изумрудный, Тёмная, Ночная.
-• Настройка размера текста, межстрочного интервала, полей и анимации перелистывания.
-• Системные шрифты (serif / sans / condensed) — ничего лишнего скачивать не нужно.
-
-НАВИГАЦИЯ И ПОИСК
-• Оглавление по всем урокам и разделам.
-• Полнотекстовый поиск по всем книгам с подсветкой найденного.
-• Закладки и сохранённые цитаты — с возможностью поделиться.
-• Прогресс чтения по каждой книге, статистика: страницы, минуты, серии дней.
-
-ПРИНЦИПЫ
-• Ноль разрешений: приложение не запрашивает ни одного разрешения Android.
-• Полностью офлайн: все книги хранятся внутри приложения, интернет не нужен.
-• Никакой рекламы, аналитики и сторонних библиотек.
-• Никакого сбора данных: прогресс, закладки и цитаты остаются только на вашем устройстве.
-• Небольшой размер, поддержка Android 5.0 и новее, тёмная тема.
-
-Политика конфиденциальности: приложение не собирает и не передаёт персональные данные. Подробнее — по ссылке в описании.
-
-TÜRKMENÇE
-«Akyda we Namaz» — «Namaz kitaby» we «Akyda» kitaplaryny bir programmada: doly tekst, asyl sahypalaryň skan nusgasy, amatly okaýyş we internetiň gerek däl bolmagy.
+«Akyda we Namaz» — üç kitap bir programmada: «Namaz kitaby», onuň ikinji kitaby we
+«Akyda». Doly tekst, kitaphanalyk görnüşli okaýyş, gözleg, bellikler we sitatalar.
+Programma doly of-laýn işleýär, internet gerek däl.
 
 IÇINDE
-• «Namaz kitaby» — namaz, taharat, ybadatyň şertleri we tertibi.
-• «Akyda» — ymarat esaslarynyň on bir dersi.
-• Günüň sitatasy — kitaplardan gysga ýatlatmalar.
+• «Namaz kitaby» — iman, täret, namaz, onuň parzlary we okalyş düzgüni.
+• «Namaz kitaby — ikinji kitap» — juma, tarawa, jynaza we sepil namazlar, dogalar.
+• «Akyda» — esaslar boýunça on bir ders.
+• Günüň sözi — kitaplardan gysga ýatlatmalar.
 
 OKAÝYŞ
-• Iki tertip: sahypa bilen geçirmek we ýumşak aýlamak.
-• «Asyl nusga» tertibi — kitabyň skan sahypasyny tekst bilen deňeşdirmek mümkin.
-• Bäş tema: Kagyz, Sepiýa, Zümrüt, Garaňky, Gije.
-• Tekstiň ululygyny, setir aralygyny, kenarlary sazlap bolýar.
+• Hakyky kitap ýaly: sahypany barmak bilen öwürmek — ýumşak we tebigy hereket.
+• Iki tertip: sahypa bilen geçirmek we dikeltmek (aşak we ýokary) tertibi.
+• Tekstiň ululygyny ekranda +/− düwmeleri bilen üýtgetmek.
+• Bäş tema: Kagyz, Sepiýa, Zümrüt, Garaňky, Gije — gije okamak üçin amatly.
+• Setir aralygy, kenar giňligi, animasiýa we ses sazlamalary.
+• Her bölümiň başynda öz elimiz bilen çyzylan suratlar (PDF-den alynan surat ýok).
+• Kitapdaky asyl sahypalaryň belgileri: tekst nireden alnandygyny görmek mümkin.
 
 GÖZLEG WE BELLIKLER
 • Mazmun: ähli dersler we bölümler boýunça.
 • Ähli kitaplar boýunça doly tekst gözlegi.
 • Bellikler we sitatalar — paýlaşmak mümkin.
-• Her kitap boýunça okalyş derejesi we statistika.
+• Her kitap boýunça okalyş derejesi we statistika (sahypalar, minutlar, yzygider günler).
 
 ÝÖRELGELER
-• Hiç hili rugsat soralmaýar.
-• Doly of-laýn: kitaplar programmanyň içinde saklanýar.
+• Hiç hili rugsat soralmaýar — programmada hiç hili ygtyýarlyk ýok.
+• Doly of-laýn: kitaplar programmanyň içinde, internet gerek däl.
 • Reklama, analitika we üçünji tarap kitaphanalary ýok.
 • Maglumat ýygnalmaýar: okalyş, bellikler we sitatalar diňe siziň enjamyňyzda galýar.
+• System şriftleri — goşmaça ýükleme gerek däl.
 • Android 5.0 we has täze wersiýalar üçin.
 
-Учебное и справочное издание. Тексты приводятся по имеющимся печатным изданиям; приложение не является официальным изданием и не заменяет консультацию специалиста.
+РУССКИЙ (для справки; интерфейс приложения — туркменский)
+• Три книги: «Namaz kitaby», его вторая книга и «Akyda».
+• Читалка как настоящая книга: перелистывание пальцем, объёмный поворот листа.
+• Два режима: листание страницами и прокрутка (вниз и вверх) по всему тексту.
+• Масштаб текста кнопками на экране, пять тем чтения, статистика чтения.
+• Только свои векторные иллюстрации — изображения из PDF не используются.
+• Ноль разрешений, полный офлайн, без рекламы и аналитики.
 ```
-
 ---
 
 ## Что нового (до 500 символов)
 
 ```
-1.0.0
-• Первая версия: «Намаз китабы» и «Акыда» с оглавлением, поиском и закладками.
-• Режим «Оригинал» — сравнение скана и текста.
-• Пять тем чтения, настройки шрифта и полей.
-• Полностью офлайн, без разрешений и рекламы.
+1.1.0
+• Интерфейс полностью на туркменском языке.
+• Читалка переделана: перелистывание как в настоящей книге, объёмный поворот листа.
+• Режим прокрутки (вниз и вверх) и кнопки масштаба текста прямо на экране.
+• Свои векторные иллюстрации к разделам — картинки из PDF больше не используются.
+• В приложение вошли все три книги; исправлено множество распознанных мест.
+• Новый значок приложения, исправлены невидимые иконки и пустые экраны.
 ```
 
 ---
@@ -110,8 +93,8 @@ GÖZLEG WE BELLIKLER
 | Поле | Значение |
 |---|---|
 | Категория | Книги и справочники (Books & Reference) |
-| Теги | книги, справочник, религия, образование |
-| Языки интерфейса | русский, туркменский |
+| Теги | kitaplar, справочник, религия, образование |
+| Языки интерфейса | туркменский (tk) |
 | Цена | бесплатно |
 | Реклама | нет |
 | Встроенные покупки | нет |
