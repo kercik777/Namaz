@@ -214,4 +214,8 @@
     <string name="yes_remove">Да, удалить</string>
     <string name="sources_note">Издание: %s</string>
     <string name="press_again_exit">Нажмите «Назад» ещё раз, чтобы выйти</string>
+    <!-- Адрес для обратной связи: впишите свою почту, чтобы письмо
+         из приложения открывалось с уже заполненным получателем. -->
+    <string name="dev_email" translatable="false"></string>
+    <string name="github_page">GitHub</string>
 </resources>

@@ -180,6 +180,18 @@ public class MoreTab implements TabPage {
                 feedback();
             }
         }));
+        about.addView(row(Ico.SHARE, host.getString(R.string.github_page), null, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    host.startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://github.com/kercik777/Namaz/issues")));
+                } catch (ActivityNotFoundException e) {
+                    host.toast(host.getString(R.string.no_store_app));
+                }
+            }
+        }));
+
         about.addView(row(Ico.STAR, host.getString(R.string.rate), null, new Runnable() {
             @Override
             public void run() {
@@ -210,7 +222,8 @@ public class MoreTab implements TabPage {
 
     private void feedback() {
         Intent i = new Intent(Intent.ACTION_SENDTO);
-        i.setData(Uri.parse("mailto:"));
+        i.setData(Uri.parse(host.getString(R.string.dev_email).isEmpty()
+                ? "mailto:" : "mailto:" + host.getString(R.string.dev_email)));
         i.putExtra(Intent.EXTRA_SUBJECT, host.getString(R.string.app_name) + " — " + host.getString(R.string.feedback));
         i.putExtra(Intent.EXTRA_TEXT, host.getString(R.string.error_report_text) + "\n\n");
         try {

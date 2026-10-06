@@ -196,4 +196,8 @@
     <string name="yes_remove">Hawa, aýyr</string>
     <string name="sources_note">Neşir: %s</string>
     <string name="press_again_exit">Çykmak üçin «Yza» düwmesine ýene bassyň</string>
+    <!-- Адрес для обратной связи: впишите свою почту, чтобы письмо
+         из приложения открывалось с уже заполненным получателем. -->
+    <string name="dev_email" translatable="false"></string>
+    <string name="github_page">GitHub</string>
 </resources>

@@ -96,7 +96,8 @@ public class AboutActivity extends BaseActivity {
             @Override
             public void run() {
                 Intent i = new Intent(Intent.ACTION_SENDTO);
-                i.setData(Uri.parse("mailto:"));
+                i.setData(Uri.parse(getString(R.string.dev_email).isEmpty()
+                        ? "mailto:" : "mailto:" + getString(R.string.dev_email)));
                 i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name) + " — " + getString(R.string.feedback));
                 try {
                     startActivity(Intent.createChooser(i, getString(R.string.email_hint)));
