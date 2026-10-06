@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+<!-- Фон адаптивной иконки: глубокий изумрудный градиент (как в генераторе иконок). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
     <gradient
         android:angle="270"
-        android:startColor="#FF0E4A36"
-        android:endColor="#FF041610"
+        android:startColor="#0E4A36"
+        android:centerColor="#0A3527"
+        android:endColor="#041610"
         android:type="linear" />
 </shape>

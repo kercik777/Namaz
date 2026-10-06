@@ -149,6 +149,11 @@ public final class Ui {
         return lp;
     }
 
+    /** Делает элемент нажимаемым (лёгкая вибрация + ripple нет — фон задаётся вызывающим). */
+    public static void click(View v, final Runnable action) {
+        U.click(v, action);
+    }
+
     public static void pad(View v, Context c, float l, float t, float r, float b) {
         v.setPadding(U.dp(c, l), U.dp(c, t), U.dp(c, r), U.dp(c, b));
     }
