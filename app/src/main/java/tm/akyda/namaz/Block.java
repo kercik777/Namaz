@@ -24,6 +24,7 @@ public class Block {
     public static final String LIST = "list";     // нумерованный список
     public static final String NOTE = "note";     // сноска/мелкий текст
     public static final String IMG = "img";       // иллюстрация
+    public static final String SCAN = "scan";     // скан страницы (фото/рисунок) целиком
     public static final String PAGE = "page";     // маркер страницы оригинала
     public static final String CENTER = "center"; // центрированная строка
     public static final String TITLE = "title";   // титульная строка

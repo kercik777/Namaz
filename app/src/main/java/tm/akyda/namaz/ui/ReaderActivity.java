@@ -220,6 +220,20 @@ public class ReaderActivity extends BaseActivity {
             }
         }));
 
+        // Кнопки A−/A+ для быстрой регулировки размера шрифта
+        topBar.addView(roundTextButton("A−", 14f, new Runnable() {
+            @Override
+            public void run() {
+                zoomText(-1);
+            }
+        }));
+        topBar.addView(roundTextButton("A+", 14f, new Runnable() {
+            @Override
+            public void run() {
+                zoomText(1);
+            }
+        }));
+
         topBar.addView(roundButton(Ico.MORE, 24f, new Runnable() {
             @Override
             public void run() {
@@ -313,6 +327,25 @@ public class ReaderActivity extends BaseActivity {
         f.setLayoutParams(new LinearLayout.LayoutParams(s, s));
         inner.setLayoutParams(Ui.flp(U.dp(this, 24), U.dp(this, 24), Gravity.CENTER));
         f.addView(inner);
+        Ui.click(f, new Runnable() {
+            @Override
+            public void run() {
+                action.run();
+            }
+        });
+        return f;
+    }
+
+    /** Текстовая кнопка в панели — для A−/A+. */
+    private View roundTextButton(String label, float sizeSp, final Runnable action) {
+        FrameLayout f = Ui.frame(this);
+        int s = U.dp(this, 40);
+        f.setLayoutParams(new LinearLayout.LayoutParams(s, s));
+        TextView t = Ui.tv(this, label, sizeSp, Skin.paperInk(theme()), U.uiMed(this));
+        t.setGravity(Gravity.CENTER);
+        t.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, sizeSp);
+        t.setText(label);
+        f.addView(t, Ui.flp(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER));
         Ui.click(f, new Runnable() {
             @Override
             public void run() {

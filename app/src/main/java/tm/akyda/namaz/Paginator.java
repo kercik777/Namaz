@@ -175,9 +175,17 @@ public class Paginator {
                     break;
                 }
                 case Block.IMG: {
-                    Item it = image(b, o);
+                    Item it = image(b, o, false);
                     if (it != null) {
                         it.blockIndex = i;   // чтобы закладки и прогресс знали, где мы
+                        out.add(it);
+                    }
+                    break;
+                }
+                case Block.SCAN: {
+                    Item it = image(b, o, true);
+                    if (it != null) {
+                        it.blockIndex = i;
                         out.add(it);
                     }
                     break;
@@ -559,7 +567,7 @@ public class Paginator {
 
     /* ---------------- Иллюстрации ---------------- */
 
-    private Item image(Block b, Opt o) {
+    private Item image(Block b, Opt o, boolean fullPage) {
         String src = b.source;
         if (U.empty(src)) return null;
         Bitmap bm;
@@ -583,24 +591,32 @@ public class Paginator {
             String path = "images/" + src;
             bm = imageCache.get(path);
             if (bm == null) {
-                bm = decode(path, o.width);
+                bm = decode(path, fullPage ? Math.max(o.width, 1500) : o.width);
                 if (bm == null) return null;
                 if (imageCache.size() > 6) imageCache.clear();
                 imageCache.put(path, bm);
             }
         }
         Item it = new Item();
-        it.type = Block.IMG;
+        it.type = fullPage ? Block.SCAN : Block.IMG;
         it.blockIndex = -1;
         it.image = bm;
         int w = Math.min(o.width, bm.getWidth());
         it.imageHeight = Math.max(1, (int) ((float) bm.getHeight() * w / bm.getWidth()));
-        int maxH = (int) (o.height * (isFig ? 0.68f : 0.62f));
+        int maxH;
+        if (fullPage) {
+            // Скан-страница должна заполнить почти всю страницу
+            maxH = (int) (o.height * 1.55f);
+            it.spaceBefore = o.textSize * 0.2f;
+            it.spaceAfter = o.textSize * 0.2f;
+        } else {
+            maxH = (int) (o.height * (isFig ? 0.68f : 0.62f));
+            it.spaceBefore = o.textSize * 0.6f;
+            it.spaceAfter = o.textSize * 0.6f;
+        }
         if (it.imageHeight > maxH) {
             it.imageHeight = maxH;
         }
-        it.spaceBefore = o.textSize * 0.6f;
-        it.spaceAfter = o.textSize * 0.6f;
         if (!U.empty(b.caption)) {
             TextPaint p = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
             p.setTextSize(o.textSize * 0.78f);

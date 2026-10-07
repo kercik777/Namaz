@@ -1,1 +1,934 @@
-{"v":1,"id":"akyda","script":"latin","has_scan":false,"scan_pages":0,"accent":4279126582,"title":{"ru":"Акыда","tk":"Akyda"},"subtitle":{"ru":"Основы вероучения — одиннадцать уроков","tk":"Iman esaslary — on bir ders"},"author":{"ru":"По изданию «Namaz kitaby»","tk":"«Namaz kitaby» neşirine görä"},"edition":{"ru":"Türkmenistanyň Müftüsiniň Müdirligi","tk":"Türkmenistanyň Müftüsiniň Müdirligi"},"blocks":[{"t":"part","x":"AKYDA BÖLÜMI"},{"t":"p","x":"Imanyň esaslary: Alla, pygamberler, kitaplar, ahyret we kadar baradaky on bir ders."},{"t":"page","n":1},{"t":"p","x":"BISMILLÄHIRRAHMÄNIRRAHYM"},{"t":"h1","x":"BIRINJI DERS"},{"t":"q","x":"MUSULMAN MY SEN ?"},{"t":"a","x":"ELHAMDÜ LILLÄH MUSULMAN MEN ."},{"t":"q","x":"MUSULMAN DIB KIME DIÝERLER ?"},{"t":"a","x":"MUSULMAN DIB HAZRETY MUHAMMED ALAÝHISSALAMYŇ GETIREN DYNYNA YNANYB BOÝYN ALAN ADAMA DIÝERLER ."},{"t":"q","x":"HAZRETY MUHAMMED ALAÝHISSALAM ŞU DÜNYÄ KIMIŇ TARAFYNDAN WE KIMIŇ WESILESI GETIRIB DUR ?"},{"t":"a","x":"ALLAH TA,ALANYŇ TARAFYNDAN , JEBRAÝYL FERIŞTÄNIŇ WESILESI BILEN GETIRIB DUR ."},{"t":"h1","x":"IKINJI DERS"},{"t":"q","x":"ŞU DÜNYÄŇ ASYL LARY NÄÇE DUR ?"},{"t":"a","x":"ÜÇ DUR : IÝMAN , ISLAM, IHSAN , DUR ."},{"t":"q","x":"IÝMAN DIB NÄMÄ DIÝERLER ?"},{"t":"a","x":"IÝMAN DIB ÝEDI ZADY BILIB DIL BILEN IKRAR EDIB ÝÜREK BILEN YNANMAGA DIÝERLER ."},{"t":"q","x":"OL ÝEDI ZAD NÄMELER DUR ?"},{"t":"page","n":2},{"t":"list","items":["IKINJISI : FERIŞTELERIŇ DUR ,","ÜÇÜNJISI : KITABLAR DUR ,","DÖRDINJISI : PYGAMBERLER DUR ,","BÄŞINJISI : KYÝAMAT DUR ,","ALTYNJYSY : KADAR DUR ,","ÝEDINJISI : ÖLENDEN SÖŇ DIRELMEK DUR ."]},{"t":"a","x":"AWALKYSY : ALLAH TA,ALA DUR ,"},{"t":"h1","x":"ÜÇÜNJI DERS"},{"t":"q","x":"ALLAH TA,ALA DIB NÄMÄ DIÝERLER ?"},{"t":"a","x":"ALLAH TA,ALA DIB HEMME MAHLUKATLARY ÝARADAN ÖZINIŇ WÜJUDI WÄJIB BOLAN BIR HALYK BAR DUR ŞOŇA DIÝERLER ."},{"t":"q","x":"ALLAH TA,ALANYŇ NÄME SYFATLARY BARDUR ?"},{"t":"a","x":"ALLAH TA,ALANYŇ WÄJIB SYFATLARY BAR DUR, ALLAH TA,ALANYŇ JAÝYZ SYFATLARY BARDUR, ALLAH TA,ALANYŇ MÜSTEHYL ( BOLMALY DÄL ) SYFATLARY BARDUR ."},{"t":"q","x":"ALLAH TA,ALANYŇ NÄÇE WÄJIB SYFATLARY BAR DUR ?"},{"t":"a","x":"ON ÜÇ ( 13 ) WÄJIB SYFAT LARY BAR DUR . BÄŞISI SELBI DUR , SEKIZSI SÜBUTY DUR"},{"t":"h1","x":"DÖRDINJI DERS"},{"t":"page","n":3},{"t":"q","x":"SELBI SYFATLARY BULAR DUR : AWWALKYSY : ALLAH TA,ALA KADYM DUR ÝA,NY ÖZINIŇ WÜJUDI ÜÇÜN AWWALY ÝOK DUR. IKINJISY : ALLAH TA,ALA BAKY DURÝA,NY ÖZINIŇ WÜJUDI ÜÇÜN AHYRY ÝOK DUR . ÜÇÜNJISI : ALLAH TA,ALA HIÇ ZAD GA MEŇZEÝÄN DÄL DUR . DÖRDINJISI : ALLAH TA,ALA HIÇ ZAD GA MÄTÄÇ DÄL DUR . BÄŞINJISI : ALLAH TA,ALA BIR DUR ÝA,NY ŞERIGI = ORTAGY ÝOK DUR ."},{"t":"h1","x":"BÄŞINJI DERS"},{"t":"q","x":"SÜBUTY SYFATLARY BU LAR DUR : AWWALKYSY: ALLAH TA,ALA HER ZAD GA KADYR DUR . IKINJISI : ÝAGŞY BOLSYN ÝAMAN BOLSYN HEMME ZADY ALLAH TA,ALA IRÄDE ETGUJI DUR . ÜÇÜNJISI : ALLAH TA,ALA HEMME ZADY BILGUJI DUR . DÖRDINJISI: ALLAH TA,ALA DIRI DUR . BÄŞINJISI: ALLAH TA,ALA HEMME ZAD LARY EŞITGUJI DUR . ALTYNJISI: ALLAH TA,ALA GÖRGUJI DUR . ÝEDINJISI: ALLAH TA,ALA KEBLEGUJI DUR . SEKGINJISI: ALLAH TA,ALA HEMME ZADLARY ÝOK DAN BAR ETGUJI DUR ."},{"t":"h1","x":"ALTYNJY DERS"},{"t":"p","x":"ALLAH TA,ALANYŇ JAÝYZ SYFATLARY"},{"t":"q","x":"NÄÇE DUR ?"},{"t":"a","x":"BIR DUR: ALLAH TA,ALA HER BIR IÝŞI HALASA EDER , HALAMASA EDMEZ ."},{"t":"q","x":"ALLAH TA,ALANYŇ MÜSTEHYL SYFATLARY NÄÇE DUR ?"},{"t":"a","x":"ON ÜÇ DUR : ŞOL WÄJIB SYFATLARYNYŇ TERSLERI DUR . ALLAH TA,ALA NYŇ HEMME AD LARY WE SYFATLARY KADYM DUR."},{"t":"q","x":"ALLAH TA,ALANYŇ ŞOL SYFATLARY BARDYGNY NÄMEDEN BILÝÄRSIŇ ?"},{"t":"a","x":"AÝNY, GÜNNI DOGYRYB , BATYRYB , BIR DAMJA SUWDAN ADAMLARY ÝARADYB, SÜŇK EDIB , ET EDIB , DAMAR EDIB , SIŇIR EDIB , GYL EDIB , JAN BERIB , SÖZLEDIB , GEZDIRIB DUR , ŞÜ HILLI GEŇ IŞLERNI EDIB DUR ŞÖNDAN BILÝÄRIN ."},{"t":"q","x":"OL BIR DAMJA SUW ÖZI DÖRÄB DUR DIÝEŇDE BOLMAÝARMY ?"},{"t":"page","n":4},{"t":"a","x":"ÝÖK BOLMAZ . EGER OL BIR DAMJA SUW ÖZI DÖREMEKLIGI BAŞARÝAN BOLSA , ULALANDA ÖLMEZLIGI HEM BAŞARARDY . ULALANDA ÖLMEZLIGI BAŞARMAÝAR , ÖLÝÄR . ÖZINIŇ DÖREMÄNDIGNI ALLAH TA,ALANYŇ DÖREDENDIGINI ŞONDAN BILÝÄRIN ."},{"t":"h1","x":"ÝEDINJI DERS"},{"t":"q","x":"FERIŞTE LER DIB NÄMÄ DIÝERLER ?"},{"t":"a","x":"FERIŞTELER ALLAH TA,ALA NIŇ NUR DAN ÝARADAN SYLAGLY BENDE LERI DUR . FERIŞTE LER MYDAM ALLAH TA,ALA NYŇ HYDMATYN DA BOLARLAR WE HIÇ WAGT ALLAH TA,ALA NYŇ BUÝRYGYN DAN ÇYKMAZ LAR , HÝMEZLER , IÇMEZLER, ÄRLIK WE HATYNLYK OLARDA BOLMAZ ."},{"t":"q","x":"KITABLAR DIB NÄMÄ DIÝERLER ?"},{"t":"page","n":5},{"t":"a","x":"KITAB LAR , ALLAH TA,ALA NYŇ DYN ÝOLYNI BILDIRMEK ÜÇÜN PYGAMBARLARA INDEREN SÖZLERI DUR : MISLI TEWRAT , INJIL , ZEBUR , KUR,AN , WE BULARDAN BAŞGA HEM KÖP KITAB INDERIB DUR HEMMESI ÖZINIŇ AWWALKY SÖZLERI DUR ÝANY MAHLUK DÄL DUR MUHAMMED ALAÝHISSALATÜ WESSALAMGA KUR,AN GELENDEN SOŇ HEMMESI KUR,AN BILEN MENSUH BOLAN DUR , KUR,ANDAN SOŇ KITAB INMEZ , MUHAMMED ALAÝHISSALATÜ WESSALAMDAN SOŇ PYGAMBAR GELMEZ , TA KYÝAMAT GA ÇENLI MUHAMMED ALAÝHISSALATÜ WESSALAMYŇ ŞERI,ATY BILEN AMAL ETMELI DUR ."},{"t":"h1","x":"SEKIZINJI DERS"},{"t":"q","x":"PYGAMBERLAR DIB KIME DIÝERLER : PYGAMBERLAR , ALLAH TA,ALA NYŇ DOGRY ÝOLYNY BILDIRMEK ÜÇÜN HALKLARA IBEREN BENDELERI WE ILÇILERI DUR . PYGAMBERLARYŇ NÄÇE WÄJIB SYFATLARY BAR DUR : DÖRT WÄJIB SYFATLARY BAR DUR : AWWALKYSY : PYGAMBERLAR ZIREK WE AKYLLY DUR . IKINJISI : PYGAMBERLER ALLAH TA,ALA NYŇ HEMME BUÝRUKLARYNY HALKLARA ÝETIRGEN DUR . ÜÇÜNJISI : PYGAMBERLAR ÝALAN SÖZLÄNDÄL DUR . DÖRDINJISI : PYGAMBERLAR HEMME GÜNÄLERDEN SAKLANAN DUR . PYGAMBERLARYŇ JAÝYZ SYFATLARY BULAR DUR: PYGAMBERLAR BIZ KEMIN IÝERLER, IÇERLER, UKLARLAR, EMMÄ ALA WE JÜZÄM KEMIN ADAMLARYŇ TEBI,ATY GAÇAR ÝALY ÝAMAN KESEL OLARDA BOLMAZ , PYGAMBERLARYŇ AWWALKYSY ADAM ALAÝHISSALATÜ WESSALAM DUR AHYRKYSY MUHAMMED ALAÝHISSALATÜ WESSALAM DUR . BULARYŇ ARASYNDA PYGAMBER KÖP SANY BELLI DÄL DUR ."},{"t":"h1","x":"DOKUZYNJY DERS"},{"t":"q","x":"KYÝAMAT DIB NÄMÄ NIÝERLER : KYÝAMAT DIB , ŞÜ MAHLUKATLARYŇ HEMMESI ÖLJEK DUR WE ÝENE KYÝAMAT GÜNI DIRELJEK DUR , ALLAH TA,ALA MIZAN TERAZU BILEN OLARYŇ GÜNÄLERNI ,SEWAB- LARNY ÇEKJEK DUR , KÄFIRLERIŇ HEMMESINI WE MUSYLMANLARYŇ GÜNÄLI LERNI ÖZ ADLY BILEN JÄHENNEMGE IÝBERJEK DUR , GÜNÄLI MUSYLMANLAR AZABYN ÇEKIB WE ÝENE GUTYLJAK DUR , EMMÄ KÄFIRLERIŇ HEMMESI MYDAM OL JÄHENNEMDE GALJAK DUR , MUSYLMANLARYŇ ÝAGŞYLARNY ÖZ FAZLY BILEN JENNETGE IÝBERJEK DUR . JENNET WE JÄHENNEM BARLYGY HAK DUR . SYRAT KÖFRIŇ BARLYGY HAK DUR . HAWZY KEWSER BARLYGY HAK DUR . PYGAMBERLERIŇ WE EWLIÝALARYŇ ŞEFA,ATY HAK DUR . MÜŇKIR NEKIRIŇ SÜ,ÄL SORAJAGY HAK DUR. SENIŇ REBBYŇ KIM DUR ?"},{"t":"a","x":"MENIŇ REBBYM ALLAH DUR ."},{"t":"q","x":"SENIŇ DYÝNYŇ NÄME DUR ?"},{"t":"a","x":"MENIŇ DYÝN YM ISLAM DUR ."},{"t":"q","x":"SENIŇ PYGAMBERIŇ KIM DUR ?"},{"t":"page","n":6},{"t":"a","x":"MENIŇ PYGAMBERYM MUHAMMED ALAÝHIS- SALATÜ WESSALAM DUR . ÝAGŞY BOLSAŇ KABR DA NY,MAT RAHAT BOLJAGY HAK DUR . ÝAMAN BOLSAŇ KABR – DA AZAB BOLJAGY HAK DUR ."},{"t":"h1","x":"ONUNJY DERS"},{"t":"q","x":"KADAR DIB NÄMÄ DIÝERLER : KADAR DIB , ŞÜ MAHLUKAT LARYŇ ARASYNDA BIR IÝŞ BOLSA , ÝAGŞY BOLSYN ÝAMAN BOLSYN , ULY BOLSYN KIÇI BOLSYN ALLAH TA,ALANYŇ TAKDYRI BILEN DUR . HATTA , FERIŞTELER , ŞEÝTAN LAR , INSAN - LAR BIR ADAMA ÝAGŞYLYK ÝÄ ÝAMANLYK ETJEK BOLYB BIRLEŞSELER HEM ALLAH – TA,ALA KADAR ETMESE EDIB BILMEZLER . HER IÝŞI YHTIÝAR ETMEK BENDÄ NIŇ HÝŞI DUR , OL IÝŞI ÝARATMAK ALLAH TA,ALANIŇ IÝŞI DUR ."},{"t":"h1","x":"ON BIRINJI DERS"},{"t":"q","x":"ISLAM DIB NÄMÄ DIÝERLER ?"},{"t":"a","x":"ISLAM DIB ALLAH TA,ALANYŇ BÜÝRAN IÝŞLERNE BOÝYN BERIB , BUÝURMADYK IÝŞLERINDEN GAÇMAGA DIÝERLER ."},{"t":"q","x":"ISLAMYŇ RÜKN LERI NÄÇE DUR ?"},{"t":"q","x":"5 = BÄŞ DUR : AWWALKYSY: EŞ HEDÜ EN LÄ ILÄHE IL LAL LAHÜ , WE EŞ HEDÜ ENNE MUHAMMEDEN ABDÜHU WE RESU LUH . DIMEK DUR MANYSYN BILIB . MANYSY BÜ DUR : ŞAHADET BERÝÄRIN : YBADAT EDER ÝALY ZAT ÝOK DUR, BIR – ALLAH TA,ALA DAN GAÝRY ! WE ÝENE ŞAHADET BERÝÄRIN : HAZRETI MUHAMMED ALAÝHISSALATÜ WESSALAM ALLA - TA,ALANYŇ BENDE SI WE ILÇISI DUR . IKINJISI : NAMAZ OKYMAK . ÜÇÜNJISI : MALDAN ZEKAT BERMEK . DÖRDINJISI : REMEZAN AÝ RUZA TUTMAK . BÄŞINJISI : GÜÝJI ÝETSE HAJ ETMEK . IHSAN DIB NÄMÄ DIÝERLER ?"},{"t":"a","x":"IHSAN DIB , ALLAH TA,ALA ÜÇÜN HYDMAT ETMEK DUR SEN ONY GÖRÝÄN ÝALY BOLYB , SEN ONY GÖRMESEŇDE OLSENI GÖRÝÄN DUR. AKYDA BILMEGEN ŞEÝTANA IÝL DUR EGER MUŇ ÝYL AMAL DIB KYLSA ÝEL DUR"}]}
+{
+ "v": 1,
+ "id": "akyda",
+ "script": "latin",
+ "has_scan": false,
+ "scan_pages": 0,
+ "accent": 4279126582,
+ "title": {
+  "ru": "Акыда",
+  "tk": "Akyda"
+ },
+ "subtitle": {
+  "ru": "Основы вероучения — одиннадцать уроков",
+  "tk": "Iman esaslary — on bir ders"
+ },
+ "author": {
+  "ru": "По изданию «Namaz kitaby»",
+  "tk": "«Namaz kitaby» neşirine görä"
+ },
+ "edition": {
+  "tk": "Türkmenistanyň Müftüsiniň Müdirligi",
+  "ru": "Türkmenistanyň Müftüsiniň Müdirligi"
+ },
+ "blocks": [
+  {
+   "t": "center",
+   "x": "BISMILLÄHIR-RAHMÄNIR-RAHYM"
+  },
+  {
+   "t": "h1",
+   "x": "BIRINJI DERS :"
+  },
+  {
+   "t": "q",
+   "x": "MUSULMAN MY SEN ?"
+  },
+  {
+   "t": "a",
+   "x": "ELHAMDÜ LILLÄH MUSULMAN MEN ."
+  },
+  {
+   "t": "q",
+   "x": "MUSULMAN DIB KIME DIÝER LER ?"
+  },
+  {
+   "t": "a",
+   "x": "MUSULMAN DIB HAZRETY MUHAMMED"
+  },
+  {
+   "t": "h2",
+   "x": "ALAÝHISSALAMYŇ GETIREN DYNY NA"
+  },
+  {
+   "t": "h2",
+   "x": "YNANYB BOÝYN ALAN ADAMA DIÝERLER ."
+  },
+  {
+   "t": "q",
+   "x": "HAZRETY MUHAMMED ALAÝHISSALAM"
+  },
+  {
+   "t": "h2",
+   "x": "ŞÜ DYNY KIMIŇ TARAFYNDAN WE KIMIŇ"
+  },
+  {
+   "t": "h2",
+   "x": "WESILESI GETIRIB DUR ?"
+  },
+  {
+   "t": "a",
+   "x": "ALLAH TA,ALANYŇ TARAFYNDAN ,"
+  },
+  {
+   "t": "h2",
+   "x": "JEBRAÝYL FERIŞTÄNIŇ WESILESI BILEN"
+  },
+  {
+   "t": "h2",
+   "x": "GETIRIB DUR ."
+  },
+  {
+   "t": "h1",
+   "x": "IKINJI DERS :"
+  },
+  {
+   "t": "h2",
+   "x": "ŞÜ DYNYŇ ASYL LARY NÄÇE DUR ?"
+  },
+  {
+   "t": "p",
+   "x": "ÜÇ DUR : IÝMAN , ISLAM, IHSAN , DUR ."
+  },
+  {
+   "t": "h2",
+   "x": "IÝMAN DIB NÄMÄ DIÝERLER ?"
+  },
+  {
+   "t": "h2",
+   "x": "IÝMAN DIB ÝEDI ZADY BILIB DIL BILEN IKRAR"
+  },
+  {
+   "t": "h2",
+   "x": "EDIB ÝÜREK BILEN YNANMAGA DIÝERLER ."
+  },
+  {
+   "t": "h2",
+   "x": "OL ÝEDI ZAD NÄME LER DUR ?"
+  },
+  {
+   "t": "p",
+   "x": "AWALKYSY : ALLA TA,ALA DUR ,"
+  },
+  {
+   "t": "p",
+   "x": "IKINJISI : FERIŞTELERIŇ DUR ,"
+  },
+  {
+   "t": "p",
+   "x": "ÜÇÜNJISI : KITABLAR DUR ,"
+  },
+  {
+   "t": "p",
+   "x": "DÖRDINJISI : PYGAMBERLER DUR ,"
+  },
+  {
+   "t": "p",
+   "x": "BÄŞINJISI : KYÝAMAT DUR ,"
+  },
+  {
+   "t": "p",
+   "x": "ALTYNJYSY : KADAR DUR ,"
+  },
+  {
+   "t": "p",
+   "x": "ÝEDINJISI : ÖLENDEN SÖŇ DIRELMEK DUR ."
+  },
+  {
+   "t": "page",
+   "n": 1
+  },
+  {
+   "t": "h1",
+   "x": "ÜÇÜNJI DERS :"
+  },
+  {
+   "t": "h2",
+   "x": "ALLAH TA,ALA DIB NÄMÄ DIÝERLER ?"
+  },
+  {
+   "t": "h2",
+   "x": "ALLAH TA,ALA DIB HEMME MAHLUKATLARY"
+  },
+  {
+   "t": "h2",
+   "x": "ÝARADAN ÖZINIŇ WÜJUDI WÄJIB BOLAN BIR"
+  },
+  {
+   "t": "h2",
+   "x": "HALYK BAR DUR ŞOŇA DIÝER LER ."
+  },
+  {
+   "t": "h2",
+   "x": "ALLAH TA,ALANYŇ NÄME SYFATLARY"
+  },
+  {
+   "t": "h2",
+   "x": "BARDUR ?"
+  },
+  {
+   "t": "h2",
+   "x": "ALLAH TA,ALANYŇ WÄJIB SYFATLARY"
+  },
+  {
+   "t": "h2",
+   "x": "BAR DUR,"
+  },
+  {
+   "t": "h2",
+   "x": "ALLAH TA,ALANYŇ JAÝYZ SYFATLARY"
+  },
+  {
+   "t": "h2",
+   "x": "BARDUR,"
+  },
+  {
+   "t": "h2",
+   "x": "ALLAH TA,ALANYŇ MÜSTEHYL"
+  },
+  {
+   "t": "p",
+   "x": "( BOLMALY DÄL ) SYFATLARY BARDUR ."
+  },
+  {
+   "t": "h2",
+   "x": "ALLAH TA,ALANYŇ NÄÇE WÄJIB SYFATLARY"
+  },
+  {
+   "t": "h2",
+   "x": "BAR DUR ?"
+  },
+  {
+   "t": "p",
+   "x": "ON ÜÇ ( 13 ) WÄJIB SYFAT LARY BAR DUR ."
+  },
+  {
+   "t": "h2",
+   "x": "BÄŞISI SELBI DUR ,"
+  },
+  {
+   "t": "h2",
+   "x": "SEKIZSI SÜBUTY DUR"
+  },
+  {
+   "t": "h1",
+   "x": "DÖRDINJI DERS :"
+  },
+  {
+   "t": "p",
+   "x": "SELBI SYFATLARY BU LAR DUR :"
+  },
+  {
+   "t": "p",
+   "x": "AWALKYSY : ALLAH TA,ALA KADYM DUR"
+  },
+  {
+   "t": "h2",
+   "x": "ÝA,NY ÖZINIŇ WÜJUDI ÜÇÜN AWWALY ÝOK DUR."
+  },
+  {
+   "t": "p",
+   "x": "IKINJISY : ALLAH TA,ALA BAKY DURÝA,NY"
+  },
+  {
+   "t": "h2",
+   "x": "ÖZINIŇ WÜJUDI ÜÇÜN AHYRY ÝOK DUR ."
+  },
+  {
+   "t": "p",
+   "x": "ÜÇÜNJISI : ALLAH TA,ALA HIÇ ZAD GA"
+  },
+  {
+   "t": "h2",
+   "x": "MEŇZEÝÄN DÄL DUR ."
+  },
+  {
+   "t": "p",
+   "x": "DÖRDINJISI : ALLAH TA,ALA HIÇ ZAD GA"
+  },
+  {
+   "t": "h2",
+   "x": "MÄTÄÇ DÄL DUR ."
+  },
+  {
+   "t": "p",
+   "x": "BÄŞINJISI : ALLAH TA,ALA BIR DUR ÝA,NY"
+  },
+  {
+   "t": "p",
+   "x": "ŞERIGI = ORTAGY ÝOK DUR ."
+  },
+  {
+   "t": "page",
+   "n": 2
+  },
+  {
+   "t": "h1",
+   "x": "BÄŞINJI DERS :"
+  },
+  {
+   "t": "p",
+   "x": "SÜBUTI SYPATLARY BU LAR DUR :"
+  },
+  {
+   "t": "p",
+   "x": "AWWAKYSY: ALLAH TA,ALA HER ZAD GA"
+  },
+  {
+   "t": "h2",
+   "x": "KADYR DUR ."
+  },
+  {
+   "t": "p",
+   "x": "IKINJISI : ÝAGŞY BOLSYN ÝAMAN BOLSYN"
+  },
+  {
+   "t": "h2",
+   "x": "HEMME ZADY ALLAH TA,ALA IRÄDE ETGUJI DUR ."
+  },
+  {
+   "t": "p",
+   "x": "ÜÇÜNJISI : ALLAH TA,ALA HEMME ZADY"
+  },
+  {
+   "t": "h2",
+   "x": "BILGUJI DUR ."
+  },
+  {
+   "t": "p",
+   "x": "DÖRDINJISI: ALLAH TA,ALA DIRI DUR ."
+  },
+  {
+   "t": "p",
+   "x": "BÄŞINJISI: ALLAH TA,ALA HEMME ZAD LARY"
+  },
+  {
+   "t": "h2",
+   "x": "EŞITGUJI DUR ."
+  },
+  {
+   "t": "p",
+   "x": "ALTYNJISI: ALLAH TA,ALA GÖRGUJI DUR ."
+  },
+  {
+   "t": "p",
+   "x": "ÝEDINJISI: ALLAH TA,ALA KEBLEGUJI DUR ."
+  },
+  {
+   "t": "p",
+   "x": "SEKGINJISI: ALLAH TA,ALA HEMME ZADLARY"
+  },
+  {
+   "t": "h2",
+   "x": "ÝOK DAN BAR ETGUJI DUR ."
+  },
+  {
+   "t": "h1",
+   "x": "ALTYNJY DERS :"
+  },
+  {
+   "t": "h2",
+   "x": "ALLAH TA,ALANYŇ JAÝYZ SYPATLARY"
+  },
+  {
+   "t": "h2",
+   "x": "NÄÇE DUR ?"
+  },
+  {
+   "t": "p",
+   "x": "BIR DUR: ALLAH TA,ALA HER BIR IÝŞI HALASA"
+  },
+  {
+   "t": "h2",
+   "x": "EDER , HALAMASA EDMEZ ."
+  },
+  {
+   "t": "h2",
+   "x": "ALLAH TA,ALANYŇ MÜSTEHYL SYFATLARY"
+  },
+  {
+   "t": "h2",
+   "x": "NÄÇE DUR ?"
+  },
+  {
+   "t": "p",
+   "x": "ON ÜÇ DUR : ŞOL WÄJIB SYFATLARYNYŇ"
+  },
+  {
+   "t": "h2",
+   "x": "TERSLERI DUR ."
+  },
+  {
+   "t": "h2",
+   "x": "ALLAH TA,ALA NYŇ HEMME AD LARY WE"
+  },
+  {
+   "t": "h2",
+   "x": "SYFATLARY KADYM DUR."
+  },
+  {
+   "t": "h2",
+   "x": "ALLAH TA,ALANYŇ ŞOL SYFATLARY"
+  },
+  {
+   "t": "h2",
+   "x": "BARDYGNY NÄMEDEN BILÝÄRSIŇ ?"
+  },
+  {
+   "t": "h2",
+   "x": "AÝNY, GÜNNI DOGYRYB , BATYRYB , BIR DAMJA"
+  },
+  {
+   "t": "h2",
+   "x": "SUWDAN ADAMLARY ÝARADYB, SÜŇK EDIB , ET"
+  },
+  {
+   "t": "h2",
+   "x": "EDIB , DAMAR EDIB , SIŇIR EDIB , GYL EDIB , JAN"
+  },
+  {
+   "t": "h2",
+   "x": "BERIB , SÖZLEDIB , GEZDIRIB DUR , ŞÜ HILLI GEŇ"
+  },
+  {
+   "t": "h2",
+   "x": "IŞLERNI EDIB DUR ŞÖNDAN BILÝÄRIN ."
+  },
+  {
+   "t": "h2",
+   "x": "OL BIR DAMJA SUW ÖZI DÖRÄB DUR DIÝEŇDE"
+  },
+  {
+   "t": "h2",
+   "x": "BOLMAÝARMY ?"
+  },
+  {
+   "t": "h2",
+   "x": "ÝÖK BOLMAZ . EGER OL BIR DAMJA SUW ÖZI"
+  },
+  {
+   "t": "h2",
+   "x": "DÖREMEKLIGI BAŞARÝAN BOLSA , ULALANDA"
+  },
+  {
+   "t": "h2",
+   "x": "ÖLMEZLIGI HEM BAŞARARDY . ULALANDA"
+  },
+  {
+   "t": "h2",
+   "x": "ÖLMEZLIGI BAŞARMAÝAR , ÖLÝÄR . ÖZINIŇ"
+  },
+  {
+   "t": "h2",
+   "x": "DÖREMÄNDIGNI ALLAH TA,ALANYŇ"
+  },
+  {
+   "t": "h2",
+   "x": "DÖERDENDIGNI ŞONDAN BILÝÄRIN ."
+  },
+  {
+   "t": "page",
+   "n": 3
+  },
+  {
+   "t": "h1",
+   "x": "ÝEDINJI DERS :"
+  },
+  {
+   "t": "h2",
+   "x": "FERIŞTE LER DIB NÄMÄ DIÝERLER ?"
+  },
+  {
+   "t": "h2",
+   "x": "FERIŞTELER ALLAH TA,ALA NIŇ NUR DAN"
+  },
+  {
+   "t": "h2",
+   "x": "ÝARADAN SYLAGLY BENDE LERI DUR ."
+  },
+  {
+   "t": "h2",
+   "x": "FERIŞTE LER MYDAM ALLAH TA,ALA NYŇ"
+  },
+  {
+   "t": "h2",
+   "x": "HYDMATYN DA BOLARLAR WE HIÇ WAGT"
+  },
+  {
+   "t": "h2",
+   "x": "ALLAH TA,ALA NYŇ BUÝRYGYN DAN"
+  },
+  {
+   "t": "h2",
+   "x": "ÇYKMAZ LAR , HÝMEZLER , IÇMEZLER, ÄRLIK"
+  },
+  {
+   "t": "h2",
+   "x": "WE HATYNLYK OLARDA BOLMAZ ."
+  },
+  {
+   "t": "h2",
+   "x": "KITABLAR DIB NÄMÄ DIÝERLER ?"
+  },
+  {
+   "t": "h2",
+   "x": "KITAB LAR , ALLAH TA,ALA NYŇ DYN"
+  },
+  {
+   "t": "h2",
+   "x": "ÝOLYNI BILDIRMEK ÜÇÜN PYGAMBARLARA"
+  },
+  {
+   "t": "p",
+   "x": "INDEREN SÖZLERI DUR : MISLI TEWRAT ,"
+  },
+  {
+   "t": "h2",
+   "x": "INJIL , ZEBUR , KUR,AN , WE BULARDAN"
+  },
+  {
+   "t": "h2",
+   "x": "BAŞGA HEM KÖB KITAB INDERIB DUR"
+  },
+  {
+   "t": "h2",
+   "x": "HEMMESI ÖZINIŇ AWWALKY SÖZLERI DUR"
+  },
+  {
+   "t": "h2",
+   "x": "ÝANY MAHLUK DÄL DUR"
+  },
+  {
+   "t": "h2",
+   "x": "MUHAMMED ALAÝHISSALATÜ WESSALAMGA"
+  },
+  {
+   "t": "h2",
+   "x": "KUR,AN GELENDEN SOŇ HEMMESI KUR,AN"
+  },
+  {
+   "t": "h2",
+   "x": "BILEN MENSUH BOLAN DUR ,"
+  },
+  {
+   "t": "h2",
+   "x": "KUR,ANDAN SOŇ KITAB INMEZ ,"
+  },
+  {
+   "t": "h2",
+   "x": "MUHAMMED ALAÝHISSALATÜ"
+  },
+  {
+   "t": "h2",
+   "x": "WESSALAMDAN SOŇ PYGAMBAR GELMEZ ,"
+  },
+  {
+   "t": "h2",
+   "x": "TA KYÝAMAT GA ÇENLI MUHAMMED"
+  },
+  {
+   "t": "h2",
+   "x": "ALAÝHISSALATÜ WESSALAMYŇ ŞERI,ATY"
+  },
+  {
+   "t": "h2",
+   "x": "BILEN AMAL ETMELI DUR ."
+  },
+  {
+   "t": "page",
+   "n": 4
+  },
+  {
+   "t": "h1",
+   "x": "SEKIZINJI DERS :"
+  },
+  {
+   "t": "p",
+   "x": "PYGAMBERLAR DIB KIME DIÝERLER :"
+  },
+  {
+   "t": "h2",
+   "x": "PYGAMBERLAR , ALLAH TA,ALA NYŇ DOGRY"
+  },
+  {
+   "t": "h2",
+   "x": "ÝOLYNY BILDIRMEK ÜÇÜN HALKLARA"
+  },
+  {
+   "t": "h2",
+   "x": "IBEREN BENDELERI WE ILÇILERI DUR ."
+  },
+  {
+   "t": "h2",
+   "x": "PYGAMBERLARYŇ NÄÇE WÄJIB SYFATLARY"
+  },
+  {
+   "t": "p",
+   "x": "BAR DUR :"
+  },
+  {
+   "t": "p",
+   "x": "DÖRT WÄJIB SYFATLARY BAR DUR :"
+  },
+  {
+   "t": "p",
+   "x": "AWALKYSY : PYGAMBERLAR ZIREK WE"
+  },
+  {
+   "t": "h2",
+   "x": "AKYLLY DUR ."
+  },
+  {
+   "t": "p",
+   "x": "IKINJISI : PYGAMBERLER ALLAH TA,ALA NYŇ"
+  },
+  {
+   "t": "h2",
+   "x": "HEMME BÜÝRYKLARNY HALKLARA"
+  },
+  {
+   "t": "h2",
+   "x": "ÝETIRGEN DUR ."
+  },
+  {
+   "t": "p",
+   "x": "ÜÇÜNJISI : PYGAMBERLAR ÝALAN"
+  },
+  {
+   "t": "h2",
+   "x": "SÖZLÄNDÄL DUR ."
+  },
+  {
+   "t": "p",
+   "x": "DÖRDINJISI : PYGAMBERLAR HEMME"
+  },
+  {
+   "t": "h2",
+   "x": "GÜNÄLERDEN SAKLANAN DUR ."
+  },
+  {
+   "t": "p",
+   "x": "PYGAMBERLARYŇ JAÝYZ SYFATLARY BULAR DUR:"
+  },
+  {
+   "t": "h2",
+   "x": "PYGAMBERLAR BIZ KEMIN IÝERLER, IÇERLER,"
+  },
+  {
+   "t": "h2",
+   "x": "UKLARLAR, EMMÄ ALA WE JÜZÄM KEMIN"
+  },
+  {
+   "t": "h2",
+   "x": "ADAMLARYŇ TEBI,ATY GAÇAR ÝALY ÝAMAN"
+  },
+  {
+   "t": "h2",
+   "x": "KESEL OLARDA BOLMAZ ,"
+  },
+  {
+   "t": "h2",
+   "x": "PYGAMBERLARYŇ AWALKYSY ADAM"
+  },
+  {
+   "t": "h2",
+   "x": "ALAÝHISSALATÜ WESSALAM DUR AHYRKYSY"
+  },
+  {
+   "t": "h2",
+   "x": "MUHAMMED ALAÝHISSALATÜ WESSALAM"
+  },
+  {
+   "t": "h2",
+   "x": "DUR . BULARYŇ ARASYNDA PYGAMBER KÖB"
+  },
+  {
+   "t": "h2",
+   "x": "SANY BELLI DÄL DUR ."
+  },
+  {
+   "t": "h1",
+   "x": "DOKUZYNJY DERS :"
+  },
+  {
+   "t": "p",
+   "x": "KYÝAMAT DIB NÄMÄ NIÝERLER :"
+  },
+  {
+   "t": "h2",
+   "x": "KYÝAMAT DIB , ŞÜ MAHLUKATLARYŇ"
+  },
+  {
+   "t": "h2",
+   "x": "HEMMESI ÖLJEK DUR WE ÝENE KYÝAMAT"
+  },
+  {
+   "t": "h2",
+   "x": "GÜNI DIRELJEK DUR , ALLAH TA,ALA MIZAN"
+  },
+  {
+   "t": "p",
+   "x": "TERAZU BILEN OLARYŇ GÜNÄLERNI ,SEWAB-"
+  },
+  {
+   "t": "h2",
+   "x": "LARNY ÇEKJEK DUR , KÄFIRLERIŇ HEMMESINI"
+  },
+  {
+   "t": "h2",
+   "x": "WE MUSYLMANLARYŇ GÜNÄLI LERNI ÖZ"
+  },
+  {
+   "t": "h2",
+   "x": "ADLY BILEN JÄHENNEMGE IÝBERJEK DUR ,"
+  },
+  {
+   "t": "h2",
+   "x": "GÜNÄLI MUSYLMANLAR AZABYN ÇEKIB WE"
+  },
+  {
+   "t": "h2",
+   "x": "ÝENE GUTYLJAK DUR , EMMÄ KÄFIRLERIŇ"
+  },
+  {
+   "t": "h2",
+   "x": "HEMMESI MYDAM OL JÄHENNEMDE GALJAK"
+  },
+  {
+   "t": "h2",
+   "x": "DUR , MUSYLMANLARYŇ ÝAGŞYLARNY ÖZ"
+  },
+  {
+   "t": "h2",
+   "x": "FAZLY BILEN JENNETGE IÝBERJEK DUR ."
+  },
+  {
+   "t": "h2",
+   "x": "JENNET WE JÄHENNEM BARLYGY HAK DUR ."
+  },
+  {
+   "t": "h2",
+   "x": "SYRAT KÖFRIŇ BARLYGY HAK DUR ."
+  },
+  {
+   "t": "h2",
+   "x": "HAWZY KEWSER BARLYGY HAK DUR ."
+  },
+  {
+   "t": "h2",
+   "x": "PYGAMBERLERIŇ WE EWLIÝALARYŇ ŞEFA,ATY"
+  },
+  {
+   "t": "h2",
+   "x": "HAK DUR ."
+  },
+  {
+   "t": "h2",
+   "x": "MÜŇKIR NEKIRIŇ SÜ,ÄL SORAJAGY HAK DUR."
+  },
+  {
+   "t": "h2",
+   "x": "SENIŇ REBBYŇ KIM DUR ?"
+  },
+  {
+   "t": "h2",
+   "x": "MENIŇ REBBYM ALLAH DUR ."
+  },
+  {
+   "t": "h2",
+   "x": "SENIŇ DYÝNYŇ NÄME DUR ?"
+  },
+  {
+   "t": "h2",
+   "x": "MENIŇ DYÝN YM ISLAM DUR ."
+  },
+  {
+   "t": "h2",
+   "x": "SENIŇ PYGAMBERIŇ KIM DUR ?"
+  },
+  {
+   "t": "p",
+   "x": "MENIŇ PYGAMBERYM MUHAMMED ALAÝHIS-"
+  },
+  {
+   "t": "h2",
+   "x": "SALATÜ WESSALAM DUR ."
+  },
+  {
+   "t": "h2",
+   "x": "ÝAGŞY BOLSAŇ KABR DA NY,MAT RAHAT"
+  },
+  {
+   "t": "p",
+   "x": "BOLJAGY HAK DUR . ÝAMAN BOLSAŇ KABR –"
+  },
+  {
+   "t": "h2",
+   "x": "DA AZAB BOLJAGY HAK DUR ."
+  },
+  {
+   "t": "page",
+   "n": 5
+  },
+  {
+   "t": "h1",
+   "x": "ONUNJY DERS :"
+  },
+  {
+   "t": "p",
+   "x": "KADAR DIB NÄMÄ DIÝERLER :"
+  },
+  {
+   "t": "h2",
+   "x": "KADAR DIB , ŞÜ MAHLUKAT LARYŇ"
+  },
+  {
+   "t": "h2",
+   "x": "ARASYNDA BIR IÝŞ BOLSA , ÝAGŞY BOLSYN"
+  },
+  {
+   "t": "h2",
+   "x": "ÝAMAN BOLSYN , ULY BOLSYN KIÇI BOLSYN"
+  },
+  {
+   "t": "h2",
+   "x": "ALLA TA,ALANYŇ TAKDYRI BILEN DUR ."
+  },
+  {
+   "t": "p",
+   "x": "HATTA , FERIŞTELER , ŞEÝTAN LAR , INSAN -"
+  },
+  {
+   "t": "h2",
+   "x": "LAR BIR ADAMA ÝAGŞYLYK ÝÄ ÝAMANLYK"
+  },
+  {
+   "t": "p",
+   "x": "ETJEK BOLYB BIRLEŞSELER HEM ALLAH –"
+  },
+  {
+   "t": "h2",
+   "x": "TA,ALA KADAR ETMESE EDIB BILMEZLER ."
+  },
+  {
+   "t": "h2",
+   "x": "HER IÝŞI YHTIÝAR ETMEK BENDÄ NIŇ HÝŞI"
+  },
+  {
+   "t": "h2",
+   "x": "DUR , OL IÝŞI ÝARATMAK ALLAH"
+  },
+  {
+   "t": "h2",
+   "x": "TA,ALANIŇ IÝŞI DUR ."
+  },
+  {
+   "t": "h1",
+   "x": "ON BIRINJI DERS :"
+  },
+  {
+   "t": "h2",
+   "x": "ISLAM DIB NÄMÄ DIÝERLER ?"
+  },
+  {
+   "t": "h2",
+   "x": "ISLAM DIB ALLA TA,ALANYŇ BÜÝRAN"
+  },
+  {
+   "t": "h2",
+   "x": "IÝŞLERNE BOÝYN BERIB , BÜÝRMADYK"
+  },
+  {
+   "t": "h2",
+   "x": "IÝŞLERINDEN GAÇMAGA DIÝERLER ."
+  },
+  {
+   "t": "h2",
+   "x": "ISLAMYŇ RÜKN LERI NÄÇE DUR ?"
+  },
+  {
+   "t": "p",
+   "x": "5 = BÄŞ DUR : AWALKYSY:"
+  },
+  {
+   "t": "h2",
+   "x": "EŞ HEDÜ EN LÄ ILÄHE IL LAL LAHÜ ,"
+  },
+  {
+   "t": "h2",
+   "x": "WE EŞ HEDÜ ENNE MUHAMMEDEN ABDÜHU"
+  },
+  {
+   "t": "h2",
+   "x": "WE RESU LUH . DIMEK DUR MA,NASYN BILIB ."
+  },
+  {
+   "t": "p",
+   "x": "MA,NASY BÜ DUR : ŞAHADET BERÝÄRIN :"
+  },
+  {
+   "t": "p",
+   "x": "YBADAT EDER ÝALY ZAT ÝOK DUR, BIR –"
+  },
+  {
+   "t": "h2",
+   "x": "ALLAH TA,ALA DAN GAÝRY ! WE ÝENE"
+  },
+  {
+   "t": "p",
+   "x": "ŞAHADET BERÝÄRIN : HAZRETI MUHAMMED"
+  },
+  {
+   "t": "p",
+   "x": "ALAÝHISSALATÜ WESSALAM ALLA -"
+  },
+  {
+   "t": "h2",
+   "x": "TA,ALANYŇ BENDE SI WE ILÇISI DUR ."
+  },
+  {
+   "t": "p",
+   "x": "IKINJISI : NAMAZ OKYMAK ."
+  },
+  {
+   "t": "p",
+   "x": "ÜÇÜNJISI : MALDAN ZEKAT BERMEK ."
+  },
+  {
+   "t": "p",
+   "x": "DÖRDINJISI : REMEZAN AÝ RUZA TUTMAK ."
+  },
+  {
+   "t": "p",
+   "x": "BÄŞINJISI : GÜÝJI ÝETSE HAJ ETMEK ."
+  },
+  {
+   "t": "h2",
+   "x": "IHSAN DIB NÄMÄ DIÝERLER ?"
+  },
+  {
+   "t": "h2",
+   "x": "IHSAN DIB , ALLA TA,ALA ÜÇÜN HYDMAT"
+  },
+  {
+   "t": "h2",
+   "x": "ETMEK DUR SEN ONY GÖRÝÄN ÝALY BOLYB ,"
+  },
+  {
+   "t": "h2",
+   "x": "SEN ONY GÖRMESEŇDE OLSENI GÖRÝÄN DUR."
+  },
+  {
+   "t": "page",
+   "n": 6
+  },
+  {
+   "t": "h2",
+   "x": "AKYDA BILMEGEN ŞEÝTANA IÝL DUR"
+  },
+  {
+   "t": "h2",
+   "x": "EGER MUŇ ÝYL AMAL DIB KYLSA ÝEL DUR"
+  }
+ ]
+}
